@@ -5,13 +5,14 @@ export interface CargoItem {
 
 export interface RouteStop {
   id: string;
-  stationId: number;
+  stationId: number | null; // null for custom stations not in AllEntities
   stationName: string;
   pickupSelections: Map<string, boolean>;
   availablePickups: CargoItem[];
   dropoffs: CargoItem[];
   inventoryAfter: CargoItem[];
   currentSCU: number;
+  isCustomStation?: boolean; // flag to identify custom stations
 }
 
 export interface RoutePlannerState {

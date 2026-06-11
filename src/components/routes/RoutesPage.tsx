@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { data as allEntitiesData, locationTypes, AllEntities } from '@/data/AllEntities';
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as Sonner } from '@/components/ui/sonner';
@@ -385,6 +385,37 @@ const RoutesPage = () => {
     matchContractRoutes();
   }, [contracts]);
 
+  // Compute delivered quantities per item and location from current route stops
+  const deliveredMap = useMemo(() => {
+    const map = new Map<string, number>();
+    routeStops.forEach(stop => {
+      if (!stop.dropoffs || stop.dropoffs.length === 0) return;
+      stop.dropoffs.forEach(drop => {
+        const key = `${drop.itemName}|${stop.stationName}`.toLowerCase();
+        const current = map.get(key) || 0;
+        map.set(key, current + drop.quantity);
+      });
+    });
+    return map;
+  }, [routeStops]);
+
+  // Compute picked-up quantities per item and source location from current route selections
+  const pickedUpMap = useMemo(() => {
+    const map = new Map<string, number>();
+    routeStops.forEach(stop => {
+      if (!stop.availablePickups || stop.availablePickups.length === 0) return;
+      stop.availablePickups.forEach(pickup => {
+        const isSelected = stop.pickupSelections?.get(pickup.itemName) || false;
+        if (isSelected) {
+          const key = `${pickup.itemName}|${stop.stationName}`.toLowerCase();
+          const current = map.get(key) || 0;
+          map.set(key, current + pickup.quantity);
+        }
+      });
+    });
+    return map;
+  }, [routeStops]);
+
   // Draw canvas
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -630,6 +661,12 @@ const RoutesPage = () => {
       
       // Add all route stops
       routeStops.forEach((stop, index) => {
+        if (stop.isCustomStation || stop.stationId === null) {
+          // For custom stations, we can't draw them on the map since they don't have coordinates
+          // We'll skip them for now, but could add a visual indicator later
+          return;
+        }
+        
         const entity = adjustedData.find(e => e.id === stop.stationId);
         if (entity) {
           routePoints.push({ entity, stopNumber: index + 1 });
@@ -948,38 +985,49 @@ const RoutesPage = () => {
                         
                         return (
                           <div key={contract.id} className="text-xs text-muted-foreground">
-                            {showPickup && (
-                              <>
-                                <div className="flex items-center gap-2 mb-1">
-                                  <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                                  <span 
-                                    className="cursor-pointer hover:text-emerald-400 transition-colors"
-                                    onClick={() => flashLocationOnMap(contract.source)}
-                                  >
-                                    Pickup: {contract.source}
-                                  </span>
+                            {showPickup && (() => {
+                              const requiredPickup = contract.deliveries.reduce((sum, d) => sum + d.quantity, 0);
+                              const pickedKey = `${contract.item}|${contract.source}`.toLowerCase();
+                              const pickedQty = pickedUpMap.get(pickedKey) || 0;
+                              const pickupDone = pickedQty >= requiredPickup;
+                              return (
+                                <div className={pickupDone ? 'line-through opacity-60' : ''}>
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                                    <span 
+                                      className="cursor-pointer hover:text-emerald-400 transition-colors"
+                                      onClick={() => flashLocationOnMap(contract.source)}
+                                    >
+                                      Pickup: {contract.source}
+                                    </span>
+                                  </div>
+                                  <div className="ml-4 mb-1">
+                                    <span className="text-emerald-400 font-medium">📦 {contract.item} ({requiredPickup} SCU)</span>
+                                  </div>
                                 </div>
-                                <div className="ml-4 mb-1">
-                                  <span className="text-emerald-400 font-medium">📦 {contract.item} ({contract.deliveries.reduce((sum, delivery) => sum + delivery.quantity, 0)} SCU)</span>
+                              );
+                            })()}
+                            {filteredDeliveries.map((delivery, idx) => {
+                              const key = `${contract.item}|${delivery.location}`.toLowerCase();
+                              const deliveredQty = deliveredMap.get(key) || 0;
+                              const isDelivered = deliveredQty >= delivery.quantity;
+                              return (
+                                <div key={idx} className={isDelivered ? 'line-through opacity-60' : ''}>
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                                    <span 
+                                      className="cursor-pointer hover:text-red-400 transition-colors"
+                                      onClick={() => flashLocationOnMap(delivery.location)}
+                                    >
+                                      Dropoff: {delivery.location}
+                                    </span>
+                                  </div>
+                                  <div className="ml-4">
+                                    <span className="text-red-400 font-medium">🚚 {contract.item} ({delivery.quantity} SCU)</span>
+                                  </div>
                                 </div>
-                              </>
-                            )}
-                            {filteredDeliveries.map((delivery, idx) => (
-                              <div key={idx}>
-                                <div className="flex items-center gap-2">
-                                  <div className="w-2 h-2 rounded-full bg-red-500"></div>
-                                  <span 
-                                    className="cursor-pointer hover:text-red-400 transition-colors"
-                                    onClick={() => flashLocationOnMap(delivery.location)}
-                                  >
-                                    Dropoff: {delivery.location}
-                                  </span>
-                                </div>
-                                <div className="ml-4">
-                                  <span className="text-red-400 font-medium">🚚 {contract.item} ({delivery.quantity} SCU)</span>
-                                </div>
-                              </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         );
                       })}

@@ -112,9 +112,11 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ contracts, onRouteChange })
         cleanedSource.toLowerCase().includes(entity.name.toLowerCase())
       );
 
-      if (sourceEntity) {
-        locationMap.set(contract.source, { name: contract.source, entityId: sourceEntity.id });
-      }
+      // Always add the source location, even if not found in AllEntities
+      locationMap.set(contract.source, { 
+        name: contract.source, 
+        entityId: sourceEntity?.id || null 
+      });
 
       contract.deliveries.forEach(delivery => {
         const cleanedDelivery = cleanStationNameForMatching(delivery.location);
@@ -124,9 +126,11 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ contracts, onRouteChange })
           cleanedDelivery.toLowerCase().includes(entity.name.toLowerCase())
         );
 
-        if (deliveryEntity) {
-          locationMap.set(delivery.location, { name: delivery.location, entityId: deliveryEntity.id });
-        }
+        // Always add the delivery location, even if not found in AllEntities
+        locationMap.set(delivery.location, { 
+          name: delivery.location, 
+          entityId: deliveryEntity?.id || null 
+        });
       });
     });
 
@@ -241,12 +245,14 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ contracts, onRouteChange })
   const recalculateRoute = (stopsToCalculate: RouteStop[] = routeStops) => {
     if (stopsToCalculate.length === 0) return stopsToCalculate;
     
-    // Validate all stations exist
+    // Validate stations exist (only for non-custom stations)
     const errors: string[] = [];
     stopsToCalculate.forEach(stop => {
-      const entity = allEntitiesData.find(e => e.id === stop.stationId);
-      if (!entity) {
-        errors.push(`Station "${stop.stationName}" (ID: ${stop.stationId}) not found in the system`);
+      if (!stop.isCustomStation && stop.stationId !== null) {
+        const entity = allEntitiesData.find(e => e.id === stop.stationId);
+        if (!entity) {
+          errors.push(`Station "${stop.stationName}" (ID: ${stop.stationId}) not found in the system`);
+        }
       }
     });
     
@@ -258,7 +264,45 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ contracts, onRouteChange })
     const shipManagerCopy = new ShipInventoryManager(cargoSpace);
 
     const updatedStops = stopsToCalculate.map(stop => {
-      const availablePickups = stationManagerCopy.getAvailableItems(stop.stationId);
+      // Build available pickups per stop
+      let availablePickups: CargoItem[] = [];
+      if (stop.isCustomStation) {
+        // For custom stations, derive pickups from contracts whose source matches the custom station name
+        const cleanedStop = cleanStationNameForMatching(stop.stationName);
+        const totals = new Map<string, number>();
+        contracts.forEach(contract => {
+          const cleanedSource = cleanStationNameForMatching(contract.source);
+          const matches =
+            cleanedSource.toLowerCase() === cleanedStop.toLowerCase() ||
+            cleanedSource.toLowerCase().includes(cleanedStop.toLowerCase()) ||
+            cleanedStop.toLowerCase().includes(cleanedSource.toLowerCase());
+          if (matches) {
+            const totalQty = contract.deliveries.reduce((sum, d) => sum + d.quantity, 0);
+            totals.set(contract.item, (totals.get(contract.item) || 0) + totalQty);
+          }
+        });
+        availablePickups = Array.from(totals.entries()).map(([itemName, quantity]) => ({ itemName, quantity }));
+      } else {
+        availablePickups = stationManagerCopy.getAvailableItems(stop.stationId);
+      }
+
+      // Ensure pickups are only from contract sources for this station, not general station availability or dropoffs
+      if (!stop.isCustomStation && stop.stationId !== null) {
+        const allowedItems = new Set<string>();
+        contracts.forEach(contract => {
+          const cleanedSource = cleanStationNameForMatching(contract.source);
+          const sourceEntity = allEntitiesData.find(entity =>
+            entity.name.toLowerCase().includes(cleanedSource.toLowerCase()) ||
+            entity.key.toLowerCase().includes(cleanedSource.toLowerCase()) ||
+            cleanedSource.toLowerCase().includes(entity.name.toLowerCase())
+          );
+          if (sourceEntity?.id === stop.stationId) {
+            allowedItems.add(contract.item);
+          }
+        });
+
+        availablePickups = availablePickups.filter(p => allowedItems.has(p.itemName));
+      }
       const dropoffs: CargoItem[] = [];
 
       // Calculate required dropoffs at this station based on contracts
@@ -292,7 +336,10 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ contracts, onRouteChange })
       // Process dropoffs first
       dropoffs.forEach(dropoff => {
         shipManagerCopy.dropoff(dropoff.itemName, dropoff.quantity);
-        stationManagerCopy.addDropoff(stop.stationId, dropoff.itemName, dropoff.quantity);
+        // Only update station manager for non-custom stations
+        if (!stop.isCustomStation && stop.stationId !== null) {
+          stationManagerCopy.addDropoff(stop.stationId, dropoff.itemName, dropoff.quantity);
+        }
       });
 
       // Process pickups based on selections (allow exceeding capacity)
@@ -301,7 +348,10 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ contracts, onRouteChange })
         if (isSelected) {
           // Force pickup regardless of capacity - let user see the overflow
           shipManagerCopy.forcePickup(pickup.itemName, pickup.quantity);
-          stationManagerCopy.consumePickup(stop.stationId, pickup.itemName, pickup.quantity);
+          // Only update station manager for non-custom stations
+          if (!stop.isCustomStation && stop.stationId !== null) {
+            stationManagerCopy.consumePickup(stop.stationId, pickup.itemName, pickup.quantity);
+          }
         }
       });
 
@@ -321,30 +371,22 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ contracts, onRouteChange })
   };
 
   const handleAddStation = (locationName: string, entityId: number | null) => {
-    if (!entityId) {
-      setStationErrors([`Cannot add station "${locationName}": Station not found in the system`]);
-      return;
-    }
-
-    // Verify the entity exists
-    const entity = allEntitiesData.find(e => e.id === entityId);
-    if (!entity) {
-      setStationErrors([`Cannot add station "${locationName}": Station with ID ${entityId} not found in the system`]);
-      return;
-    }
-
     // Clear any previous errors
     setStationErrors([]);
 
+    // Generate a unique ID for custom stations
+    const stationId = entityId || -Math.floor(Math.random() * 1000000); // negative ID for custom stations
+    
     const newStop: RouteStop = {
-      id: `${entityId}-${Date.now()}`,
+      id: `${stationId}-${Date.now()}`,
       stationId: entityId,
       stationName: locationName,
       pickupSelections: new Map(),
       availablePickups: [],
       dropoffs: [],
       inventoryAfter: [],
-      currentSCU: 0
+      currentSCU: 0,
+      isCustomStation: !entityId
     };
 
     const stopsWithNew = [...routeStops, newStop];
@@ -521,7 +563,12 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ contracts, onRouteChange })
                   <div className="flex items-start gap-2 flex-1">
                     <GripVertical className="w-4 h-4 text-gray-400 mt-1 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <div className="text-white font-medium text-sm">{stop.stationName}</div>
+                      <div className="text-white font-medium text-sm">
+                        {stop.stationName}
+                        {stop.isCustomStation && (
+                          <span className="ml-2 text-xs text-yellow-400">(Custom)</span>
+                        )}
+                      </div>
                       <div className={cn(
                         "text-xs",
                         stop.currentSCU > cargoSpace ? "text-red-400 font-semibold" : "text-gray-400"
@@ -628,6 +675,9 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ contracts, onRouteChange })
                           >
                             <MapPin className="w-4 h-4 mr-2" />
                             {location.name}
+                            {!location.entityId && (
+                              <span className="ml-2 text-xs text-yellow-400">(Custom)</span>
+                            )}
                           </CommandItem>
                         ))}
                       </ScrollArea>
