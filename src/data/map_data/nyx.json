@@ -1,0 +1,3935 @@
+{
+  "system": "nyx",
+  "count": 120,
+  "category_counts": {
+    "planet": 3,
+    "poi": 98,
+    "station": 18,
+    "star": 1
+  },
+  "bounds": {
+    "minX": -47998823159.68,
+    "maxX": 47999735232.84,
+    "minY": -47834599252.3499,
+    "maxY": 47780646220.08776
+  },
+  "orbits": [
+    {
+      "name": "Nyx I",
+      "entity_name": "Nyx1",
+      "center": [
+        0.0,
+        0.0
+      ],
+      "radius": 7500000909.521368,
+      "planet_position": [
+        6495194198.506323,
+        -3749995462.198742
+      ]
+    },
+    {
+      "name": "Nyx II",
+      "entity_name": "Nyx2",
+      "center": [
+        0.0,
+        0.0
+      ],
+      "radius": 10499998796.52228,
+      "planet_position": [
+        -3591210930.539283,
+        9866771446.595106
+      ]
+    },
+    {
+      "name": "Nyx III",
+      "entity_name": "Nyx3",
+      "center": [
+        0.0,
+        0.0
+      ],
+      "radius": 38000005232.06956,
+      "planet_position": [
+        -29109694335.707394,
+        -24425930756.452217
+      ]
+    }
+  ],
+  "orbit_exceptions": {},
+  "tree": {
+    "name": "nyx",
+    "path": [],
+    "children": [
+      {
+        "name": "nyxstar",
+        "path": [
+          "nyxstar"
+        ],
+        "children": [
+          {
+            "name": "glaciemring_segment_levski",
+            "path": [
+              "nyxstar",
+              "glaciemring_segment_levski"
+            ],
+            "children": [
+              {
+                "name": "levski_all-001",
+                "path": [
+                  "nyxstar",
+                  "glaciemring_segment_levski",
+                  "levski_all-001"
+                ],
+                "children": [
+                  {
+                    "name": "levski_v2_ext",
+                    "path": [
+                      "nyxstar",
+                      "glaciemring_segment_levski",
+                      "levski_all-001",
+                      "levski_v2_ext"
+                    ],
+                    "children": [
+                      {
+                        "name": "levski_v2_int",
+                        "path": [
+                          "nyxstar",
+                          "glaciemring_segment_levski",
+                          "levski_all-001",
+                          "levski_v2_ext",
+                          "levski_v2_int"
+                        ],
+                        "children": [
+                          {
+                            "name": "levski_v2_middeck",
+                            "path": [
+                              "nyxstar",
+                              "glaciemring_segment_levski",
+                              "levski_all-001",
+                              "levski_v2_ext",
+                              "levski_v2_int",
+                              "levski_v2_middeck"
+                            ],
+                            "children": [
+                              {
+                                "name": "levski_hosp",
+                                "path": [
+                                  "nyxstar",
+                                  "glaciemring_segment_levski",
+                                  "levski_all-001",
+                                  "levski_v2_ext",
+                                  "levski_v2_int",
+                                  "levski_v2_middeck",
+                                  "levski_hosp"
+                                ],
+                                "children": [],
+                                "poiIndices": [
+                                  37
+                                ]
+                              }
+                            ],
+                            "poiIndices": []
+                          }
+                        ],
+                        "poiIndices": []
+                      }
+                    ],
+                    "poiIndices": []
+                  }
+                ],
+                "poiIndices": [
+                  36
+                ]
+              }
+            ],
+            "poiIndices": []
+          },
+          {
+            "name": "glaciemring_segment_wtn-013",
+            "path": [
+              "nyxstar",
+              "glaciemring_segment_wtn-013"
+            ],
+            "children": [
+              {
+                "name": "glaciem_ring_wtn_setup",
+                "path": [
+                  "nyxstar",
+                  "glaciemring_segment_wtn-013",
+                  "glaciem_ring_wtn_setup"
+                ],
+                "children": [],
+                "poiIndices": [
+                  3
+                ]
+              }
+            ],
+            "poiIndices": []
+          },
+          {
+            "name": "jumppoint_nyx_castra",
+            "path": [
+              "nyxstar",
+              "jumppoint_nyx_castra"
+            ],
+            "children": [
+              {
+                "name": "rs_ext_nyx-castra_jp1",
+                "path": [
+                  "nyxstar",
+                  "jumppoint_nyx_castra",
+                  "rs_ext_nyx-castra_jp1"
+                ],
+                "children": [
+                  {
+                    "name": "rs_entry_nyx_castra_jp1",
+                    "path": [
+                      "nyxstar",
+                      "jumppoint_nyx_castra",
+                      "rs_ext_nyx-castra_jp1",
+                      "rs_entry_nyx_castra_jp1"
+                    ],
+                    "children": [
+                      {
+                        "name": "rs_clinic_pyro-stan_jp1",
+                        "path": [
+                          "nyxstar",
+                          "jumppoint_nyx_castra",
+                          "rs_ext_nyx-castra_jp1",
+                          "rs_entry_nyx_castra_jp1",
+                          "rs_clinic_pyro-stan_jp1"
+                        ],
+                        "children": [],
+                        "poiIndices": [
+                          49
+                        ]
+                      }
+                    ],
+                    "poiIndices": []
+                  }
+                ],
+                "poiIndices": [
+                  50
+                ]
+              }
+            ],
+            "poiIndices": [
+              4
+            ]
+          },
+          {
+            "name": "jumppoint_nyx_pyro",
+            "path": [
+              "nyxstar",
+              "jumppoint_nyx_pyro"
+            ],
+            "children": [
+              {
+                "name": "rs_ext_nyx-pyro_jp1",
+                "path": [
+                  "nyxstar",
+                  "jumppoint_nyx_pyro",
+                  "rs_ext_nyx-pyro_jp1"
+                ],
+                "children": [
+                  {
+                    "name": "rs_entry_nyx_pyro_jp1",
+                    "path": [
+                      "nyxstar",
+                      "jumppoint_nyx_pyro",
+                      "rs_ext_nyx-pyro_jp1",
+                      "rs_entry_nyx_pyro_jp1"
+                    ],
+                    "children": [
+                      {
+                        "name": "rs_clinic_pyro-stan_jp1",
+                        "path": [
+                          "nyxstar",
+                          "jumppoint_nyx_pyro",
+                          "rs_ext_nyx-pyro_jp1",
+                          "rs_entry_nyx_pyro_jp1",
+                          "rs_clinic_pyro-stan_jp1"
+                        ],
+                        "children": [],
+                        "poiIndices": [
+                          48
+                        ]
+                      }
+                    ],
+                    "poiIndices": []
+                  }
+                ],
+                "poiIndices": [
+                  51
+                ]
+              }
+            ],
+            "poiIndices": [
+              5
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_004",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_004"
+            ],
+            "children": [],
+            "poiIndices": [
+              6
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_005",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_005"
+            ],
+            "children": [],
+            "poiIndices": [
+              7
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_006",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_006"
+            ],
+            "children": [],
+            "poiIndices": [
+              8
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_007",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_007"
+            ],
+            "children": [],
+            "poiIndices": [
+              9
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_008",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_008"
+            ],
+            "children": [],
+            "poiIndices": [
+              10
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_009",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_009"
+            ],
+            "children": [],
+            "poiIndices": [
+              11
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_010",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_010"
+            ],
+            "children": [],
+            "poiIndices": [
+              12
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_011",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_011"
+            ],
+            "children": [],
+            "poiIndices": [
+              13
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_012",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_012"
+            ],
+            "children": [],
+            "poiIndices": [
+              14
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_013",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_013"
+            ],
+            "children": [],
+            "poiIndices": [
+              15
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_014",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_014"
+            ],
+            "children": [],
+            "poiIndices": [
+              16
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_015",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_015"
+            ],
+            "children": [],
+            "poiIndices": [
+              17
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_016",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_016"
+            ],
+            "children": [],
+            "poiIndices": [
+              18
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_017",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_017"
+            ],
+            "children": [],
+            "poiIndices": [
+              19
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_018",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_018"
+            ],
+            "children": [],
+            "poiIndices": [
+              20
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_019",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_019"
+            ],
+            "children": [],
+            "poiIndices": [
+              21
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_020",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_020"
+            ],
+            "children": [],
+            "poiIndices": [
+              22
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_021",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_021"
+            ],
+            "children": [],
+            "poiIndices": [
+              23
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_022",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_022"
+            ],
+            "children": [],
+            "poiIndices": [
+              24
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_023",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_023"
+            ],
+            "children": [],
+            "poiIndices": [
+              25
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_024",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_024"
+            ],
+            "children": [],
+            "poiIndices": [
+              26
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_025",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_025"
+            ],
+            "children": [],
+            "poiIndices": [
+              27
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_026",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_026"
+            ],
+            "children": [],
+            "poiIndices": [
+              28
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_027",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_027"
+            ],
+            "children": [],
+            "poiIndices": [
+              29
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_028",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_028"
+            ],
+            "children": [],
+            "poiIndices": [
+              30
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_029",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_029"
+            ],
+            "children": [],
+            "poiIndices": [
+              31
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_030",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_030"
+            ],
+            "children": [],
+            "poiIndices": [
+              32
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_031",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_031"
+            ],
+            "children": [],
+            "poiIndices": [
+              33
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_032",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_032"
+            ],
+            "children": [],
+            "poiIndices": [
+              34
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_033",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_033"
+            ],
+            "children": [],
+            "poiIndices": [
+              35
+            ]
+          },
+          {
+            "name": "keeger_segment_rckcrk_066",
+            "path": [
+              "nyxstar",
+              "keeger_segment_rckcrk_066"
+            ],
+            "children": [
+              {
+                "name": "rockcrack_assembled_002",
+                "path": [
+                  "nyxstar",
+                  "keeger_segment_rckcrk_066",
+                  "rockcrack_assembled_002"
+                ],
+                "children": [],
+                "poiIndices": [
+                  39
+                ]
+              }
+            ],
+            "poiIndices": []
+          },
+          {
+            "name": "keeger_segment_social_001",
+            "path": [
+              "nyxstar",
+              "keeger_segment_social_001"
+            ],
+            "children": [
+              {
+                "name": "rs_asmbl_keeger_01",
+                "path": [
+                  "nyxstar",
+                  "keeger_segment_social_001",
+                  "rs_asmbl_keeger_01"
+                ],
+                "children": [
+                  {
+                    "name": "rs_int_layout_keeger_01",
+                    "path": [
+                      "nyxstar",
+                      "keeger_segment_social_001",
+                      "rs_asmbl_keeger_01",
+                      "rs_int_layout_keeger_01"
+                    ],
+                    "children": [
+                      {
+                        "name": "rs_clinic_final",
+                        "path": [
+                          "nyxstar",
+                          "keeger_segment_social_001",
+                          "rs_asmbl_keeger_01",
+                          "rs_int_layout_keeger_01",
+                          "rs_clinic_final"
+                        ],
+                        "children": [],
+                        "poiIndices": [
+                          45
+                        ]
+                      }
+                    ],
+                    "poiIndices": []
+                  }
+                ],
+                "poiIndices": [
+                  40
+                ]
+              }
+            ],
+            "poiIndices": []
+          },
+          {
+            "name": "keeger_segment_social_002",
+            "path": [
+              "nyxstar",
+              "keeger_segment_social_002"
+            ],
+            "children": [
+              {
+                "name": "rs_asmbl_keeger_02",
+                "path": [
+                  "nyxstar",
+                  "keeger_segment_social_002",
+                  "rs_asmbl_keeger_02"
+                ],
+                "children": [
+                  {
+                    "name": "rs_int_layout_keeger_02",
+                    "path": [
+                      "nyxstar",
+                      "keeger_segment_social_002",
+                      "rs_asmbl_keeger_02",
+                      "rs_int_layout_keeger_02"
+                    ],
+                    "children": [
+                      {
+                        "name": "rs_clinic_final",
+                        "path": [
+                          "nyxstar",
+                          "keeger_segment_social_002",
+                          "rs_asmbl_keeger_02",
+                          "rs_int_layout_keeger_02",
+                          "rs_clinic_final"
+                        ],
+                        "children": [],
+                        "poiIndices": [
+                          46
+                        ]
+                      }
+                    ],
+                    "poiIndices": []
+                  }
+                ],
+                "poiIndices": [
+                  41
+                ]
+              }
+            ],
+            "poiIndices": []
+          },
+          {
+            "name": "keeger_segment_social_003",
+            "path": [
+              "nyxstar",
+              "keeger_segment_social_003"
+            ],
+            "children": [
+              {
+                "name": "rs_asmbl_keeger_03",
+                "path": [
+                  "nyxstar",
+                  "keeger_segment_social_003",
+                  "rs_asmbl_keeger_03"
+                ],
+                "children": [
+                  {
+                    "name": "rs_int_layout_keeger_03",
+                    "path": [
+                      "nyxstar",
+                      "keeger_segment_social_003",
+                      "rs_asmbl_keeger_03",
+                      "rs_int_layout_keeger_03"
+                    ],
+                    "children": [
+                      {
+                        "name": "rs_clinic_final",
+                        "path": [
+                          "nyxstar",
+                          "keeger_segment_social_003",
+                          "rs_asmbl_keeger_03",
+                          "rs_int_layout_keeger_03",
+                          "rs_clinic_final"
+                        ],
+                        "children": [],
+                        "poiIndices": [
+                          44
+                        ]
+                      }
+                    ],
+                    "poiIndices": []
+                  }
+                ],
+                "poiIndices": [
+                  42
+                ]
+              }
+            ],
+            "poiIndices": []
+          },
+          {
+            "name": "keeger_segment_social_004",
+            "path": [
+              "nyxstar",
+              "keeger_segment_social_004"
+            ],
+            "children": [
+              {
+                "name": "rs_asmbl_keeger_04",
+                "path": [
+                  "nyxstar",
+                  "keeger_segment_social_004",
+                  "rs_asmbl_keeger_04"
+                ],
+                "children": [
+                  {
+                    "name": "rs_int_layout_keeger_04",
+                    "path": [
+                      "nyxstar",
+                      "keeger_segment_social_004",
+                      "rs_asmbl_keeger_04",
+                      "rs_int_layout_keeger_04"
+                    ],
+                    "children": [
+                      {
+                        "name": "rs_clinic_final",
+                        "path": [
+                          "nyxstar",
+                          "keeger_segment_social_004",
+                          "rs_asmbl_keeger_04",
+                          "rs_int_layout_keeger_04",
+                          "rs_clinic_final"
+                        ],
+                        "children": [],
+                        "poiIndices": [
+                          47
+                        ]
+                      }
+                    ],
+                    "poiIndices": []
+                  }
+                ],
+                "poiIndices": [
+                  43
+                ]
+              }
+            ],
+            "poiIndices": []
+          },
+          {
+            "name": "Nyx1",
+            "path": [
+              "nyxstar",
+              "Nyx1"
+            ],
+            "children": [],
+            "poiIndices": [
+              0
+            ]
+          },
+          {
+            "name": "Nyx2",
+            "path": [
+              "nyxstar",
+              "Nyx2"
+            ],
+            "children": [],
+            "poiIndices": [
+              1
+            ]
+          },
+          {
+            "name": "Nyx3",
+            "path": [
+              "nyxstar",
+              "Nyx3"
+            ],
+            "children": [],
+            "poiIndices": [
+              2
+            ]
+          },
+          {
+            "name": "social_001_keeger_segment_rckcrk_095",
+            "path": [
+              "nyxstar",
+              "social_001_keeger_segment_rckcrk_095"
+            ],
+            "children": [],
+            "poiIndices": [
+              52
+            ]
+          },
+          {
+            "name": "social_001_keeger_segment_rckcrk_101",
+            "path": [
+              "nyxstar",
+              "social_001_keeger_segment_rckcrk_101"
+            ],
+            "children": [],
+            "poiIndices": [
+              53
+            ]
+          },
+          {
+            "name": "social_001_keeger_segment_rckcrk_102",
+            "path": [
+              "nyxstar",
+              "social_001_keeger_segment_rckcrk_102"
+            ],
+            "children": [],
+            "poiIndices": [
+              54
+            ]
+          },
+          {
+            "name": "social_001_keeger_segment_rckcrk_105",
+            "path": [
+              "nyxstar",
+              "social_001_keeger_segment_rckcrk_105"
+            ],
+            "children": [],
+            "poiIndices": [
+              55
+            ]
+          },
+          {
+            "name": "social_001_keeger_segment_rckcrk_112",
+            "path": [
+              "nyxstar",
+              "social_001_keeger_segment_rckcrk_112"
+            ],
+            "children": [],
+            "poiIndices": [
+              56
+            ]
+          },
+          {
+            "name": "social_002_keeger_segment_rckcrk_094",
+            "path": [
+              "nyxstar",
+              "social_002_keeger_segment_rckcrk_094"
+            ],
+            "children": [],
+            "poiIndices": [
+              57
+            ]
+          },
+          {
+            "name": "social_002_keeger_segment_rckcrk_096",
+            "path": [
+              "nyxstar",
+              "social_002_keeger_segment_rckcrk_096"
+            ],
+            "children": [],
+            "poiIndices": [
+              58
+            ]
+          },
+          {
+            "name": "social_002_keeger_segment_rckcrk_097",
+            "path": [
+              "nyxstar",
+              "social_002_keeger_segment_rckcrk_097"
+            ],
+            "children": [],
+            "poiIndices": [
+              59
+            ]
+          },
+          {
+            "name": "social_002_keeger_segment_rckcrk_098",
+            "path": [
+              "nyxstar",
+              "social_002_keeger_segment_rckcrk_098"
+            ],
+            "children": [],
+            "poiIndices": [
+              60
+            ]
+          },
+          {
+            "name": "social_002_keeger_segment_rckcrk_099",
+            "path": [
+              "nyxstar",
+              "social_002_keeger_segment_rckcrk_099"
+            ],
+            "children": [],
+            "poiIndices": [
+              61
+            ]
+          },
+          {
+            "name": "tsg_gascloud_001",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_001"
+            ],
+            "children": [],
+            "poiIndices": [
+              62
+            ]
+          },
+          {
+            "name": "tsg_gascloud_002",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_002"
+            ],
+            "children": [],
+            "poiIndices": [
+              63
+            ]
+          },
+          {
+            "name": "tsg_gascloud_003",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_003"
+            ],
+            "children": [],
+            "poiIndices": [
+              64
+            ]
+          },
+          {
+            "name": "tsg_gascloud_004",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_004"
+            ],
+            "children": [],
+            "poiIndices": [
+              65
+            ]
+          },
+          {
+            "name": "tsg_gascloud_005",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_005"
+            ],
+            "children": [],
+            "poiIndices": [
+              66
+            ]
+          },
+          {
+            "name": "tsg_gascloud_006",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_006"
+            ],
+            "children": [],
+            "poiIndices": [
+              67
+            ]
+          },
+          {
+            "name": "tsg_gascloud_007",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_007"
+            ],
+            "children": [],
+            "poiIndices": [
+              68
+            ]
+          },
+          {
+            "name": "tsg_gascloud_008",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_008"
+            ],
+            "children": [],
+            "poiIndices": [
+              69
+            ]
+          },
+          {
+            "name": "tsg_gascloud_009",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_009"
+            ],
+            "children": [],
+            "poiIndices": [
+              70
+            ]
+          },
+          {
+            "name": "tsg_gascloud_010",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_010"
+            ],
+            "children": [],
+            "poiIndices": [
+              71
+            ]
+          },
+          {
+            "name": "tsg_gascloud_011",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_011"
+            ],
+            "children": [],
+            "poiIndices": [
+              72
+            ]
+          },
+          {
+            "name": "tsg_gascloud_012",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_012"
+            ],
+            "children": [],
+            "poiIndices": [
+              73
+            ]
+          },
+          {
+            "name": "tsg_gascloud_013",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_013"
+            ],
+            "children": [],
+            "poiIndices": [
+              74
+            ]
+          },
+          {
+            "name": "tsg_gascloud_014",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_014"
+            ],
+            "children": [],
+            "poiIndices": [
+              75
+            ]
+          },
+          {
+            "name": "tsg_gascloud_015",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_015"
+            ],
+            "children": [],
+            "poiIndices": [
+              76
+            ]
+          },
+          {
+            "name": "tsg_gascloud_016",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_016"
+            ],
+            "children": [],
+            "poiIndices": [
+              77
+            ]
+          },
+          {
+            "name": "tsg_gascloud_017",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_017"
+            ],
+            "children": [],
+            "poiIndices": [
+              78
+            ]
+          },
+          {
+            "name": "tsg_gascloud_018",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_018"
+            ],
+            "children": [],
+            "poiIndices": [
+              79
+            ]
+          },
+          {
+            "name": "tsg_gascloud_019",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_019"
+            ],
+            "children": [],
+            "poiIndices": [
+              80
+            ]
+          },
+          {
+            "name": "tsg_gascloud_020",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_020"
+            ],
+            "children": [],
+            "poiIndices": [
+              81
+            ]
+          },
+          {
+            "name": "tsg_gascloud_021",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_021"
+            ],
+            "children": [],
+            "poiIndices": [
+              82
+            ]
+          },
+          {
+            "name": "tsg_gascloud_022",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_022"
+            ],
+            "children": [],
+            "poiIndices": [
+              83
+            ]
+          },
+          {
+            "name": "tsg_gascloud_023",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_023"
+            ],
+            "children": [],
+            "poiIndices": [
+              84
+            ]
+          },
+          {
+            "name": "tsg_gascloud_024",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_024"
+            ],
+            "children": [],
+            "poiIndices": [
+              85
+            ]
+          },
+          {
+            "name": "tsg_gascloud_025",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_025"
+            ],
+            "children": [],
+            "poiIndices": [
+              86
+            ]
+          },
+          {
+            "name": "tsg_gascloud_026",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_026"
+            ],
+            "children": [],
+            "poiIndices": [
+              87
+            ]
+          },
+          {
+            "name": "tsg_gascloud_027",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_027"
+            ],
+            "children": [],
+            "poiIndices": [
+              88
+            ]
+          },
+          {
+            "name": "tsg_gascloud_028",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_028"
+            ],
+            "children": [],
+            "poiIndices": [
+              89
+            ]
+          },
+          {
+            "name": "tsg_gascloud_029",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_029"
+            ],
+            "children": [],
+            "poiIndices": [
+              90
+            ]
+          },
+          {
+            "name": "tsg_gascloud_030",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_030"
+            ],
+            "children": [],
+            "poiIndices": [
+              91
+            ]
+          },
+          {
+            "name": "tsg_gascloud_031",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_031"
+            ],
+            "children": [],
+            "poiIndices": [
+              92
+            ]
+          },
+          {
+            "name": "tsg_gascloud_032",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_032"
+            ],
+            "children": [],
+            "poiIndices": [
+              93
+            ]
+          },
+          {
+            "name": "tsg_gascloud_033",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_033"
+            ],
+            "children": [],
+            "poiIndices": [
+              94
+            ]
+          },
+          {
+            "name": "tsg_gascloud_034",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_034"
+            ],
+            "children": [],
+            "poiIndices": [
+              95
+            ]
+          },
+          {
+            "name": "tsg_gascloud_035",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_035"
+            ],
+            "children": [],
+            "poiIndices": [
+              96
+            ]
+          },
+          {
+            "name": "tsg_gascloud_036",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_036"
+            ],
+            "children": [],
+            "poiIndices": [
+              97
+            ]
+          },
+          {
+            "name": "tsg_gascloud_037",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_037"
+            ],
+            "children": [],
+            "poiIndices": [
+              98
+            ]
+          },
+          {
+            "name": "tsg_gascloud_038",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_038"
+            ],
+            "children": [],
+            "poiIndices": [
+              99
+            ]
+          },
+          {
+            "name": "tsg_gascloud_039",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_039"
+            ],
+            "children": [],
+            "poiIndices": [
+              100
+            ]
+          },
+          {
+            "name": "tsg_gascloud_040",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_040"
+            ],
+            "children": [],
+            "poiIndices": [
+              101
+            ]
+          },
+          {
+            "name": "tsg_gascloud_041",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_041"
+            ],
+            "children": [],
+            "poiIndices": [
+              102
+            ]
+          },
+          {
+            "name": "tsg_gascloud_042",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_042"
+            ],
+            "children": [],
+            "poiIndices": [
+              103
+            ]
+          },
+          {
+            "name": "tsg_gascloud_043",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_043"
+            ],
+            "children": [],
+            "poiIndices": [
+              104
+            ]
+          },
+          {
+            "name": "tsg_gascloud_044",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_044"
+            ],
+            "children": [],
+            "poiIndices": [
+              105
+            ]
+          },
+          {
+            "name": "tsg_gascloud_045",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_045"
+            ],
+            "children": [],
+            "poiIndices": [
+              106
+            ]
+          },
+          {
+            "name": "tsg_gascloud_046",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_046"
+            ],
+            "children": [],
+            "poiIndices": [
+              107
+            ]
+          },
+          {
+            "name": "tsg_gascloud_047",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_047"
+            ],
+            "children": [],
+            "poiIndices": [
+              108
+            ]
+          },
+          {
+            "name": "tsg_gascloud_048",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_048"
+            ],
+            "children": [],
+            "poiIndices": [
+              109
+            ]
+          },
+          {
+            "name": "tsg_gascloud_049",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_049"
+            ],
+            "children": [],
+            "poiIndices": [
+              110
+            ]
+          },
+          {
+            "name": "tsg_gascloud_050",
+            "path": [
+              "nyxstar",
+              "tsg_gascloud_050"
+            ],
+            "children": [],
+            "poiIndices": [
+              111
+            ]
+          }
+        ],
+        "poiIndices": [
+          38
+        ]
+      }
+    ],
+    "poiIndices": [
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119
+    ]
+  },
+  "entity_index": {
+    "Nyx1": 0,
+    "Nyx2": 1,
+    "Nyx3": 2,
+    "glaciem_ring_wtn_setup": 3,
+    "jumppoint_nyx_castra": 4,
+    "jumppoint_nyx_pyro": 5,
+    "keeger_segment_rckcrk_004": 6,
+    "keeger_segment_rckcrk_005": 7,
+    "keeger_segment_rckcrk_006": 8,
+    "keeger_segment_rckcrk_007": 9,
+    "keeger_segment_rckcrk_008": 10,
+    "keeger_segment_rckcrk_009": 11,
+    "keeger_segment_rckcrk_010": 12,
+    "keeger_segment_rckcrk_011": 13,
+    "keeger_segment_rckcrk_012": 14,
+    "keeger_segment_rckcrk_013": 15,
+    "keeger_segment_rckcrk_014": 16,
+    "keeger_segment_rckcrk_015": 17,
+    "keeger_segment_rckcrk_016": 18,
+    "keeger_segment_rckcrk_017": 19,
+    "keeger_segment_rckcrk_018": 20,
+    "keeger_segment_rckcrk_019": 21,
+    "keeger_segment_rckcrk_020": 22,
+    "keeger_segment_rckcrk_021": 23,
+    "keeger_segment_rckcrk_022": 24,
+    "keeger_segment_rckcrk_023": 25,
+    "keeger_segment_rckcrk_024": 26,
+    "keeger_segment_rckcrk_025": 27,
+    "keeger_segment_rckcrk_026": 28,
+    "keeger_segment_rckcrk_027": 29,
+    "keeger_segment_rckcrk_028": 30,
+    "keeger_segment_rckcrk_029": 31,
+    "keeger_segment_rckcrk_030": 32,
+    "keeger_segment_rckcrk_031": 33,
+    "keeger_segment_rckcrk_032": 34,
+    "keeger_segment_rckcrk_033": 35,
+    "levski_all-001": 36,
+    "levski_hosp": 37,
+    "nyxstar": 38,
+    "rockcrack_assembled_002": 39,
+    "rs_asmbl_keeger_01": 40,
+    "rs_asmbl_keeger_02": 41,
+    "rs_asmbl_keeger_03": 42,
+    "rs_asmbl_keeger_04": 43,
+    "rs_clinic_final": 47,
+    "rs_clinic_pyro-stan_jp1": 49,
+    "rs_ext_nyx-castra_jp1": 50,
+    "rs_ext_nyx-pyro_jp1": 51,
+    "social_001_keeger_segment_rckcrk_095": 52,
+    "social_001_keeger_segment_rckcrk_101": 53,
+    "social_001_keeger_segment_rckcrk_102": 54,
+    "social_001_keeger_segment_rckcrk_105": 55,
+    "social_001_keeger_segment_rckcrk_112": 56,
+    "social_002_keeger_segment_rckcrk_094": 57,
+    "social_002_keeger_segment_rckcrk_096": 58,
+    "social_002_keeger_segment_rckcrk_097": 59,
+    "social_002_keeger_segment_rckcrk_098": 60,
+    "social_002_keeger_segment_rckcrk_099": 61,
+    "tsg_gascloud_001": 62,
+    "tsg_gascloud_002": 63,
+    "tsg_gascloud_003": 64,
+    "tsg_gascloud_004": 65,
+    "tsg_gascloud_005": 66,
+    "tsg_gascloud_006": 67,
+    "tsg_gascloud_007": 68,
+    "tsg_gascloud_008": 69,
+    "tsg_gascloud_009": 70,
+    "tsg_gascloud_010": 71,
+    "tsg_gascloud_011": 72,
+    "tsg_gascloud_012": 73,
+    "tsg_gascloud_013": 74,
+    "tsg_gascloud_014": 75,
+    "tsg_gascloud_015": 76,
+    "tsg_gascloud_016": 77,
+    "tsg_gascloud_017": 78,
+    "tsg_gascloud_018": 79,
+    "tsg_gascloud_019": 80,
+    "tsg_gascloud_020": 81,
+    "tsg_gascloud_021": 82,
+    "tsg_gascloud_022": 83,
+    "tsg_gascloud_023": 84,
+    "tsg_gascloud_024": 85,
+    "tsg_gascloud_025": 86,
+    "tsg_gascloud_026": 87,
+    "tsg_gascloud_027": 88,
+    "tsg_gascloud_028": 89,
+    "tsg_gascloud_029": 90,
+    "tsg_gascloud_030": 91,
+    "tsg_gascloud_031": 92,
+    "tsg_gascloud_032": 93,
+    "tsg_gascloud_033": 94,
+    "tsg_gascloud_034": 95,
+    "tsg_gascloud_035": 96,
+    "tsg_gascloud_036": 97,
+    "tsg_gascloud_037": 98,
+    "tsg_gascloud_038": 99,
+    "tsg_gascloud_039": 100,
+    "tsg_gascloud_040": 101,
+    "tsg_gascloud_041": 102,
+    "tsg_gascloud_042": 103,
+    "tsg_gascloud_043": 104,
+    "tsg_gascloud_044": 105,
+    "tsg_gascloud_045": 106,
+    "tsg_gascloud_046": 107,
+    "tsg_gascloud_047": 108,
+    "tsg_gascloud_048": 109,
+    "tsg_gascloud_049": 110,
+    "tsg_gascloud_050": 111,
+    "PrivateMiningAsteroid_OC-001": 112,
+    "PrivateMiningAsteroid_OC-002": 113,
+    "PrivateMiningAsteroid_OC-003": 114,
+    "PrivateMiningAsteroid_OC-004": 115,
+    "PrivateMiningAsteroid_OC-005": 116,
+    "PrivateMiningAsteroid_OC-006": 117,
+    "PrivateMiningAsteroid_OC-007": 118,
+    "PrivateMiningAsteroid_OC-008": 119
+  },
+  "pois": [
+    {
+      "display_name": "Nyx I",
+      "entity_name": "Nyx1",
+      "category": "planet",
+      "world_position": [
+        6495194198.506323,
+        -3749995462.198742,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "Nyx1"
+      ],
+      "star_map_record_id": "2a8a3554-b2f2-489d-a50c-5adff46cbf1b",
+      "source": "object_container",
+      "nav_icon": "Planet",
+      "record_name": "StarMapObject.Nyx1",
+      "description": "[NOT CURRENTLY ACCESSIBLE] Nyx I is a coreless planet that orbits closest to the sun in the Nyx system. Once considered impossible to terraform, Nyx I has undergone a drastic transformation thanks to new experimental technology developed by Genesis Terraforming."
+    },
+    {
+      "display_name": "Nyx II",
+      "entity_name": "Nyx2",
+      "category": "planet",
+      "world_position": [
+        -3591210930.539283,
+        9866771446.595106,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "Nyx2"
+      ],
+      "star_map_record_id": "d957a643-a90d-489a-b762-63367ab21249",
+      "source": "object_container",
+      "nav_icon": "Planet",
+      "record_name": "StarMapObject.Nyx2",
+      "description": "[NOT CURRENTLY ACCESSIBLE] A high-pressure atmosphere and thick clouds of acid and carbon dioxide make Nyx II not worth terraforming. \\n"
+    },
+    {
+      "display_name": "Nyx III",
+      "entity_name": "Nyx3",
+      "category": "planet",
+      "world_position": [
+        -29109694335.707394,
+        -24425930756.452217,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "Nyx3"
+      ],
+      "star_map_record_id": "4142e7b3-c868-49c8-bb64-be7a45054bf3",
+      "source": "object_container",
+      "nav_icon": "Planet",
+      "record_name": "StarMapObject.Nyx3",
+      "description": "[NOT CURRENTLY ACCESSIBLE] Nyx III is an ice giant that lacks a breathable atmosphere or any valuable minerals. \\n"
+    },
+    {
+      "display_name": "QV Logistics Station",
+      "entity_name": "glaciem_ring_wtn_setup",
+      "category": "poi",
+      "world_position": [
+        -7965621395.595773,
+        12712911224.971518,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "glaciemring_segment_wtn-013",
+        "glaciem_ring_wtn_setup"
+      ],
+      "star_map_record_id": "a22029a8-e78c-4232-817e-59f6e1b7517e",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_Kaboos",
+      "description": "[ CLOSED ] This logistics station is operated by QV Planetary Systems."
+    },
+    {
+      "display_name": "Nyx - Castra Jump Point",
+      "entity_name": "jumppoint_nyx_castra",
+      "category": "station",
+      "world_position": [
+        -13499935650.449425,
+        -23382715137.804523,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "jumppoint_nyx_castra"
+      ],
+      "star_map_record_id": "9328b87c-7722-4924-a7ab-ac314488dd5d",
+      "source": "object_container",
+      "nav_icon": "Station",
+      "record_name": "StarMapObject.JumpPoint_Nyx_Castra",
+      "description": "This jump point connects Nyx to the UEE controlled Castra system."
+    },
+    {
+      "display_name": "Nyx - Pyro Jump Point",
+      "entity_name": "jumppoint_nyx_pyro",
+      "category": "station",
+      "world_position": [
+        -12000043844.931711,
+        20784584131.46289,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "jumppoint_nyx_pyro"
+      ],
+      "star_map_record_id": "63105afc-38df-48cc-b570-8eba703a57d7",
+      "source": "object_container",
+      "nav_icon": "Station",
+      "record_name": "StarMapObject.JumpPoint_Nyx_Pyro",
+      "description": "This jump point connects Nyx to the Pyro system."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_004",
+      "category": "poi",
+      "world_position": [
+        40586139104.740074,
+        -25627432812.724102,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_004"
+      ],
+      "star_map_record_id": "36a9e3b4-cb53-4dab-8cf3-d630e1dc089f",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_001",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_005",
+      "category": "poi",
+      "world_position": [
+        -3981345798.481462,
+        -47834599252.3499,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_005"
+      ],
+      "star_map_record_id": "8c2ce601-f0a2-4ad2-8a3f-05f13d9e30cc",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_002",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_006",
+      "category": "poi",
+      "world_position": [
+        20017698783.990532,
+        43626731889.90237,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_006"
+      ],
+      "star_map_record_id": "8d17a89a-0633-4df0-bbe4-992e56f4d769",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_003",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_007",
+      "category": "poi",
+      "world_position": [
+        46188328053.90703,
+        13062861538.907356,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_007"
+      ],
+      "star_map_record_id": "859feef1-32af-4864-8870-57c662a15aca",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_004",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_008",
+      "category": "poi",
+      "world_position": [
+        -33869738419.82471,
+        34012362743.165165,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_008"
+      ],
+      "star_map_record_id": "5541f051-fa2f-4b4e-9a84-46c93408b801",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_005",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_009",
+      "category": "poi",
+      "world_position": [
+        12985213521.94366,
+        46210217807.20722,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_009"
+      ],
+      "star_map_record_id": "67f1d2b2-821d-449d-a4b5-f5c97f29fa38",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_006",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_010",
+      "category": "poi",
+      "world_position": [
+        38549876925.00545,
+        28599073220.419796,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_010"
+      ],
+      "star_map_record_id": "f0be1fe1-6072-4fa0-9029-4554ff07f8e4",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_007",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_011",
+      "category": "poi",
+      "world_position": [
+        -15156435287.180159,
+        -45544291293.04265,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_011"
+      ],
+      "star_map_record_id": "ad396091-b2d0-4c8e-82b6-1fcbe7429a6a",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_008",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_012",
+      "category": "poi",
+      "world_position": [
+        42808982728.911804,
+        -21711540657.349285,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_012"
+      ],
+      "star_map_record_id": "9bc6e1e3-1faf-4bb0-a273-797e918d7231",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_009",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_013",
+      "category": "poi",
+      "world_position": [
+        4583649942.001827,
+        47780646220.08776,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_013"
+      ],
+      "star_map_record_id": "680a5cf0-dc84-4de1-8582-966befa8abda",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_010",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_014",
+      "category": "poi",
+      "world_position": [
+        47977332923.424095,
+        1474966289.420365,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_014"
+      ],
+      "star_map_record_id": "a8fbfd71-faca-4b96-97ba-71c53d0a290f",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_011",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_015",
+      "category": "poi",
+      "world_position": [
+        37938745174.159546,
+        29404959013.917793,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_015"
+      ],
+      "star_map_record_id": "39d3eeff-454f-4730-8cde-fea19bb81ab9",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_012",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_016",
+      "category": "poi",
+      "world_position": [
+        31891408702.83665,
+        -35873918812.260185,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_016"
+      ],
+      "star_map_record_id": "adcc3744-ad7e-4d8a-943e-f55653f0b40e",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_013",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_017",
+      "category": "poi",
+      "world_position": [
+        -47903544749.60587,
+        -3041447093.491447,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_017"
+      ],
+      "star_map_record_id": "52d28464-6a08-43d3-abc9-18ca8b15cb38",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_014",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_018",
+      "category": "poi",
+      "world_position": [
+        41432180073.86078,
+        24235809339.22311,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_018"
+      ],
+      "star_map_record_id": "324a5ea1-f580-4ac0-877f-d279a4c221d4",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_015",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_019",
+      "category": "poi",
+      "world_position": [
+        9278837355.445099,
+        47094619409.558846,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_019"
+      ],
+      "star_map_record_id": "d899d7c3-8c0c-442c-9def-c4c37815659d",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_016",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_020",
+      "category": "poi",
+      "world_position": [
+        47943820149.48449,
+        2321660929.99926,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_020"
+      ],
+      "star_map_record_id": "dea7dbcf-cc94-48f4-bdac-f2eb955c2d0d",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_017",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_021",
+      "category": "poi",
+      "world_position": [
+        22190966930.445698,
+        42562436334.07121,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_021"
+      ],
+      "star_map_record_id": "d31686bd-a3fe-4f12-bb16-f3c2c0366bfb",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_018",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_022",
+      "category": "poi",
+      "world_position": [
+        -17954670261.81848,
+        -44515500848.46144,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_022"
+      ],
+      "star_map_record_id": "c1f3b0be-1cd3-434f-a68d-27560416718f",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_019",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_023",
+      "category": "poi",
+      "world_position": [
+        -19397850186.465164,
+        -43905847083.77067,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_023"
+      ],
+      "star_map_record_id": "f1017b15-7cca-4f7d-bf33-16178571aa72",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_020",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_024",
+      "category": "poi",
+      "world_position": [
+        46877138615.36439,
+        10321524850.326778,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_024"
+      ],
+      "star_map_record_id": "4643a0bf-1e85-46ca-817b-eb07b0116249",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_021",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_025",
+      "category": "poi",
+      "world_position": [
+        -34071051585.57164,
+        33810700138.46676,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_025"
+      ],
+      "star_map_record_id": "85ec7c84-9ff7-4400-bd35-5e8b20727aea",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_022",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_026",
+      "category": "poi",
+      "world_position": [
+        17657062923.922485,
+        -44634382810.79556,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_026"
+      ],
+      "star_map_record_id": "9ad3e571-bc7d-4423-987e-8d09838f0c5f",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_023",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_027",
+      "category": "poi",
+      "world_position": [
+        -47526974967.11521,
+        6722101641.243171,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_027"
+      ],
+      "star_map_record_id": "af01f884-3261-4d8d-b4e8-988b87a914cc",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_024",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_028",
+      "category": "poi",
+      "world_position": [
+        25479610967.573196,
+        40679103049.85993,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_028"
+      ],
+      "star_map_record_id": "33210fa5-559c-43c8-b3ad-2ec41fc31d52",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_025",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_029",
+      "category": "poi",
+      "world_position": [
+        -41992080534.76908,
+        -23252207902.938335,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_029"
+      ],
+      "star_map_record_id": "1662aba5-c68d-4b28-ab39-045bb0748c8d",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_026",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_030",
+      "category": "poi",
+      "world_position": [
+        40461037057.598854,
+        25824493803.82145,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_030"
+      ],
+      "star_map_record_id": "5ea8816e-5215-418f-a312-e9261b053c12",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_027",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_031",
+      "category": "poi",
+      "world_position": [
+        -10735209578.258608,
+        46784134867.61153,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_031"
+      ],
+      "star_map_record_id": "2336b147-35e2-4e3e-897d-5a5ad718ecce",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_028",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_032",
+      "category": "poi",
+      "world_position": [
+        -14743594510.05412,
+        45679606181.78644,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_032"
+      ],
+      "star_map_record_id": "9da55651-df7d-49be-ba05-548b744b7ddf",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_029",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "keeger_segment_rckcrk_033",
+      "category": "poi",
+      "world_position": [
+        45374455277.6531,
+        -15657547964.360792,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_033"
+      ],
+      "star_map_record_id": "a90af2b5-2b54-4acd-bcb8-ac6c9cbff188",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_030",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "Levski",
+      "entity_name": "levski_all-001",
+      "category": "poi",
+      "world_position": [
+        -9641672902.905565,
+        -11490734473.539465,
+        -93642.5508
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "glaciemring_segment_levski",
+        "levski_all-001"
+      ],
+      "star_map_record_id": "468d4102-a210-47b5-8bc3-084f791a173c",
+      "source": "object_container",
+      "nav_icon": "LandingZone",
+      "record_name": "StarMapObject.Nyx_Levski",
+      "description": "This mining facility was abandoned for years before UEE refugees took up residence. Dedicated to the creation of an egalitarian society, Levski has evolved into a self-sustaining port of political activists and those wishing to escape the eye of the Empire."
+    },
+    {
+      "display_name": "Mercy Hospital",
+      "entity_name": "levski_hosp",
+      "category": "poi",
+      "world_position": [
+        -9641670619.487543,
+        -11490734231.17155,
+        -91300.27167587803
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "glaciemring_segment_levski",
+        "levski_all-001",
+        "levski_v2_ext",
+        "levski_v2_int",
+        "levski_v2_middeck",
+        "levski_hosp"
+      ],
+      "star_map_record_id": "720b9776-5b37-4671-9fbb-f7d79a05847a",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Hospital_Nyx_Levski",
+      "description": "This mining facility was abandoned for years before UEE refugees took up residence. Dedicated to creating an egalitarian society, this group of activists wanted to build the kind of community that the Messers had taken away. Levski has evolved into a self-sustaining port of political activists and those wishing to escape the eye of the Empire."
+    },
+    {
+      "display_name": "Nyx",
+      "entity_name": "nyxstar",
+      "category": "star",
+      "world_position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar"
+      ],
+      "star_map_record_id": "77ed5653-bd14-4952-b904-afd79faeef60",
+      "source": "object_container",
+      "nav_icon": "Star",
+      "record_name": "StarMapObject.NyxStar",
+      "description": ""
+    },
+    {
+      "display_name": "QV Breaker Station",
+      "entity_name": "rockcrack_assembled_002",
+      "category": "poi",
+      "world_position": [
+        22462116886.391224,
+        -42419936583.45382,
+        18194.36046
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_rckcrk_066",
+        "rockcrack_assembled_002"
+      ],
+      "star_map_record_id": "42f77630-6ab2-403b-8443-0dc2c35c8d61",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker",
+      "description": "A small group of asteroids that share orbital characteristics."
+    },
+    {
+      "display_name": "People's Service Station Alpha",
+      "entity_name": "rs_asmbl_keeger_01",
+      "category": "station",
+      "world_position": [
+        -45804303544.86258,
+        -14351319146.649755,
+        29570.487233
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_social_001",
+        "rs_asmbl_keeger_01"
+      ],
+      "star_map_record_id": "8ef8417d-2d3c-4172-8030-63f63b95eed4",
+      "source": "object_container",
+      "nav_icon": "Station",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Social_Keeger_001",
+      "description": "Managed by members of the People's Alliance, this Service Station offers a safe haven with basic restock, rearm, and refueling operations for pilots traveling through Nyx."
+    },
+    {
+      "display_name": "People's Service Station Delta",
+      "entity_name": "rs_asmbl_keeger_02",
+      "category": "station",
+      "world_position": [
+        -6432457405.590138,
+        -47567013166.58657,
+        13905.36802
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_social_002",
+        "rs_asmbl_keeger_02"
+      ],
+      "star_map_record_id": "4939d2da-c098-4d4c-9272-ead91cbb5fa4",
+      "source": "object_container",
+      "nav_icon": "Station",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Social_Keeger_002",
+      "description": "Managed by members of the People's Alliance, this Service Station offers a safe haven with basic restock, rearm, and refueling operations for pilots traveling through Nyx."
+    },
+    {
+      "display_name": "People's Service Station Theta",
+      "entity_name": "rs_asmbl_keeger_03",
+      "category": "station",
+      "world_position": [
+        40472701119.50937,
+        -25806231983.154724,
+        40589.752193
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_social_003",
+        "rs_asmbl_keeger_03"
+      ],
+      "star_map_record_id": "1af3f93e-3ef9-442d-9cb6-a633463a24e5",
+      "source": "object_container",
+      "nav_icon": "Station",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Social_Keeger_003",
+      "description": "Managed by members of the People's Alliance, this Service Station offers a safe haven with basic restock, rearm, and refueling operations for pilots traveling through Nyx."
+    },
+    {
+      "display_name": "People's Service Station Lambda",
+      "entity_name": "rs_asmbl_keeger_04",
+      "category": "station",
+      "world_position": [
+        43327760362.64139,
+        20656826663.31885,
+        25671.460589000002
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_social_004",
+        "rs_asmbl_keeger_04"
+      ],
+      "star_map_record_id": "6eb6d82c-637d-4dd6-bf74-d2282983f676",
+      "source": "object_container",
+      "nav_icon": "Station",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Social_Keeger_004",
+      "description": "Managed by members of the People's Alliance, this Service Station offers a safe haven with basic restock, rearm, and refueling operations for pilots traveling through Nyx."
+    },
+    {
+      "display_name": "PSS Theta Clinic",
+      "entity_name": "rs_clinic_final",
+      "category": "poi",
+      "world_position": [
+        40472701050.70713,
+        -25806231875.17364,
+        41021.98145170239
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_social_003",
+        "rs_asmbl_keeger_03",
+        "rs_int_layout_keeger_03",
+        "rs_clinic_final"
+      ],
+      "star_map_record_id": "78d77cdf-3db7-49ec-a147-49d9b4b0150c",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Hospital_Nyx_Social_Keeger_003",
+      "description": "Managed by members of the People's Alliance, this Service Station offers a safe haven with basic restock, rearm, and refueling operations for pilots traveling through Nyx."
+    },
+    {
+      "display_name": "PSS Alpha Clinic",
+      "entity_name": "rs_clinic_final",
+      "category": "poi",
+      "world_position": [
+        -45804303132.07631,
+        -14351318966.84022,
+        29592.663558690623
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_social_001",
+        "rs_asmbl_keeger_01",
+        "rs_int_layout_keeger_01",
+        "rs_clinic_final"
+      ],
+      "star_map_record_id": "77d29b58-d764-41ca-84ee-ffe13af889ba",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Hospital_Nyx_Social_Keeger_001",
+      "description": "Managed by members of the People's Alliance, this Service Station offers a safe haven with basic restock, rearm, and refueling operations for pilots traveling through Nyx."
+    },
+    {
+      "display_name": "PSS Delta Clinic",
+      "entity_name": "rs_clinic_final",
+      "category": "poi",
+      "world_position": [
+        -6432457144.475898,
+        -47567013335.02776,
+        13578.775423457948
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_social_002",
+        "rs_asmbl_keeger_02",
+        "rs_int_layout_keeger_02",
+        "rs_clinic_final"
+      ],
+      "star_map_record_id": "a1702d0c-bf12-46e6-894b-be39a2292d62",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Hospital_Nyx_Social_Keeger_002",
+      "description": "Managed by members of the People's Alliance, this Service Station offers a safe haven with basic restock, rearm, and refueling operations for pilots traveling through Nyx."
+    },
+    {
+      "display_name": "PSS Lambda Clinic",
+      "entity_name": "rs_clinic_final",
+      "category": "poi",
+      "world_position": [
+        43327760517.804924,
+        20656826241.826626,
+        25709.988299987275
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "keeger_segment_social_004",
+        "rs_asmbl_keeger_04",
+        "rs_int_layout_keeger_04",
+        "rs_clinic_final"
+      ],
+      "star_map_record_id": "ee1dbdfc-7dae-4b14-b140-734169b1db08",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Hospital_Nyx_Social_Keeger_004",
+      "description": "Managed by members of the People's Alliance, this Service Station offers a safe haven with basic restock, rearm, and refueling operations for pilots traveling through Nyx."
+    },
+    {
+      "display_name": "Terra Gateway Clinic",
+      "entity_name": "rs_clinic_pyro-stan_jp1",
+      "category": "poi",
+      "world_position": [
+        -12000045107.977253,
+        20784580558.878445,
+        -38797.458927324304
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "jumppoint_nyx_pyro",
+        "rs_ext_nyx-pyro_jp1",
+        "rs_entry_nyx_pyro_jp1",
+        "rs_clinic_pyro-stan_jp1"
+      ],
+      "star_map_record_id": "9cb81910-1567-45e0-8ed1-d8b5a4ca5dba",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.RR_NYX_PYRO_JP1_CLINIC",
+      "description": "Where fast and reliable medical treatment is always what the doctor ordered."
+    },
+    {
+      "display_name": "Terra Gateway Clinic",
+      "entity_name": "rs_clinic_pyro-stan_jp1",
+      "category": "poi",
+      "world_position": [
+        -13499931587.632004,
+        -23382702465.473167,
+        -36975.96424079735
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "jumppoint_nyx_castra",
+        "rs_ext_nyx-castra_jp1",
+        "rs_entry_nyx_castra_jp1",
+        "rs_clinic_pyro-stan_jp1"
+      ],
+      "star_map_record_id": "3e9ec8c5-10fb-41f2-afdf-bc1e146dd2d6",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.RR_NYX-CASTRA_JP1_CLINIC",
+      "description": "Where fast and reliable medical treatment is always what the doctor ordered."
+    },
+    {
+      "display_name": "Stanton Gateway",
+      "entity_name": "rs_ext_nyx-castra_jp1",
+      "category": "station",
+      "world_position": [
+        -13499931610.233513,
+        -23382701964.218426,
+        -36662.089647999994
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "jumppoint_nyx_castra",
+        "rs_ext_nyx-castra_jp1"
+      ],
+      "star_map_record_id": "6396623a-61bd-4ced-9c8b-77c47753ef8f",
+      "source": "object_container",
+      "nav_icon": "Station",
+      "record_name": "StarMapObject.RR_JP_NyxCastra",
+      "description": "Situated at a strategic location near the jump point to Stanton, the Gateway station provides shops and services to those traveling to and from Nyx. Visitors to the station can find a wide variety of amenities and stores including: Refueling, Restocking, Cargo Transfers, Personal Weapons, Personal Armor, Clothing, Food, a Clinic, Habs, and more. (TEMPORARY)"
+    },
+    {
+      "display_name": "Pyro Gateway",
+      "entity_name": "rs_ext_nyx-pyro_jp1",
+      "category": "station",
+      "world_position": [
+        -12000044529.892805,
+        20784580528.598274,
+        -38674.228082999995
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "jumppoint_nyx_pyro",
+        "rs_ext_nyx-pyro_jp1"
+      ],
+      "star_map_record_id": "a66119fa-6d93-4e56-bcd1-c9bd2c50beb7",
+      "source": "object_container",
+      "nav_icon": "Station",
+      "record_name": "StarMapObject.RR_JP_NyxPyro",
+      "description": "Situated at a strategic location near the jump point to Pyro, the Gateway station provides shops and services to those traveling to and from Nyx. Visitors to the station can find a wide variety of amenities and stores including: Refueling, Restocking, Cargo Transfers, Personal Weapons, Personal Armor, Clothing, Food, a Clinic, Habs, and more."
+    },
+    {
+      "display_name": "QV Breaker Station BRK-204",
+      "entity_name": "social_001_keeger_segment_rckcrk_095",
+      "category": "station",
+      "world_position": [
+        47999735232.84,
+        0.0,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "social_001_keeger_segment_rckcrk_095"
+      ],
+      "star_map_record_id": "8cf3eb9c-a3cb-402e-b7fe-6c84ef9fffe1",
+      "source": "object_container",
+      "nav_icon": "Station",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_Sandbox_001",
+      "description": "This shuttered breaker station was built by the now defunct QV Planetary System to process and mine asteroids."
+    },
+    {
+      "display_name": "QV Breaker Station BRK-320",
+      "entity_name": "social_001_keeger_segment_rckcrk_101",
+      "category": "station",
+      "world_position": [
+        45104451567.10988,
+        16416678391.183674,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "social_001_keeger_segment_rckcrk_101"
+      ],
+      "star_map_record_id": "fac812bf-ea31-48b6-81b1-9b54cf4442b9",
+      "source": "object_container",
+      "nav_icon": "Station",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_Sandbox_002",
+      "description": "This shuttered breaker station was built by the now defunct QV Planetary System to process and mine asteroids."
+    },
+    {
+      "display_name": "QV Breaker Station BRK-546",
+      "entity_name": "social_001_keeger_segment_rckcrk_102",
+      "category": "station",
+      "world_position": [
+        36770076693.63727,
+        30853759233.49808,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "social_001_keeger_segment_rckcrk_102"
+      ],
+      "star_map_record_id": "9dadcb6f-d551-4b56-adbd-63099bb82ce0",
+      "source": "object_container",
+      "nav_icon": "Station",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_Sandbox_003",
+      "description": "This shuttered breaker station was built by the now defunct QV Planetary System to process and mine asteroids."
+    },
+    {
+      "display_name": "QV Breaker Station BRK-127",
+      "entity_name": "social_001_keeger_segment_rckcrk_105",
+      "category": "station",
+      "world_position": [
+        23999783757.6675,
+        41568849431.55284,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "social_001_keeger_segment_rckcrk_105"
+      ],
+      "star_map_record_id": "8d962d6c-4af2-490c-b1fa-d7fa24225969",
+      "source": "object_container",
+      "nav_icon": "Station",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_Sandbox_004",
+      "description": "This shuttered breaker station was built by the now defunct QV Planetary System to process and mine asteroids."
+    },
+    {
+      "display_name": "QV Breaker Station BRK-425",
+      "entity_name": "social_001_keeger_segment_rckcrk_112",
+      "category": "station",
+      "world_position": [
+        8334906499.686675,
+        47269657927.21803,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "social_001_keeger_segment_rckcrk_112"
+      ],
+      "star_map_record_id": "0e7ad495-0fef-4141-b074-9c9210baa156",
+      "source": "object_container",
+      "nav_icon": "Station",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_Sandbox_005",
+      "description": "This shuttered breaker station was built by the now defunct QV Planetary System to process and mine asteroids."
+    },
+    {
+      "display_name": "QV Breaker Station BRK-608",
+      "entity_name": "social_002_keeger_segment_rckcrk_094",
+      "category": "station",
+      "world_position": [
+        -8335073483.453284,
+        47270545289.66491,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "social_002_keeger_segment_rckcrk_094"
+      ],
+      "star_map_record_id": "541c9236-96ec-4358-8b54-a1bdf18bc076",
+      "source": "object_container",
+      "nav_icon": "Station",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_Sandbox_006",
+      "description": "This shuttered breaker station was built by the now defunct QV Planetary System to process and mine asteroids."
+    },
+    {
+      "display_name": "QV Breaker Station BRK-267",
+      "entity_name": "social_002_keeger_segment_rckcrk_096",
+      "category": "station",
+      "world_position": [
+        -23999881222.96148,
+        41569007952.28538,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "social_002_keeger_segment_rckcrk_096"
+      ],
+      "star_map_record_id": "cc4d7f56-6c51-4677-94d3-1f3da9f8a6eb",
+      "source": "object_container",
+      "nav_icon": "Station",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_Sandbox_007",
+      "description": "This shuttered breaker station was built by the now defunct QV Planetary System to process and mine asteroids."
+    },
+    {
+      "display_name": "QV Breaker Station BRK-235",
+      "entity_name": "social_002_keeger_segment_rckcrk_097",
+      "category": "station",
+      "world_position": [
+        -36769992594.39951,
+        30853672880.800274,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "social_002_keeger_segment_rckcrk_097"
+      ],
+      "star_map_record_id": "70847df0-156c-407c-bc2d-40ccf7ce87f0",
+      "source": "object_container",
+      "nav_icon": "Station",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_Sandbox_008",
+      "description": "This shuttered breaker station was built by the now defunct QV Planetary System to process and mine asteroids."
+    },
+    {
+      "display_name": "QV Breaker Station BRK-304",
+      "entity_name": "social_002_keeger_segment_rckcrk_098",
+      "category": "station",
+      "world_position": [
+        -45104682575.85671,
+        16416741792.451506,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "social_002_keeger_segment_rckcrk_098"
+      ],
+      "star_map_record_id": "490d662c-ea17-4789-9742-9a20a2a5f56c",
+      "source": "object_container",
+      "nav_icon": "Station",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_Sandbox_009",
+      "description": "This shuttered breaker station was built by the now defunct QV Planetary System to process and mine asteroids."
+    },
+    {
+      "display_name": "QV Breaker Station BRK-521",
+      "entity_name": "social_002_keeger_segment_rckcrk_099",
+      "category": "station",
+      "world_position": [
+        -47998823159.68,
+        -4196.190393,
+        0.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "social_002_keeger_segment_rckcrk_099"
+      ],
+      "star_map_record_id": "7711e485-0854-4528-b1ea-6307dd89ade5",
+      "source": "object_container",
+      "nav_icon": "Station",
+      "record_name": "StarMapObject.AsteroidClusterBase_Nyx_Rockcracker_Sandbox_010",
+      "description": "This shuttered breaker station was built by the now defunct QV Planetary System to process and mine asteroids."
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_001",
+      "category": "poi",
+      "world_position": [
+        16928479605.695139,
+        11357524738.8385,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_001"
+      ],
+      "star_map_record_id": "2b9691a1-0092-4edd-803a-3fd13137887b",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_001",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_002",
+      "category": "poi",
+      "world_position": [
+        21798386961.246086,
+        23856943334.54221,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_002"
+      ],
+      "star_map_record_id": "ae248b5c-da78-49c3-a032-bce260d99a41",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_002",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_003",
+      "category": "poi",
+      "world_position": [
+        -517809834.352938,
+        19561808645.229042,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_003"
+      ],
+      "star_map_record_id": "5b4ea578-36ab-4cac-9dc1-631efcf6f4a4",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_003",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_004",
+      "category": "poi",
+      "world_position": [
+        -7893071518.580386,
+        -16999836637.289215,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_004"
+      ],
+      "star_map_record_id": "43e4a08d-3319-445c-a20e-fbbe693dd6ce",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_004",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_005",
+      "category": "poi",
+      "world_position": [
+        -13127097398.23929,
+        16034838405.415495,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_005"
+      ],
+      "star_map_record_id": "c1f64882-9f73-4c43-b475-94ce96d94187",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_005",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_006",
+      "category": "poi",
+      "world_position": [
+        -30081962620.561886,
+        12780108537.412056,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_006"
+      ],
+      "star_map_record_id": "ff10b6b7-7434-451c-bf69-22de89892c26",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_006",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_007",
+      "category": "poi",
+      "world_position": [
+        -1831735941.534012,
+        -24024432868.125874,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_007"
+      ],
+      "star_map_record_id": "93680154-37a6-47b2-b063-f0df3bdb6303",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_007",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_008",
+      "category": "poi",
+      "world_position": [
+        -7741716802.048518,
+        -20949049706.748684,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_008"
+      ],
+      "star_map_record_id": "c82edfb2-3491-46fb-a76f-1e364739855f",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_008",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_009",
+      "category": "poi",
+      "world_position": [
+        5614047129.349942,
+        -30432484496.95785,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_009"
+      ],
+      "star_map_record_id": "f254123a-7aef-4b72-b822-162d527160fc",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_009",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_010",
+      "category": "poi",
+      "world_position": [
+        -4142046925.808661,
+        35206893209.88262,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_010"
+      ],
+      "star_map_record_id": "424fefd2-e76b-4cd5-a932-b1b945da495e",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_010",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_011",
+      "category": "poi",
+      "world_position": [
+        -22550107103.017494,
+        -19745272638.486866,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_011"
+      ],
+      "star_map_record_id": "e73652c8-a09e-4fa0-a1bd-9e46f4bc7e5b",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_011",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_012",
+      "category": "poi",
+      "world_position": [
+        35921068674.90029,
+        7182718619.975654,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_012"
+      ],
+      "star_map_record_id": "28a944a4-a72b-4407-abd1-786224f1c333",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_012",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_013",
+      "category": "poi",
+      "world_position": [
+        -30442159537.29434,
+        -17087399925.474052,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_013"
+      ],
+      "star_map_record_id": "6ac4b872-42ee-4671-bbb9-94300ce6cf26",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_013",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_014",
+      "category": "poi",
+      "world_position": [
+        -26321614085.08598,
+        -12628403077.401161,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_014"
+      ],
+      "star_map_record_id": "8d777695-b177-4818-8625-060749392e11",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_014",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_015",
+      "category": "poi",
+      "world_position": [
+        24255664115.833214,
+        6156214816.770525,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_015"
+      ],
+      "star_map_record_id": "d9eec698-4bcf-4a8b-ba02-2b81bbe8af9b",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_015",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_016",
+      "category": "poi",
+      "world_position": [
+        34985164921.67238,
+        -5825421350.756379,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_016"
+      ],
+      "star_map_record_id": "332dd564-71e7-4b2b-acb7-c5e4e0976841",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_016",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_017",
+      "category": "poi",
+      "world_position": [
+        -34609763767.12038,
+        -9187792703.09156,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_017"
+      ],
+      "star_map_record_id": "ee342b0b-890a-4690-b49b-3e4114eab7a4",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_017",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_018",
+      "category": "poi",
+      "world_position": [
+        -17600310036.655285,
+        -31785178006.149677,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_018"
+      ],
+      "star_map_record_id": "25468056-1a2c-488f-a8b5-b1fe760eeca9",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_018",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_019",
+      "category": "poi",
+      "world_position": [
+        -4528505789.052932,
+        25979296314.95256,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_019"
+      ],
+      "star_map_record_id": "e4b95984-e845-45c3-94b9-a5fdc3d8dba6",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_019",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_020",
+      "category": "poi",
+      "world_position": [
+        1212157800.065908,
+        29646227313.26106,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_020"
+      ],
+      "star_map_record_id": "a6257eeb-62ed-4c63-886b-29d8258ddc34",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_020",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_021",
+      "category": "poi",
+      "world_position": [
+        10420562318.385836,
+        17200761142.6831,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_021"
+      ],
+      "star_map_record_id": "fee07eba-b396-4524-aadd-35f2f3fa0c73",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_021",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_022",
+      "category": "poi",
+      "world_position": [
+        21184829576.923023,
+        -17349485442.312103,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_022"
+      ],
+      "star_map_record_id": "2255284a-9355-42c0-bc53-46106bcf2b10",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_022",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_023",
+      "category": "poi",
+      "world_position": [
+        -29606129869.467945,
+        -4994121877.09561,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_023"
+      ],
+      "star_map_record_id": "a0b95e05-2a98-4338-8af4-1a24e2cdd7d2",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_023",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_024",
+      "category": "poi",
+      "world_position": [
+        19523483647.446655,
+        -29963955064.548878,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_024"
+      ],
+      "star_map_record_id": "7790e2d0-e92c-4cff-b38c-2f9928a43d93",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_024",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_025",
+      "category": "poi",
+      "world_position": [
+        18081803971.921677,
+        -23890070801.024143,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_025"
+      ],
+      "star_map_record_id": "c7c6d4d7-2e72-4c4c-91df-74639b55405b",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_025",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_026",
+      "category": "poi",
+      "world_position": [
+        30103322016.97881,
+        -21767583998.422665,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_026"
+      ],
+      "star_map_record_id": "2302c5da-c387-4c3c-bb63-9fe245b64570",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_026",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_027",
+      "category": "poi",
+      "world_position": [
+        -24791059628.010094,
+        6153500453.797708,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_027"
+      ],
+      "star_map_record_id": "5635024e-d98e-4c57-bc63-6f476f92ac8a",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_027",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_028",
+      "category": "poi",
+      "world_position": [
+        15574769559.523495,
+        30254414328.762047,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_028"
+      ],
+      "star_map_record_id": "22ddc448-c35e-4b94-bee2-8db2e98eea40",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_028",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_029",
+      "category": "poi",
+      "world_position": [
+        -18639426801.115814,
+        -13381167626.968103,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_029"
+      ],
+      "star_map_record_id": "5cd438f1-b7cf-4eaa-99ec-62c18b0dbc3a",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_029",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_030",
+      "category": "poi",
+      "world_position": [
+        -27797786802.802197,
+        24363827180.427254,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_030"
+      ],
+      "star_map_record_id": "4eba1c40-2896-4718-a6b6-37ac5b3a855c",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_030",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_031",
+      "category": "poi",
+      "world_position": [
+        6354585543.721427,
+        -25775684457.282063,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_031"
+      ],
+      "star_map_record_id": "535ebd35-544c-4ae1-8507-dbebe045ea3b",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_031",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_032",
+      "category": "poi",
+      "world_position": [
+        3465226091.608046,
+        -36878773210.96102,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_032"
+      ],
+      "star_map_record_id": "e9e56529-6d25-414c-9071-a85bbbaffa4f",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_032",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_033",
+      "category": "poi",
+      "world_position": [
+        -20959676115.18851,
+        12566558391.59266,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_033"
+      ],
+      "star_map_record_id": "835975c9-6112-4e6a-852f-a14663456ca5",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_033",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_034",
+      "category": "poi",
+      "world_position": [
+        -28472927398.666275,
+        1368962526.415268,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_034"
+      ],
+      "star_map_record_id": "bd26c883-04e9-4d45-81f6-296ab1e039eb",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_034",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_035",
+      "category": "poi",
+      "world_position": [
+        27767236973.301327,
+        15592960983.52455,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_035"
+      ],
+      "star_map_record_id": "ef986934-6dfe-4473-8c9a-f6d97096e22f",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_035",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_036",
+      "category": "poi",
+      "world_position": [
+        16335425491.669525,
+        -13812890452.678482,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_036"
+      ],
+      "star_map_record_id": "827206a3-a815-4b44-8fe4-5bb44a6bf259",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_036",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_037",
+      "category": "poi",
+      "world_position": [
+        31221569497.41054,
+        1773131943.925536,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_037"
+      ],
+      "star_map_record_id": "f9943b28-da0d-4cb5-b2b3-eaad8e77aec9",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_037",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_038",
+      "category": "poi",
+      "world_position": [
+        18634988131.514423,
+        18290908816.488857,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_038"
+      ],
+      "star_map_record_id": "49439dcf-9c47-4856-af94-f46af9ed8d89",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_038",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_039",
+      "category": "poi",
+      "world_position": [
+        28813283605.489998,
+        -13712538576.347797,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_039"
+      ],
+      "star_map_record_id": "646f4768-b63a-45aa-82ad-b9bc5feba894",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_039",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_040",
+      "category": "poi",
+      "world_position": [
+        -7213630313.733765,
+        -26976226529.900204,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_040"
+      ],
+      "star_map_record_id": "9ff4affc-0e88-4e1d-82ea-22a9b4b33de4",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_040",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_041",
+      "category": "poi",
+      "world_position": [
+        -34471106028.18946,
+        5526649202.434628,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_041"
+      ],
+      "star_map_record_id": "7e06e50e-516c-4b0c-8f18-d99fa205ac30",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_041",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_042",
+      "category": "poi",
+      "world_position": [
+        -16802309091.0309,
+        28871974056.753754,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_042"
+      ],
+      "star_map_record_id": "05ea1954-aa2f-4138-b5f1-b8788723dad2",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_042",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_043",
+      "category": "poi",
+      "world_position": [
+        7082656611.526957,
+        -20140698570.545544,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_043"
+      ],
+      "star_map_record_id": "e4d12b71-aa56-4fe6-a5fe-7ecb4d2721dd",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_043",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_044",
+      "category": "poi",
+      "world_position": [
+        25251546578.562325,
+        -1803161987.149783,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_044"
+      ],
+      "star_map_record_id": "f19dd3c8-31f8-476a-b951-971852d508e4",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_044",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_045",
+      "category": "poi",
+      "world_position": [
+        23009857988.47877,
+        -9697410981.88912,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_045"
+      ],
+      "star_map_record_id": "52618fbf-e992-42fc-996b-a16bc7f7734d",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_045",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_046",
+      "category": "poi",
+      "world_position": [
+        -22688804494.318058,
+        -3293823736.715151,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_046"
+      ],
+      "star_map_record_id": "b0b98b06-b782-4eb0-b0b7-a2e8743c4946",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_046",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_047",
+      "category": "poi",
+      "world_position": [
+        -19814519294.24374,
+        18785288134.866478,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_047"
+      ],
+      "star_map_record_id": "8c66a940-bfc0-4da3-ac22-3c3e133b66ea",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_047",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_048",
+      "category": "poi",
+      "world_position": [
+        -4136631154.667182,
+        -32700779064.47452,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_048"
+      ],
+      "star_map_record_id": "e53ac009-4faa-4c5f-b205-25243505c305",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_048",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_049",
+      "category": "poi",
+      "world_position": [
+        -19569308726.770992,
+        -25160541148.62943,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_049"
+      ],
+      "star_map_record_id": "2ec30d8d-1281-4a84-9dac-f1a3380e16fb",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_049",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "QV Extraction Station",
+      "entity_name": "tsg_gascloud_050",
+      "category": "poi",
+      "world_position": [
+        8100788994.315035,
+        23387380266.903408,
+        -20.0
+      ],
+      "parent_chain": [
+        "nyxstar",
+        "tsg_gascloud_050"
+      ],
+      "star_map_record_id": "389e33ff-f08d-46e2-9282-f78fd6f624be",
+      "source": "object_container",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.Nyx_TSG_QVExtractionStation_050",
+      "description": "<= UNINITIALIZED =>"
+    },
+    {
+      "display_name": "Mining Claim #JK7-L0L",
+      "entity_name": "PrivateMiningAsteroid_OC-001",
+      "category": "poi",
+      "world_position": [
+        369683.21875,
+        557278.0625,
+        54130.669006
+      ],
+      "parent_chain": [],
+      "star_map_record_id": "7c663520-7b01-4b17-ab30-03dde80eefa9",
+      "source": "object_container_orphan",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.PrivateMiningPoint_Delamar_001",
+      "description": "A privately owned mining claim that has been registered with the UEE Bureau of Resource Management. No unauthorized access allowed."
+    },
+    {
+      "display_name": "Mining Claim #TWU-19T",
+      "entity_name": "PrivateMiningAsteroid_OC-002",
+      "category": "poi",
+      "world_position": [
+        -326864.8125,
+        -267972.90625,
+        72338.251953
+      ],
+      "parent_chain": [],
+      "star_map_record_id": "548bc567-f28b-4749-ad17-93ef6df67b71",
+      "source": "object_container_orphan",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.PrivateMiningPoint_Delamar_002",
+      "description": "A privately owned mining claim that has been registered with the UEE Bureau of Resource Management. No unauthorized access allowed."
+    },
+    {
+      "display_name": "Mining Claim #N4I-FN8",
+      "entity_name": "PrivateMiningAsteroid_OC-003",
+      "category": "poi",
+      "world_position": [
+        -17285.787109,
+        345122.96875,
+        544901.691223
+      ],
+      "parent_chain": [],
+      "star_map_record_id": "865120e3-bda7-408f-928c-ef3afabc19c1",
+      "source": "object_container_orphan",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.PrivateMiningPoint_Delamar_003",
+      "description": "A privately owned mining claim that has been registered with the UEE Bureau of Resource Management. No unauthorized access allowed."
+    },
+    {
+      "display_name": "Mining Claim #Y55-06R",
+      "entity_name": "PrivateMiningAsteroid_OC-004",
+      "category": "poi",
+      "world_position": [
+        70642.147832,
+        3048.40012,
+        27046.218518
+      ],
+      "parent_chain": [],
+      "star_map_record_id": "5ea6a7e4-0b55-4d49-bb8b-00fe7c730684",
+      "source": "object_container_orphan",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.PrivateMiningPoint_Delamar_004",
+      "description": "A privately owned mining claim that has been registered with the UEE Bureau of Resource Management. No unauthorized access allowed."
+    },
+    {
+      "display_name": "Mining Claim #8PB-H2A",
+      "entity_name": "PrivateMiningAsteroid_OC-005",
+      "category": "poi",
+      "world_position": [
+        -21192.64605,
+        -43874.565507,
+        57282.182419
+      ],
+      "parent_chain": [],
+      "star_map_record_id": "983c868c-dca1-48be-a5da-a22d95cc6541",
+      "source": "object_container_orphan",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.PrivateMiningPoint_Delamar_005",
+      "description": "A privately owned mining claim that has been registered with the UEE Bureau of Resource Management. No unauthorized access allowed."
+    },
+    {
+      "display_name": "Mining Claim #A2J-2LQ",
+      "entity_name": "PrivateMiningAsteroid_OC-006",
+      "category": "poi",
+      "world_position": [
+        -151042.515625,
+        -48427.203125,
+        -99442.287899
+      ],
+      "parent_chain": [],
+      "star_map_record_id": "fd62f17a-c46a-4ac0-9352-28f46bd7bef4",
+      "source": "object_container_orphan",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.PrivateMiningPoint_Delamar_006",
+      "description": "A privately owned mining claim that has been registered with the UEE Bureau of Resource Management. No unauthorized access allowed."
+    },
+    {
+      "display_name": "Mining Claim #N0S-4R2",
+      "entity_name": "PrivateMiningAsteroid_OC-007",
+      "category": "poi",
+      "world_position": [
+        -134799.870117,
+        171507.695984,
+        72959.952974
+      ],
+      "parent_chain": [],
+      "star_map_record_id": "a82b87a6-d0d3-44c9-9509-d49128c4f941",
+      "source": "object_container_orphan",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.PrivateMiningPoint_Delamar_007",
+      "description": "A privately owned mining claim that has been registered with the UEE Bureau of Resource Management. No unauthorized access allowed."
+    },
+    {
+      "display_name": "Mining Claim #R2D-C3P",
+      "entity_name": "PrivateMiningAsteroid_OC-008",
+      "category": "poi",
+      "world_position": [
+        97495.280518,
+        -157749.424683,
+        38539.702393
+      ],
+      "parent_chain": [],
+      "star_map_record_id": "aaa1e82a-1017-4133-8856-40043ffea5ba",
+      "source": "object_container_orphan",
+      "nav_icon": "Default",
+      "record_name": "StarMapObject.PrivateMiningPoint_Delamar_008",
+      "description": "A privately owned mining claim that has been registered with the UEE Bureau of Resource Management. No unauthorized access allowed."
+    }
+  ]
+}

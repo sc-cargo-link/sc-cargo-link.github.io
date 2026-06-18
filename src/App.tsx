@@ -1,35 +1,30 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Layout from "./components/layout/Layout";
-import Dashboard from "./components/dashboard/Dashboard";
-import ContractsPage from "./components/contracts/ContractsPage";
-import Record from "./components/contracts/Record";
-import RoutesPage from "./components/routes/RoutesPage";
-import NotFound from "./pages/NotFound";
-import RemoteSession from './components/contracts/RemoteSession';
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { ContractsProvider } from "@/context/ContractsContext";
+import { AppLayout } from "@/components/layout/AppLayout";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { HomePage } from "@/pages/HomePage";
+import { MapPage } from "@/pages/MapPage";
+import { ContractsPage } from "@/pages/ContractsPage";
+import { HelpPage } from "@/pages/HelpPage";
+import { Toaster } from "@/components/ui/sonner";
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider delayDuration={0}>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
+export default function App() {
+  return (
+    <ThemeProvider>
+    <ContractsProvider>
+      <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Layout><Dashboard /></Layout>} />
-          {/* <Route path="/contracts" element={<Layout><ContractsPage /></Layout>} /> */}
-          {/* <Route path="/contracts/record" element={<Layout><Record /></Layout>} /> */}
-          <Route path="/contracts/remote" element={<Layout><RemoteSession /></Layout>} />
-          <Route path="/routes" element={<RoutesPage />} />
-          <Route path="*" element={<NotFound />} />
+          <Route element={<AppLayout />}>
+            <Route index element={<HomePage />} />
+            <Route path="map" element={<MapPage />} />
+            <Route path="contracts" element={<ContractsPage />} />
+            <Route path="help" element={<HelpPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
         </Routes>
       </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
-
-export default App;
+      <Toaster />
+    </ContractsProvider>
+    </ThemeProvider>
+  );
+}
