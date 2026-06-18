@@ -3,6 +3,16 @@ import { DEFAULT_SCAN_REGIONS } from "@/types/contracts";
 import type { StarSystem } from "@/types/map";
 import { STAR_SYSTEMS } from "@/lib/map-data";
 import { migrateLocationToEntity } from "@/lib/location-lookup";
+import {
+  deleteAllScreenshots,
+  deleteCalibrationImage,
+  deleteScreenshot,
+  getCalibrationImage,
+  getScreenshotsForIds,
+  pruneScreenshots,
+  saveCalibrationImage,
+  saveScreenshot,
+} from "@/lib/blob-storage";
 
 const CONTRACTS_KEY = "cargolink-contracts";
 const ROUTE_KEY = "cargolink-route";
@@ -41,8 +51,64 @@ export function loadContracts(): Contract[] {
   }
 }
 
-export function saveContracts(contracts: Contract[]): void {
-  localStorage.setItem(CONTRACTS_KEY, JSON.stringify(contracts));
+function toLeanContracts(contracts: Contract[]): Contract[] {
+  return contracts.map(({ screenshot: _screenshot, ...rest }) => rest);
+}
+
+export async function persistContracts(
+  contracts: Contract[],
+): Promise<{ ok: true } | { ok: false; message: string }> {
+  try {
+    const keepIds = new Set(contracts.map((c) => c.id));
+    await Promise.all(
+      contracts
+        .filter((c) => c.screenshot)
+        .map((c) => saveScreenshot(c.id, c.screenshot!)),
+    );
+    await pruneScreenshots(keepIds);
+    localStorage.setItem(CONTRACTS_KEY, JSON.stringify(toLeanContracts(contracts)));
+    return { ok: true };
+  } catch (error) {
+    const message =
+      error instanceof DOMException && error.name === "QuotaExceededError"
+        ? "Storage quota exceeded. Remove some contracts or clear browser data."
+        : "Failed to save contracts.";
+    return { ok: false, message };
+  }
+}
+
+export async function hydrateContracts(contracts: Contract[]): Promise<Contract[]> {
+  const missing = contracts.filter((c) => !c.screenshot).map((c) => c.id);
+  if (missing.length === 0) return contracts;
+
+  const screenshots = await getScreenshotsForIds(missing);
+  return contracts.map((contract) => {
+    const dataUrl = contract.screenshot ?? screenshots.get(contract.id);
+    return dataUrl ? { ...contract, screenshot: dataUrl } : contract;
+  });
+}
+
+export async function migrateInlineScreenshots(contracts: Contract[]): Promise<void> {
+  const withInline = contracts.filter((c) => c.screenshot);
+  if (withInline.length === 0) return;
+
+  await Promise.all(
+    withInline.map((c) => saveScreenshot(c.id, c.screenshot!)),
+  );
+
+  try {
+    localStorage.setItem(CONTRACTS_KEY, JSON.stringify(toLeanContracts(contracts)));
+  } catch {
+    // lean payload should be small; ignore migration write failures
+  }
+}
+
+export async function removeContractScreenshot(id: string): Promise<void> {
+  await deleteScreenshot(id);
+}
+
+export async function removeAllContractScreenshots(): Promise<void> {
+  await deleteAllScreenshots();
 }
 
 export function loadRoute(): RoutePlan | null {
@@ -99,17 +165,40 @@ export function saveScanRegions(regions: ScanRegions): void {
   localStorage.setItem(SCAN_REGIONS_KEY, JSON.stringify(regions));
 }
 
-export function loadScanCalibrationImage(): string | null {
+export async function loadScanCalibrationImage(): Promise<string | null> {
   try {
-    return localStorage.getItem(SCAN_CALIBRATION_KEY);
+    const fromDb = await getCalibrationImage();
+    if (fromDb) return fromDb;
+
+    const legacy = localStorage.getItem(SCAN_CALIBRATION_KEY);
+    if (!legacy) return null;
+
+    await saveCalibrationImage(legacy);
+    localStorage.removeItem(SCAN_CALIBRATION_KEY);
+    return legacy;
   } catch {
     return null;
   }
 }
 
-export function saveScanCalibrationImage(dataUrl: string | null): void {
-  if (dataUrl) localStorage.setItem(SCAN_CALIBRATION_KEY, dataUrl);
-  else localStorage.removeItem(SCAN_CALIBRATION_KEY);
+export async function persistScanCalibrationImage(
+  dataUrl: string | null,
+): Promise<{ ok: true } | { ok: false; message: string }> {
+  try {
+    if (dataUrl) {
+      await saveCalibrationImage(dataUrl);
+    } else {
+      await deleteCalibrationImage();
+    }
+    localStorage.removeItem(SCAN_CALIBRATION_KEY);
+    return { ok: true };
+  } catch (error) {
+    const message =
+      error instanceof DOMException && error.name === "QuotaExceededError"
+        ? "Storage quota exceeded. Remove the calibration image or clear browser data."
+        : "Failed to save calibration image.";
+    return { ok: false, message };
+  }
 }
 
 export function loadDeveloperMode(): boolean {

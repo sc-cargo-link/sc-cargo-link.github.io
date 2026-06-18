@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from "react";
 import { ChevronDown, Crop, Upload } from "lucide-react";
 import type { ScanRegion, ScanRegionKey, ScanRegions } from "@/types/contracts";
 import { Button } from "@/components/ui/button";
+import { compressImageFile } from "@/lib/image-compress";
 import { cn } from "@/lib/utils";
 
 const REGION_LABELS: Record<ScanRegionKey, string> = {
@@ -99,12 +100,7 @@ export function ScanRegionSetup({
   const handleCalibrationFile = async (files: FileList | null) => {
     const file = files?.[0];
     if (!file) return;
-    const dataUrl = await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
+    const { dataUrl } = await compressImageFile(file);
     onCalibrationImageChange(dataUrl);
     setOpen(true);
   };

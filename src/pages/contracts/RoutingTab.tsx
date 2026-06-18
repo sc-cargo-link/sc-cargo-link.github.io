@@ -1,5 +1,5 @@
 import { Fragment, useMemo, useState } from "react";
-import { Route, AlertCircle, Plus, Trash2 } from "lucide-react";
+import { Route, AlertCircle, Plus, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useContracts } from "@/context/ContractsContext";
 import { optimizeRoute } from "@/lib/route-optimizer";
@@ -12,6 +12,7 @@ import {
   visitTypeForActions,
   type AvailableRouteAction,
 } from "@/lib/route-actions";
+import { contractMatchesSearch } from "@/lib/contract-search";
 import { findLocation, getLocationDisplayName, getLocationStorageKey, searchLocations } from "@/lib/location-lookup";
 import { POIMap } from "@/components/map/POIMap";
 import { ContractDetailsTooltip } from "@/components/contracts/ContractDetailsTooltip";
@@ -25,6 +26,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { formatDistance, formatScu } from "@/lib/utils";
+import { cargoItemLabel } from "@/lib/cargo-display";
 import type { Contract, RouteAction, RouteVisit } from "@/types/contracts";
 import type { StarSystem } from "@/types/map";
 
@@ -158,7 +160,7 @@ function VisitCard({
       {visit.actions.map((action, i) => (
         <div key={i} className="mt-1 text-muted-foreground">
           {action.type === "pickup" ? "Pick up" : "Drop off"} ({action.contractTitle}):{" "}
-          {action.items.map((it) => `${it.name} ${it.scu} SCU`).join(", ")}
+          {action.items.map((it) => `${cargoItemLabel(it)} ${it.scu} SCU`).join(", ")}
         </div>
       ))}
       <div className="mt-1 text-[10px] text-muted-foreground">
@@ -225,7 +227,7 @@ function CustomRoutePanel({
                 {action.type === "pickup" ? "Pick up" : "Drop off"} · {action.contractTitle}
               </div>
               <div className="text-muted-foreground">
-                {action.items.map((it) => `${it.name} (${it.scu} SCU)`).join(", ") || formatScu(scu)}
+                {action.items.map((it) => `${cargoItemLabel(it)} (${it.scu} SCU)`).join(", ") || formatScu(scu)}
               </div>
             </div>
           </label>
@@ -259,6 +261,13 @@ export function RoutingTab() {
     y: number;
     token: number;
   } | null>(null);
+  const [contractSearchQuery, setContractSearchQuery] = useState("");
+
+  const filteredContracts = useMemo(() => {
+    const query = contractSearchQuery.trim().toLowerCase();
+    if (!query) return contracts;
+    return contracts.filter((contract) => contractMatchesSearch(contract, query));
+  }, [contracts, contractSearchQuery]);
 
   const focusVisitOnMap = (visit: RouteVisit) => {
     setMapFocusRequest((prev) => ({
@@ -525,24 +534,47 @@ export function RoutingTab() {
             )}
             </div>
             <div className="flex min-h-0 flex-1 flex-col gap-1">
-              <Label>Contracts</Label>
+              <div className="flex shrink-0 items-center justify-between gap-2">
+                <Label>Contracts</Label>
+                {contracts.length > 0 && (
+                  <span className="text-[10px] text-muted-foreground">
+                    {contractSearchQuery.trim()
+                      ? `${filteredContracts.length} of ${contracts.length}`
+                      : `${contracts.length}`}
+                  </span>
+                )}
+              </div>
+              {contracts.length > 0 && (
+                <div className="relative shrink-0">
+                  <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    value={contractSearchQuery}
+                    onChange={(e) => setContractSearchQuery(e.target.value)}
+                    placeholder="Search contracts…"
+                    className="h-8 pl-8"
+                  />
+                </div>
+              )}
               <ScrollArea className="min-h-0 flex-1">
                 <TooltipProvider delayDuration={200}>
                   <div className="space-y-1 pr-2">
-                    {contracts.map((c) => (
-                      <ContractDetailsTooltip key={c.id} contract={c}>
-                        <label className="flex cursor-pointer items-start gap-2 rounded-md border border-border px-2 py-1.5 text-xs">
-                          <Checkbox
-                            checked={c.selectedForRoute}
-                            onCheckedChange={(v) => toggleContractSelection(c.id, !!v)}
-                            className="mt-0.5"
-                          />
-                          <ContractRouteRow contract={c} />
-                        </label>
-                      </ContractDetailsTooltip>
-                    ))}
-                    {contracts.length === 0 && (
+                    {contracts.length === 0 ? (
                       <p className="text-xs text-muted-foreground">Add contracts in Prep first.</p>
+                    ) : filteredContracts.length === 0 ? (
+                      <p className="text-xs text-muted-foreground">No contracts match your search.</p>
+                    ) : (
+                      filteredContracts.map((c) => (
+                        <ContractDetailsTooltip key={c.id} contract={c}>
+                          <label className="flex cursor-pointer items-start gap-2 rounded-md border border-border px-2 py-1.5 text-xs">
+                            <Checkbox
+                              checked={c.selectedForRoute}
+                              onCheckedChange={(v) => toggleContractSelection(c.id, !!v)}
+                              className="mt-0.5"
+                            />
+                            <ContractRouteRow contract={c} />
+                          </label>
+                        </ContractDetailsTooltip>
+                      ))
                     )}
                   </div>
                 </TooltipProvider>

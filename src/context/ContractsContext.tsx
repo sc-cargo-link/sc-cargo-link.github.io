@@ -16,13 +16,18 @@ import {
   loadRoutingSettings,
   loadScanCalibrationImage,
   loadScanRegions,
-  saveContracts,
+  hydrateContracts,
+  migrateInlineScreenshots,
+  persistContracts,
+  persistScanCalibrationImage,
+  removeAllContractScreenshots,
+  removeContractScreenshot,
   saveDeveloperMode,
   saveRoute,
   saveRoutingSettings,
-  saveScanCalibrationImage,
   saveScanRegions,
 } from "@/lib/contracts-storage";
+import { toast } from "sonner";
 
 interface ContractsContextValue {
   contracts: Contract[];
@@ -53,14 +58,38 @@ export function ContractsProvider({ children }: { children: ReactNode }) {
     loadRoutingSettings()
   );
   const [scanRegions, setScanRegionsState] = useState<ScanRegions>(() => loadScanRegions());
-  const [scanCalibrationImage, setScanCalibrationImageState] = useState<string | null>(() =>
-    loadScanCalibrationImage()
-  );
+  const [scanCalibrationImage, setScanCalibrationImageState] = useState<string | null>(null);
   const [developerMode, setDeveloperModeState] = useState(() => loadDeveloperMode());
+  const [storageReady, setStorageReady] = useState(false);
 
   useEffect(() => {
-    saveContracts(contracts);
-  }, [contracts]);
+    let cancelled = false;
+
+    void (async () => {
+      const loaded = loadContracts();
+      await migrateInlineScreenshots(loaded);
+      const hydrated = await hydrateContracts(loaded);
+      const calibration = await loadScanCalibrationImage();
+
+      if (cancelled) return;
+      setContracts(hydrated);
+      setScanCalibrationImageState(calibration);
+      setStorageReady(true);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!storageReady) return;
+
+    void (async () => {
+      const result = await persistContracts(contracts);
+      if (!result.ok) toast.error(result.message);
+    })();
+  }, [contracts, storageReady]);
 
   useEffect(() => {
     saveRoute(route);
@@ -75,8 +104,13 @@ export function ContractsProvider({ children }: { children: ReactNode }) {
   }, [scanRegions]);
 
   useEffect(() => {
-    saveScanCalibrationImage(scanCalibrationImage);
-  }, [scanCalibrationImage]);
+    if (!storageReady) return;
+
+    void (async () => {
+      const result = await persistScanCalibrationImage(scanCalibrationImage);
+      if (!result.ok) toast.error(result.message);
+    })();
+  }, [scanCalibrationImage, storageReady]);
 
   useEffect(() => {
     saveDeveloperMode(developerMode);
@@ -100,6 +134,7 @@ export function ContractsProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const deleteContract = useCallback((id: string) => {
+    void removeContractScreenshot(id);
     setContracts((prev) => prev.filter((c) => c.id !== id).map((c, i) => ({ ...c, order: i })));
   }, []);
 
@@ -136,6 +171,7 @@ export function ContractsProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const clearAllContracts = useCallback(() => {
+    void removeAllContractScreenshots();
     setContracts([]);
     setRouteState(null);
   }, []);

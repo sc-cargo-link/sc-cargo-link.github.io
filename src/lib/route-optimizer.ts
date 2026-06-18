@@ -17,6 +17,7 @@ import {
   getRefuelStationsInRange,
   type ResolvedLocation,
 } from "@/lib/location-lookup";
+import { cargoItemLabel, cargoItemsMatch, contractRouteLabel } from "@/lib/cargo-display";
 import { findGateway } from "@/lib/gateway-lookup";
 import { formatDistance } from "@/lib/utils";
 
@@ -46,6 +47,19 @@ interface TravelHop {
 
 function samePlace(a: { x: number; y: number }, b: { x: number; y: number }): boolean {
   return Math.hypot(a.x - b.x, a.y - b.y) < 1;
+}
+
+function resolveStopLocation(stop: ContractStop): ResolvedLocation | null {
+  if (stop.locationName) {
+    const resolved = findLocation(stop.locationName);
+    if (resolved) return resolved;
+  }
+  if (stop.locationHint) return findLocation(stop.locationHint);
+  return null;
+}
+
+function stopStorageKey(stop: ContractStop, loc: ResolvedLocation): string {
+  return stop.locationName || getLocationStorageKey(loc);
 }
 
 function systemsAlongLeg(from: ResolvedLocation, to: ResolvedLocation): StarSystem[] {
@@ -267,10 +281,13 @@ function resolvePickupTask(
   const items = pickup.items.map((pi) => {
     const matchedScu = contract.dropoffs.reduce(
       (sum, dropoff) =>
-        sum + dropoff.items.filter((di) => di.name === pi.name).reduce((s, di) => s + di.scu, 0),
+        sum +
+        dropoff.items
+          .filter((di) => cargoItemsMatch(di, pi))
+          .reduce((s, di) => s + di.scu, 0),
       0
     );
-    return { ...pi, scu: matchedScu };
+    return { ...pi, name: cargoItemLabel(pi), scu: matchedScu };
   });
   const scu = items.reduce((s, i) => s + i.scu, 0);
   if (scu > 0) return { scu, items };
@@ -298,39 +315,106 @@ interface CargoLeg {
   totalScu: number;
 }
 
-function buildCargoLegs(contract: Contract): CargoLeg[] {
-  const legs: CargoLeg[] = [];
+interface PickupPortion {
+  pickup: ContractStop;
+  items: CargoItem[];
+  totalScu: number;
+}
 
-  for (const dropoff of contract.dropoffs) {
-    if (dropoff.completed) continue;
+interface CargoLegPlan {
+  dropoff: ContractStop;
+  dropoffItems: CargoItem[];
+  totalScu: number;
+  pickups: PickupPortion[];
+}
+
+function splitScuAcrossStops(total: number, parts: number): number[] {
+  if (parts <= 0) return [];
+  const base = Math.floor(total / parts);
+  const remainder = total % parts;
+  return Array.from({ length: parts }, (_, i) => base + (i < remainder ? 1 : 0));
+}
+
+function buildCargoLegPlans(contract: Contract): CargoLegPlan[] {
+  const plans: CargoLegPlan[] = [];
+  const activeDropoffs = contract.dropoffs.filter((d) => !d.completed);
+  const fallbackPickup = contract.pickups.find((p) => !p.completed);
+
+  for (const dropoff of activeDropoffs) {
     for (const item of dropoff.items) {
       if (item.scu <= 0) continue;
-      const pickup =
-        contract.pickups.find(
-          (p) => !p.completed && p.items.some((pi) => pi.name === item.name)
-        ) ?? contract.pickups.find((p) => !p.completed);
-      if (!pickup) continue;
-      legs.push({
-        pickup,
+
+      const matchingPickups = contract.pickups.filter(
+        (p) => !p.completed && p.items.some((pi) => cargoItemsMatch(pi, item)),
+      );
+      const labeledItem: CargoItem = {
+        id: item.id,
+        name: cargoItemLabel(item),
+        nameHint: item.nameHint,
+        scu: item.scu,
+      };
+
+      let pickupsForItem: ContractStop[];
+      if (matchingPickups.length > 1 && activeDropoffs.length === 1) {
+        pickupsForItem = matchingPickups;
+      } else if (matchingPickups.length > 1 && activeDropoffs.length > 1) {
+        const dropoffIdx = activeDropoffs.indexOf(dropoff);
+        pickupsForItem = [matchingPickups[dropoffIdx % matchingPickups.length]];
+      } else if (matchingPickups.length === 1) {
+        pickupsForItem = matchingPickups;
+      } else if (fallbackPickup) {
+        pickupsForItem = [fallbackPickup];
+      } else {
+        continue;
+      }
+
+      const scuParts = splitScuAcrossStops(item.scu, pickupsForItem.length);
+      const pickups: PickupPortion[] = pickupsForItem
+        .map((pickup, idx) => ({
+          pickup,
+          totalScu: scuParts[idx] ?? 0,
+          items: [{ ...labeledItem, id: nanoid(6), scu: scuParts[idx] ?? 0 }],
+        }))
+        .filter((portion) => portion.totalScu > 0);
+
+      if (pickups.length === 0) continue;
+
+      plans.push({
         dropoff,
-        items: [{ id: item.id, name: item.name, scu: item.scu }],
+        dropoffItems: [labeledItem],
         totalScu: item.scu,
+        pickups,
       });
     }
   }
 
-  if (legs.length === 0) {
+  if (plans.length === 0) {
     for (const pickup of contract.pickups) {
       if (pickup.completed) continue;
       const dropoff = contract.dropoffs.find((d) => !d.completed);
       if (!dropoff) continue;
       const { items, scu } = resolvePickupTask(pickup, contract);
       if (scu <= 0) continue;
-      legs.push({ pickup, dropoff, items, totalScu: scu });
+      const labeledItems = items.map((i) => ({ ...i, name: cargoItemLabel(i) }));
+      plans.push({
+        dropoff,
+        dropoffItems: labeledItems,
+        totalScu: scu,
+        pickups: [{ pickup, items: labeledItems.map((i) => ({ ...i })), totalScu: scu }],
+      });
     }
   }
 
-  return legs;
+  return plans;
+}
+
+function buildCargoLegs(contract: Contract): CargoLeg[] {
+  return buildCargoLegPlans(contract).map((plan) => ({
+    pickup: plan.pickups[0].pickup,
+    dropoff: plan.dropoff,
+    items: plan.dropoffItems,
+    totalScu: plan.totalScu,
+  }));
 }
 
 function splitLegIntoChunks(leg: CargoLeg, capacity: number): CargoItem[][] {
@@ -348,7 +432,7 @@ function splitLegIntoChunks(leg: CargoLeg, capacity: number): CargoItem[][] {
     while (chunkLeft > 0 && itemIdx < items.length) {
       const take = Math.min(chunkLeft, itemLeft);
       if (take > 0) {
-        chunk.push({ id: nanoid(6), name: items[itemIdx].name, scu: take });
+        chunk.push({ id: nanoid(6), name: cargoItemLabel(items[itemIdx]), scu: take });
         chunkLeft -= take;
         itemLeft -= take;
         remaining -= take;
@@ -372,9 +456,13 @@ function addChunkedLegTasks(
   leg: CargoLeg,
   capacity: number
 ): void {
-  const pickupLoc = findLocation(leg.pickup.locationName);
-  const dropoffLoc = findLocation(leg.dropoff.locationName);
+  const pickupLoc = resolveStopLocation(leg.pickup);
+  const dropoffLoc = resolveStopLocation(leg.dropoff);
   if (!pickupLoc || !dropoffLoc) return;
+
+  const pickupKey = stopStorageKey(leg.pickup, pickupLoc);
+  const dropoffKey = stopStorageKey(leg.dropoff, dropoffLoc);
+  const routeLabel = contractRouteLabel(contract);
 
   const itemChunks = splitLegIntoChunks(leg, capacity);
   let prevTaskId: string | null = null;
@@ -386,10 +474,10 @@ function addChunkedLegTasks(
     tasks.push({
       id: pickupId,
       contractId: contract.id,
-      contractTitle: contract.title,
+      contractTitle: routeLabel,
       stopId: leg.pickup.id,
       type: "pickup",
-      locationName: leg.pickup.locationName,
+      locationName: pickupKey,
       x: pickupLoc.x,
       y: pickupLoc.y,
       system: pickupLoc.system,
@@ -402,10 +490,10 @@ function addChunkedLegTasks(
     tasks.push({
       id: dropoffId,
       contractId: contract.id,
-      contractTitle: contract.title,
+      contractTitle: routeLabel,
       stopId: leg.dropoff.id,
       type: "dropoff",
-      locationName: leg.dropoff.locationName,
+      locationName: dropoffKey,
       x: dropoffLoc.x,
       y: dropoffLoc.y,
       system: dropoffLoc.system,
@@ -418,15 +506,104 @@ function addChunkedLegTasks(
   }
 }
 
+function addChunkedLegPlanTasks(
+  tasks: PendingTask[],
+  contract: Contract,
+  plan: CargoLegPlan,
+  capacity: number,
+): void {
+  if (plan.pickups.length === 1) {
+    addChunkedLegTasks(tasks, contract, {
+      pickup: plan.pickups[0].pickup,
+      dropoff: plan.dropoff,
+      items: plan.dropoffItems,
+      totalScu: plan.totalScu,
+    }, capacity);
+    return;
+  }
+
+  const dropoffLoc = resolveStopLocation(plan.dropoff);
+  if (!dropoffLoc) return;
+
+  const dropoffKey = stopStorageKey(plan.dropoff, dropoffLoc);
+  const routeLabel = contractRouteLabel(contract);
+  const itemName = cargoItemLabel(plan.dropoffItems[0] ?? { id: "", name: "", scu: 0 });
+
+  const resolvedPickups = plan.pickups
+    .map((portion) => {
+      const loc = resolveStopLocation(portion.pickup);
+      if (!loc) return null;
+      return {
+        portion,
+        loc,
+        key: stopStorageKey(portion.pickup, loc),
+      };
+    })
+    .filter((entry): entry is NonNullable<typeof entry> => entry !== null);
+
+  if (resolvedPickups.length !== plan.pickups.length) return;
+
+  let remaining = plan.totalScu;
+  let prevRoundDropoffId: string | null = null;
+
+  while (remaining > 0) {
+    const roundScu = Math.min(remaining, capacity);
+    const roundPickupScu = splitScuAcrossStops(roundScu, resolvedPickups.length);
+    const pickupTaskIds: string[] = [];
+
+    for (let i = 0; i < resolvedPickups.length; i++) {
+      const portionScu = roundPickupScu[i] ?? 0;
+      if (portionScu <= 0) continue;
+
+      const { portion, loc, key } = resolvedPickups[i];
+      const pickupId = nanoid(8);
+      tasks.push({
+        id: pickupId,
+        contractId: contract.id,
+        contractTitle: routeLabel,
+        stopId: portion.pickup.id,
+        type: "pickup",
+        locationName: key,
+        x: loc.x,
+        y: loc.y,
+        system: loc.system,
+        scu: portionScu,
+        items: [{ id: nanoid(6), name: itemName, scu: portionScu }],
+        dependsOn: prevRoundDropoffId ? [prevRoundDropoffId] : [],
+      });
+      pickupTaskIds.push(pickupId);
+    }
+
+    const dropoffId = nanoid(8);
+    tasks.push({
+      id: dropoffId,
+      contractId: contract.id,
+      contractTitle: routeLabel,
+      stopId: plan.dropoff.id,
+      type: "dropoff",
+      locationName: dropoffKey,
+      x: dropoffLoc.x,
+      y: dropoffLoc.y,
+      system: dropoffLoc.system,
+      scu: roundScu,
+      items: [{ id: nanoid(6), name: itemName, scu: roundScu }],
+      dependsOn: pickupTaskIds,
+    });
+
+    prevRoundDropoffId = dropoffId;
+    remaining -= roundScu;
+  }
+}
+
 function buildTasks(contracts: Contract[], capacity: number): PendingTask[] {
   const tasks: PendingTask[] = [];
 
   for (const contract of contracts) {
     if (!contract.selectedForRoute || contract.completed) continue;
 
-    const legs = buildCargoLegs(contract);
-    for (const leg of legs) {
-      addChunkedLegTasks(tasks, contract, leg, capacity);
+    const plans = buildCargoLegPlans(contract);
+    for (const plan of plans) {
+      addChunkedLegPlanTasks(tasks, contract, plan, capacity);
     }
   }
 

@@ -61,6 +61,51 @@ describe("optimizeRoute capacity", () => {
     expect(Math.max(...result.visits.map((v) => v.cargoAfter))).toBeLessThanOrEqual(100);
   });
 
+  it("visits all pickup stops when one dropoff has multiple collect locations", () => {
+    const contract = makeContract({
+      id: "waste",
+      title: "Waste haul",
+      pickups: [
+        {
+          id: "p-sacren",
+          locationName: "RL_Pyro4_col_m_trdpst_indy_001",
+          completed: false,
+          items: [{ id: "i1", name: "Waste", scu: 0 }],
+        },
+        {
+          id: "p-jackson",
+          locationName: "RL_Pyro2_col_m_trdp_indy_001",
+          completed: false,
+          items: [{ id: "i2", name: "Waste", scu: 0 }],
+        },
+      ],
+      dropoffs: [
+        {
+          id: "d1",
+          locationName: "RL_Pyro2_col_m_scrp_indy_001",
+          completed: false,
+          items: [{ id: "i3", name: "Waste", scu: 12 }],
+        },
+      ],
+    });
+
+    const result = optimizeRoute([contract], {
+      shipCapacity: 128,
+      maxDistanceGm: 500,
+      startingLocation: "RL_Pyro2_col_m_trdp_indy_001",
+    });
+
+    expect("error" in result).toBe(false);
+    if ("error" in result) return;
+
+    const pickupLocations = result.visits
+      .filter((v) => v.type === "pickup")
+      .map((v) => v.locationName);
+
+    expect(pickupLocations).toContain("RL_Pyro4_col_m_trdpst_indy_001");
+    expect(pickupLocations).toContain("RL_Pyro2_col_m_trdp_indy_001");
+  });
+
   it("chunks cargo above ship capacity across multiple runs", () => {
     const contract = makeContract({
       id: "c2",

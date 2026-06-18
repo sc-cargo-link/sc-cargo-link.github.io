@@ -3,6 +3,7 @@ import type { Contract, RouteAction, RouteVisit } from "@/types/contracts";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatDistance, formatScu } from "@/lib/utils";
+import { cargoItemLabel } from "@/lib/cargo-display";
 import { getLocationDisplayName } from "@/lib/location-lookup";
 
 function visitIcon(type: RouteVisit["type"]) {
@@ -63,7 +64,7 @@ function ActionRow({
             {action.type === "pickup" ? "Pick up" : "Drop off"}
           </div>
           <div className={`text-muted-foreground ${done ? "line-through" : ""}`}>
-            {action.items.map((it) => `${it.name} (${formatScu(it.scu)})`).join(", ")}
+            {action.items.map((it) => `${cargoItemLabel(it)} (${formatScu(it.scu)})`).join(", ")}
           </div>
           <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
             <span className="text-[10px] text-muted-foreground">{action.contractTitle}</span>

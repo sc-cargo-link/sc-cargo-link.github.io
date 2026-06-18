@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid";
 import type { Contract, ContractStop, RouteAction, RouteVisit } from "@/types/contracts";
 import { findLocation, getLocationStorageKey } from "@/lib/location-lookup";
+import { cargoItemsMatch, cargoItemLabel } from "@/lib/cargo-display";
 import { recalculateRouteLegs } from "@/lib/route-optimizer";
 
 export interface AvailableRouteAction {
@@ -25,10 +26,11 @@ function pickupItemsWithScu(pickup: ContractStop, contract: Contract): RouteActi
   return pickup.items.map((pi) => {
     const scu = contract.dropoffs.reduce(
       (sum, dropoff) =>
-        sum + dropoff.items.filter((di) => di.name === pi.name).reduce((s, di) => s + di.scu, 0),
+        sum +
+        dropoff.items.filter((di) => cargoItemsMatch(di, pi)).reduce((s, di) => s + di.scu, 0),
       0
     );
-    return { ...pi, scu };
+    return { ...pi, name: cargoItemLabel(pi), scu };
   });
 }
 

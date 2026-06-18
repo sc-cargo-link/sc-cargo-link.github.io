@@ -4,7 +4,8 @@ import { toast } from "sonner";
 import { useContracts } from "@/context/ContractsContext";
 import type { CargoItem, Contract, ContractStop } from "@/types/contracts";
 import { contractTotalScu, scanContractScreenshot, stopTotalScu } from "@/lib/ocr-parser";
-import { getLocationDisplayName } from "@/lib/location-lookup";
+import { contractMatchesSearch } from "@/lib/contract-search";
+import { compressImageFile } from "@/lib/image-compress";
 import { ContractDetailsTooltip } from "@/components/contracts/ContractDetailsTooltip";
 import { ScanRegionSetup } from "@/components/contracts/ScanRegionSetup";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,23 +21,6 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { formatAuec, formatScu } from "@/lib/utils";
 import { nanoid } from "nanoid";
-
-function stopSearchText(stop: ContractStop): string[] {
-  return [
-    stop.locationName,
-    stop.locationHint ?? "",
-    getLocationDisplayName(stop.locationName),
-    ...stop.items.flatMap((item) => [item.name, item.nameHint ?? ""]),
-  ];
-}
-
-function contractMatchesSearch(contract: Contract, query: string): boolean {
-  const haystack = [
-    ...contract.pickups.flatMap(stopSearchText),
-    ...contract.dropoffs.flatMap(stopSearchText),
-  ];
-  return haystack.some((text) => text.toLowerCase().includes(query));
-}
 
 function StopEditor({
   stop,
@@ -259,13 +243,8 @@ export function PrepTab() {
     setScanning(true);
     try {
       for (const file of Array.from(files)) {
-        const dataUrl = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-        const contract = await scanContractScreenshot(file, scanRegions, dataUrl);
+        const { file: compressedFile, dataUrl } = await compressImageFile(file);
+        const contract = await scanContractScreenshot(compressedFile, scanRegions, dataUrl);
         addContract(contract);
       }
       toast.success(`Scanned ${files.length} screenshot(s)`);
