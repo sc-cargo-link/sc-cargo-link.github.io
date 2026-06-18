@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { GripVertical, Plus, Search, Trash2, Upload } from "lucide-react";
+import { Plus, Search, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { useContracts } from "@/context/ContractsContext";
 import type { CargoItem, Contract, ContractStop } from "@/types/contracts";
@@ -225,7 +225,6 @@ export function PrepTab() {
     addContract,
     updateContract,
     deleteContract,
-    reorderContracts,
     addEmptyContract,
     clearAllContracts,
     developerMode,
@@ -234,18 +233,22 @@ export function PrepTab() {
   const [scanning, setScanning] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
-  const dragItem = useRef<string | null>(null);
+
+  const orderedContracts = useMemo(
+    () => [...contracts].sort((a, b) => a.order - b.order || a.createdAt - b.createdAt),
+    [contracts]
+  );
 
   const totalReward = useMemo(
-    () => contracts.reduce((sum, c) => sum + (c.reward ?? 0), 0),
-    [contracts],
+    () => orderedContracts.reduce((sum, c) => sum + (c.reward ?? 0), 0),
+    [orderedContracts],
   );
 
   const filteredContracts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
-    if (!query) return contracts;
-    return contracts.filter((contract) => contractMatchesSearch(contract, query));
-  }, [contracts, searchQuery]);
+    if (!query) return orderedContracts;
+    return orderedContracts.filter((contract) => contractMatchesSearch(contract, query));
+  }, [orderedContracts, searchQuery]);
 
   const handleFiles = async (files: FileList | null) => {
     if (!files?.length) return;
@@ -278,26 +281,6 @@ export function PrepTab() {
     if (!window.confirm("Clear all contracts?")) return;
     clearAllContracts();
     toast.success("Cleared all contracts");
-  };
-
-  const onDragStart = (e: React.DragEvent, contractId: string) => {
-    dragItem.current = contractId;
-    e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData("text/plain", contractId);
-  };
-
-  const onDragEnd = () => {
-    dragItem.current = null;
-  };
-
-  const onDragOver = (e: React.DragEvent, contractId: string) => {
-    e.preventDefault();
-    if (dragItem.current === null || dragItem.current === contractId) return;
-    const fromIndex = contracts.findIndex((c) => c.id === dragItem.current);
-    const toIndex = contracts.findIndex((c) => c.id === contractId);
-    if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) return;
-    reorderContracts(fromIndex, toIndex);
-    dragItem.current = contractId;
   };
 
   return (
@@ -388,19 +371,8 @@ export function PrepTab() {
         <div className="space-y-4">
           <TooltipProvider delayDuration={200}>
             {filteredContracts.map((contract) => (
-              <Card
-                key={contract.id}
-                onDragOver={(e) => onDragOver(e, contract.id)}
-              >
+              <Card key={contract.id}>
                 <CardHeader className="flex flex-row items-center gap-2 space-y-0 pb-2">
-                  <span
-                    draggable
-                    className="flex shrink-0 cursor-grab touch-none active:cursor-grabbing"
-                    onDragStart={(e) => onDragStart(e, contract.id)}
-                    onDragEnd={onDragEnd}
-                  >
-                    <GripVertical className="h-4 w-4 text-muted-foreground" />
-                  </span>
                   <ContractDetailsTooltip contract={contract}>
                     <CardTitle className="min-w-0 flex-1 cursor-help truncate text-sm">
                       {contract.title}

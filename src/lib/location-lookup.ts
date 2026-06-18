@@ -249,8 +249,30 @@ function extractLocationHints(text: string): string[] {
   return hints;
 }
 
+const LOCATION_ALIASES: Record<string, string> = {
+  "chawlia s beach": "Chawla's Beach",
+  "teasa spaceport": "Lorville",
+  "teasa spaceport in lorville": "Lorville",
+  "shallow fields station": "CRU-L4 Shallow Fields Station",
+  "beautiful glen station": "CRU-L5 Beautiful Glen Station",
+  "rayari mcgrath": "Rayari McGrath Research Outpost",
+  "rayari mcgrath research outpost": "Rayari McGrath Research Outpost",
+};
+
+export function resolveLocationAlias(query: string): string {
+  const key = normalize(query);
+  if (LOCATION_ALIASES[key]) return LOCATION_ALIASES[key];
+
+  for (const [alias, canonical] of Object.entries(LOCATION_ALIASES)) {
+    if (key.startsWith(alias) || alias.startsWith(key)) return canonical;
+  }
+
+  return query;
+}
+
 export function findLocationExactMatches(query: string): ResolvedLocation[] {
-  const q = normalize(query);
+  const resolved = resolveLocationAlias(query);
+  const q = normalize(resolved);
   if (!q) return [];
   return getAllLocations().filter(
     (l) =>
@@ -258,10 +280,20 @@ export function findLocationExactMatches(query: string): ResolvedLocation[] {
   );
 }
 
-export function findLocationExactEntity(query: string): string | null {
+export function findLocationExactEntity(
+  query: string,
+  options?: { preferredSystem?: StarSystem }
+): string | null {
   const matches = findLocationExactMatches(query);
-  if (matches.length !== 1) return null;
-  return matches[0].poi.en ?? null;
+  if (matches.length === 0) return null;
+  if (matches.length === 1) return matches[0].poi.en ?? null;
+
+  if (options?.preferredSystem) {
+    const inSystem = matches.filter((m) => m.system === options.preferredSystem);
+    if (inSystem.length === 1) return inSystem[0].poi.en ?? null;
+  }
+
+  return null;
 }
 
 export function getLocationStorageKey(loc: ResolvedLocation): string {

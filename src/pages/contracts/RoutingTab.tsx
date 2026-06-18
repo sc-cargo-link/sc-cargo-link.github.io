@@ -8,6 +8,8 @@ import {
   createVisitFromActions,
   getAvailableActionsAtLocation,
   recalculateRouteCargo,
+  finalizeRouteVisits,
+  visitTypeForActions,
   type AvailableRouteAction,
 } from "@/lib/route-actions";
 import { findLocation, getLocationDisplayName, getLocationStorageKey, searchLocations } from "@/lib/location-lookup";
@@ -193,7 +195,8 @@ function CustomRoutePanel({
   if (available.length === 0) {
     return (
       <p className="text-xs text-muted-foreground">
-        No contract pickups or dropoffs at {getLocationDisplayName(locationName)}.
+        No contract pickups or dropoffs at {getLocationDisplayName(locationName)}. Click Add stop
+        to insert a refuel stopover.
       </p>
     );
   }
@@ -344,7 +347,8 @@ export function RoutingTab() {
     const visits = [...route.visits];
     const [moved] = visits.splice(from, 1);
     visits.splice(to, 0, moved);
-    setRoute({ ...route, visits: recalculateRouteCargo(visits) });
+    const finalized = finalizeRouteVisits(visits, route.totalScu);
+    setRoute({ ...route, ...finalized });
     if (selectedVisitIndex === from) setSelectedVisitIndex(to);
     else if (selectedVisitIndex !== null) {
       if (from < selectedVisitIndex && to >= selectedVisitIndex) {
@@ -358,7 +362,12 @@ export function RoutingTab() {
   const applyActionsToVisit = (visitIndex: number, actions: RouteAction[]) => {
     if (!route) return;
     const visits = [...route.visits];
-    visits[visitIndex] = { ...visits[visitIndex], actions };
+    const visit = visits[visitIndex];
+    const type =
+      visit.type === "start" || visit.type === "gateway"
+        ? visit.type
+        : visitTypeForActions(actions, visit.type);
+    visits[visitIndex] = { ...visit, actions, type };
     setRoute({ ...route, visits: recalculateRouteCargo(visits) });
   };
 
@@ -405,11 +414,6 @@ export function RoutingTab() {
         items: a.items.map((i) => ({ ...i })),
       }));
 
-    if (actions.length === 0) {
-      toast.error("Select at least one pickup or dropoff for this stop");
-      return;
-    }
-
     const newVisit = createVisitFromActions(customLocationQuery, actions);
     if (!newVisit) {
       toast.error("Location not found on map");
@@ -417,13 +421,13 @@ export function RoutingTab() {
     }
 
     const visits = route ? [...route.visits, newVisit] : [newVisit];
-    setRoute({
-      visits: recalculateRouteCargo(visits),
-      totalDistance: route?.totalDistance ?? 0,
-      totalScu: route?.totalScu ?? 0,
-    });
+    const finalized = finalizeRouteVisits(visits, route?.totalScu ?? 0);
+    setRoute(finalized);
     setSelectedVisitIndex(visits.length - 1);
     setPendingActionKeys(new Set());
+    toast.success(
+      actions.length === 0 ? "Refuel stop added" : "Stop added to route"
+    );
   };
 
   return (

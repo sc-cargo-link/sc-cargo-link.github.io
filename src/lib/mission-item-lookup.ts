@@ -18,6 +18,11 @@ const NORMALIZED_INDEX = MISSION_ITEMS.map((name) => ({
   norm: normalize(name),
 }));
 
+const ITEM_ALIASES: Record<string, string> = {
+  "sunset berries": "Sunset Berry",
+  diamond: "Diamonds",
+};
+
 function scoreItem(query: string, itemNorm: string): number {
   const q = normalize(query);
   if (!q) return 0;
@@ -43,8 +48,14 @@ export function getMissionItems(): string[] {
   return MISSION_ITEMS;
 }
 
-export function findMissionItem(query: string): string | null {
+function resolveItemAlias(query: string): string {
   const q = normalize(query);
+  return ITEM_ALIASES[q] ?? query;
+}
+
+export function findMissionItem(query: string): string | null {
+  const aliased = resolveItemAlias(query);
+  const q = normalize(aliased);
   if (!q) return null;
   const exact = NORMALIZED_INDEX.find((item) => item.norm === q);
   return exact?.name ?? null;

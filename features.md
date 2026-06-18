@@ -114,6 +114,7 @@ Collect Hydrogen from Patch City
 - Allow clearing the planned route and start over.
 - Show route leg on the line. Should be placed at 20% at the beginning. If there are multiple, show them side by side. Route leg ear number from 1, 2, 3 and so on Starting from the starting location.
 - When selecting a leg in the planned route, focus that location in the map.
+- When user is adding stops manually, allow adding stops without pickups and drop offs.
 
 #### optimal route
 - Use will set a starting location.
@@ -130,6 +131,7 @@ Collect Hydrogen from Patch City
 - If we drop some cargo, that should free up some space, so we should be able to pick up more cargo.
 - Allow user to configure custom route, the user will select what to pick up and what to drop off based on what contracts are available for that location.
 - Assume the user will refuel at every station, so the requirement should only calculate the current station to the next station, if it's not enough show error. 
+- We need to minimize the number of jumps from one system to other.
 
 ## Cargo tracking
 - User can mark a contract as completed.

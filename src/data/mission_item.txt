@@ -5,6 +5,7 @@ Agricultural Supplies
 Altruciatoxin
 Aluminum
 Ammonia
+Aphorite
 Argon
 Astatine
 Basketball
@@ -84,6 +85,7 @@ HLX99 Hyperprocessors
 Hybrid Seeds
 Hybridized Sorghum Seeds
 Hydrogen
+Hydrogen Fuel
 Ingredients
 Iron
 Iron Ore
@@ -154,6 +156,7 @@ Remains
 Research Materials
 Research Probe
 Research Supplies
+Revenant Tree Pollen
 Riccite Ore
 Rock Samples
 RoundOff
@@ -196,6 +199,7 @@ Tin
 Tissue Samples
 Titanium
 Titanium
+Tritium
 Toxic Sludge
 Toxic Waste
 Trash

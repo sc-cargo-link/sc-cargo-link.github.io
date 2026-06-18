@@ -23,17 +23,19 @@ export function loadContracts(): Contract[] {
     const raw = localStorage.getItem(CONTRACTS_KEY);
     if (!raw) return [];
     const contracts = JSON.parse(raw) as Contract[];
-    return contracts.map((contract) => ({
-      ...contract,
-      pickups: contract.pickups.map((stop) => ({
-        ...stop,
-        locationName: migrateLocationToEntity(stop.locationName),
-      })),
-      dropoffs: contract.dropoffs.map((stop) => ({
-        ...stop,
-        locationName: migrateLocationToEntity(stop.locationName),
-      })),
-    }));
+    return contracts
+      .map((contract) => ({
+        ...contract,
+        pickups: contract.pickups.map((stop) => ({
+          ...stop,
+          locationName: migrateLocationToEntity(stop.locationName),
+        })),
+        dropoffs: contract.dropoffs.map((stop) => ({
+          ...stop,
+          locationName: migrateLocationToEntity(stop.locationName),
+        })),
+      }))
+      .sort((a, b) => a.order - b.order || a.createdAt - b.createdAt);
   } catch {
     return [];
   }

@@ -7,14 +7,103 @@ import type {
   ScanRegions,
   ScannedFields,
 } from "@/types/contracts";
-import { findLocationExactEntity } from "@/lib/location-lookup";
+import {
+  findLocationExactEntity,
+  findLocationExactMatches,
+  resolveLocationAlias,
+} from "@/lib/location-lookup";
 import { findMissionItem } from "@/lib/mission-item-lookup";
+import type { StarSystem } from "@/types/map";
 
 interface ObjectiveClause {
   scu?: number;
   item?: string;
   pickupLocation?: string;
   dropoffLocation?: string;
+}
+
+function normalizeApostrophes(text: string): string {
+  return text.replace(/[\u2018\u2019\u201B\u2032]/g, "'");
+}
+
+function stripOcrLinePrefix(line: string): string {
+  return line.replace(/^[^a-zA-Z\d[]+/, "").trim();
+}
+
+function normalizeOcrRomanNumerals(text: string): string {
+  return text
+    .replace(/\bpyro\s+il\b/gi, "Pyro II")
+    .replace(/\bpyro\s+ll\b/gi, "Pyro II")
+    .replace(/\bpyroll\b/gi, "Pyro II")
+    .replace(/\bpyro\s+lll\b/gi, "Pyro III")
+    .replace(/\bpyro\s+nn\b/gi, "Pyro III")
+    .replace(/\bpyro\s+iv\b/gi, "Pyro IV")
+    .replace(/\bpyro\s+vi\b/gi, "Pyro VI")
+    .replace(/\bpyro\s+5b\b/gi, "Pyro Vb");
+}
+
+function isObjectiveStart(line: string): boolean {
+  return /^(?:deliver|collect|pick\s*up)\b/i.test(line);
+}
+
+function needsContinuation(line: string): boolean {
+  const s = line.trim();
+  if (!s || /[.!?]$/.test(s)) return false;
+  if (/\b(?:on|at|in|above|from|to)\s*$/i.test(s)) return true;
+
+  const toMatch = s.match(/\bto\s+(.+)$/i);
+  if (toMatch) {
+    const loc = toMatch[1].trim();
+    if (
+      /^(the\s+)?\w+$/i.test(loc) ||
+      (/^[\w']+(?:\s+[\w']+)?$/i.test(loc) &&
+        loc.split(/\s+/).length <= 2 &&
+        !/(station|outpost|gateway|swap|city|beach|canyon|riviera|landings|ravine|point|field|rest|plot|view|mesa|clinic|refueling|harbor|spaceport)/i.test(
+          loc
+        ))
+    ) {
+      return true;
+    }
+  }
+
+  const fromMatch = s.match(/\bfrom\s+(.+)$/i);
+  if (fromMatch && /['']s?\s*$/i.test(fromMatch[1])) return true;
+
+  return false;
+}
+
+function isContinuationLine(line: string): boolean {
+  return !isObjectiveStart(line);
+}
+
+export function mergeObjectiveLines(lines: string[]): string[] {
+  const merged: string[] = [];
+
+  for (const raw of lines) {
+    const line = stripOcrLinePrefix(raw);
+    if (!line) continue;
+
+    if (
+      merged.length > 0 &&
+      (isContinuationLine(line) || needsContinuation(merged[merged.length - 1]))
+    ) {
+      merged[merged.length - 1] = `${merged[merged.length - 1]} ${line}`;
+    } else {
+      merged.push(line);
+    }
+  }
+
+  return merged;
+}
+
+export function preprocessObjectiveText(text: string): string[] {
+  const normalized = normalizeOcrRomanNumerals(normalizeApostrophes(text));
+  const lines = normalized
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 2 && !/^primary\s+objectives$/i.test(line));
+
+  return mergeObjectiveLines(lines);
 }
 
 function parseScuFromLine(line: string): number | undefined {
@@ -25,10 +114,22 @@ function parseScuFromLine(line: string): number | undefined {
 }
 
 function cleanLocationName(raw: string): string {
+  const normalized = normalizeOcrRomanNumerals(normalizeApostrophes(raw));
+  return resolveLocationAlias(
+    normalized
+      .trim()
+      .replace(/[.,;]+$/, "")
+      .replace(/\s+(?:on|at|in|above|to)\s+.+$/i, "")
+      .replace(/\s+(?:on|at|in|above)$/i, "")
+      .trim()
+  );
+}
+
+function normalizeItemName(raw: string): string {
   return raw
     .trim()
-    .replace(/[.,;]+$/, "")
-    .replace(/\s+(?:on|at|to)\s+.+$/i, "")
+    .replace(/^[\[(]*!?[\d]+[\])]*\s*/, "")
+    .replace(/\s+/g, " ")
     .trim();
 }
 
@@ -47,13 +148,13 @@ function parseObjectiveLine(line: string): ObjectiveClause {
 
   const ofToMatch = line.match(/\bof\s+(.+?)\s+to\b/i);
   if (ofToMatch) {
-    clause.item = ofToMatch[1].trim();
+    clause.item = normalizeItemName(ofToMatch[1]);
   } else {
     const collectMatch = line.match(/\bcollect\s+(.+?)\s+from\b/i);
-    if (collectMatch) clause.item = collectMatch[1].trim();
+    if (collectMatch) clause.item = normalizeItemName(collectMatch[1]);
     else {
       const pickupMatch = line.match(/\bpick\s*up\s+(.+?)\s+from\b/i);
-      if (pickupMatch) clause.item = pickupMatch[1].trim();
+      if (pickupMatch) clause.item = normalizeItemName(pickupMatch[1]);
     }
   }
 
@@ -61,26 +162,57 @@ function parseObjectiveLine(line: string): ObjectiveClause {
 }
 
 function resolveItemName(raw: string): { name: string; nameHint?: string } {
-  const trimmed = raw.trim();
+  const trimmed = normalizeItemName(raw);
   const exact = findMissionItem(trimmed);
   if (exact) return { name: exact };
   return { name: "", nameHint: trimmed || undefined };
 }
 
-function resolveLocationName(raw: string): { locationName: string; locationHint?: string } {
+function inferPreferredSystem(clauses: ObjectiveClause[]): StarSystem | undefined {
+  const systems = new Set<StarSystem>();
+
+  for (const clause of clauses) {
+    for (const loc of [clause.pickupLocation, clause.dropoffLocation]) {
+      if (!loc) continue;
+      const matches = findLocationExactMatches(loc);
+      if (matches.length === 1) systems.add(matches[0].system);
+    }
+  }
+
+  if (systems.size === 1) return [...systems][0];
+  if (systems.has("pyro")) return "pyro";
+  return undefined;
+}
+
+function resolveLocationName(
+  raw: string,
+  preferredSystem?: StarSystem
+): { locationName: string; locationHint?: string } {
   const trimmed = cleanLocationName(raw);
-  const entity = findLocationExactEntity(trimmed);
+  const entity = findLocationExactEntity(trimmed, { preferredSystem });
   if (entity) return { locationName: entity };
   return { locationName: "", locationHint: trimmed || undefined };
 }
 
-function parseObjectiveText(text: string): { pickups: ContractStop[]; dropoffs: ContractStop[] } {
-  const lines = text
-    .split(/\n+/)
-    .map((line) => line.trim())
-    .filter((line) => line.length > 2);
+function locationStopKey(
+  locationName: string,
+  locationHint: string | undefined,
+  rawLocation: string
+): string {
+  if (locationName) return `entity:${locationName}`;
+  const hint = (locationHint ?? cleanLocationName(rawLocation)).toLowerCase();
+  const alias = resolveLocationAlias(hint);
+  const aliasMatches = findLocationExactMatches(alias);
+  if (aliasMatches.length === 1 && aliasMatches[0].poi.en) {
+    return `entity:${aliasMatches[0].poi.en}`;
+  }
+  return `hint:${hint}`;
+}
 
+function parseObjectiveText(text: string): { pickups: ContractStop[]; dropoffs: ContractStop[] } {
+  const lines = preprocessObjectiveText(text);
   const clauses = lines.map(parseObjectiveLine);
+  const preferredSystem = inferPreferredSystem(clauses);
   const defaultScu = clauses.find((c) => c.scu)?.scu ?? 1;
   const defaultItem = clauses.find((c) => c.item)?.item ?? "Cargo";
 
@@ -90,11 +222,9 @@ function parseObjectiveText(text: string): { pickups: ContractStop[]; dropoffs: 
   const locationHints = new Map<string, string | undefined>();
 
   const addPickupItem = (rawLocation: string, rawItem: string) => {
-    const { locationName, locationHint } = resolveLocationName(rawLocation);
+    const { locationName, locationHint } = resolveLocationName(rawLocation, preferredSystem);
     const { name, nameHint } = resolveItemName(rawItem);
-    const key =
-      locationName ||
-      `hint:${(locationHint ?? cleanLocationName(rawLocation)).toLowerCase()}`;
+    const key = locationStopKey(locationName, locationHint, rawLocation);
     displayNames.set(key, locationName);
     locationHints.set(key, locationHint);
     const items = pickupMap.get(key) ?? [];
@@ -103,11 +233,9 @@ function parseObjectiveText(text: string): { pickups: ContractStop[]; dropoffs: 
   };
 
   const addDropoffItem = (rawLocation: string, rawItem: string, scu: number) => {
-    const { locationName, locationHint } = resolveLocationName(rawLocation);
+    const { locationName, locationHint } = resolveLocationName(rawLocation, preferredSystem);
     const { name, nameHint } = resolveItemName(rawItem);
-    const key =
-      locationName ||
-      `hint:${(locationHint ?? cleanLocationName(rawLocation)).toLowerCase()}`;
+    const key = locationStopKey(locationName, locationHint, rawLocation);
     displayNames.set(key, locationName);
     locationHints.set(key, locationHint);
     const items = dropoffMap.get(key) ?? [];
@@ -141,10 +269,18 @@ function parseObjectiveText(text: string): { pickups: ContractStop[]; dropoffs: 
   let dropoffs = toDropoffStops();
 
   if (pickups.length === 0) {
-    pickups = [makeStop("Pickup Location", makePickupItems([{ name: resolveItemName(defaultItem) }]))];
+    pickups = [
+      makeStop("Pickup Location", undefined, makePickupItems([resolveItemName(defaultItem)])),
+    ];
   }
   if (dropoffs.length === 0) {
-    dropoffs = [makeStop("Dropoff Location", makeItems([{ name: resolveItemName(defaultItem), scu: defaultScu }]))];
+    dropoffs = [
+      makeStop(
+        "Dropoff Location",
+        undefined,
+        makeItems([{ ...resolveItemName(defaultItem), scu: defaultScu }])
+      ),
+    ];
   }
 
   return { pickups, dropoffs };

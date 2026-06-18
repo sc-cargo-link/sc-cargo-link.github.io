@@ -16,8 +16,8 @@ export default function App() {
         <Routes>
           <Route element={<AppLayout />}>
             <Route index element={<HomePage />} />
-            <Route path="map" element={<MapPage />} />
             <Route path="contracts" element={<ContractsPage />} />
+            <Route path="map" element={<MapPage />} />
             <Route path="help" element={<HelpPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>

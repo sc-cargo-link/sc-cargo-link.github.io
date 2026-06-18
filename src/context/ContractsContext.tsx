@@ -39,7 +39,6 @@ interface ContractsContextValue {
   addContract: (contract: Contract) => void;
   updateContract: (id: string, patch: Partial<Contract>) => void;
   deleteContract: (id: string) => void;
-  reorderContracts: (fromIndex: number, toIndex: number) => void;
   addEmptyContract: () => void;
   clearAllContracts: () => void;
   toggleContractSelection: (id: string, selected: boolean) => void;
@@ -104,15 +103,6 @@ export function ContractsProvider({ children }: { children: ReactNode }) {
     setContracts((prev) => prev.filter((c) => c.id !== id).map((c, i) => ({ ...c, order: i })));
   }, []);
 
-  const reorderContracts = useCallback((fromIndex: number, toIndex: number) => {
-    setContracts((prev) => {
-      const next = [...prev];
-      const [moved] = next.splice(fromIndex, 1);
-      next.splice(toIndex, 0, moved);
-      return next.map((c, i) => ({ ...c, order: i }));
-    });
-  }, []);
-
   const addEmptyContract = useCallback(() => {
     const contract: Contract = {
       id: nanoid(10),
@@ -166,7 +156,6 @@ export function ContractsProvider({ children }: { children: ReactNode }) {
       addContract,
       updateContract,
       deleteContract,
-      reorderContracts,
       addEmptyContract,
       clearAllContracts,
       toggleContractSelection,
@@ -186,7 +175,6 @@ export function ContractsProvider({ children }: { children: ReactNode }) {
       addContract,
       updateContract,
       deleteContract,
-      reorderContracts,
       addEmptyContract,
       clearAllContracts,
       toggleContractSelection,

@@ -192,6 +192,69 @@ function travelDistance(from: ResolvedLocation, to: ResolvedLocation): number {
   return hops.reduce((sum, hop) => sum + hop.distance, 0);
 }
 
+function visitToResolvedLocation(visit: RouteVisit): ResolvedLocation {
+  const loc = findLocation(visit.locationName);
+  if (loc) return loc;
+  return {
+    name: visit.locationName,
+    x: visit.x,
+    y: visit.y,
+    system: visit.system,
+    poi: { n: visit.locationName, x: visit.x, y: visit.y, z: 0 },
+  };
+}
+
+function legDistanceBetweenVisits(prev: RouteVisit, curr: RouteVisit): number {
+  if (samePlace(prev, curr)) return 0;
+  if (prev.type === "gateway" && curr.type === "gateway") return 0;
+
+  const from = visitToResolvedLocation(prev);
+  const to = visitToResolvedLocation(curr);
+
+  if (from.system === to.system) return distance2d(from, to);
+  if (prev.type === "gateway" || curr.type === "gateway") {
+    return distance2d(from, to);
+  }
+
+  return travelDistance(from, to);
+}
+
+export function recalculateRouteLegs(visits: RouteVisit[]): {
+  visits: RouteVisit[];
+  totalDistance: number;
+} {
+  let totalDistance = 0;
+  const updated = visits.map((visit, index) => {
+    if (index === 0) return { ...visit, distanceFromPrev: 0 };
+    const dist = legDistanceBetweenVisits(visits[index - 1], visit);
+    totalDistance += dist;
+    return { ...visit, distanceFromPrev: dist };
+  });
+  return { visits: updated, totalDistance };
+}
+
+/** 0 when same system, 1 when a cross-system gateway leg is required. */
+export function countSystemJumps(from: ResolvedLocation, to: ResolvedLocation): number {
+  return from.system === to.system ? 0 : 1;
+}
+
+interface TaskTravelScore {
+  jumps: number;
+  distance: number;
+}
+
+function scoreTaskTravel(from: ResolvedLocation, to: ResolvedLocation): TaskTravelScore {
+  return {
+    jumps: countSystemJumps(from, to),
+    distance: travelDistance(from, to),
+  };
+}
+
+function isBetterTaskScore(candidate: TaskTravelScore, best: TaskTravelScore): boolean {
+  if (candidate.jumps !== best.jumps) return candidate.jumps < best.jumps;
+  return candidate.distance < best.distance;
+}
+
 function resolvePickupTask(
   pickup: ContractStop,
   contract: Contract
@@ -514,16 +577,16 @@ export function optimizeRoute(
 
   while (remaining.length > 0) {
     let bestIdx = -1;
-    let bestDist = Infinity;
+    let bestScore: TaskTravelScore | null = null;
 
     for (let i = 0; i < remaining.length; i++) {
       const task = remaining[i];
       if (!canDoTask(task, completed, onboardScu, settings.shipCapacity)) continue;
       const taskLoc = findLocation(task.locationName);
       if (!taskLoc) continue;
-      const dist = travelDistance(current, taskLoc);
-      if (bestIdx < 0 || dist < bestDist) {
-        bestDist = dist;
+      const score = scoreTaskTravel(current, taskLoc);
+      if (bestScore === null || isBetterTaskScore(score, bestScore)) {
+        bestScore = score;
         bestIdx = i;
       }
     }

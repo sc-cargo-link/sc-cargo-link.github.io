@@ -1,25 +1,21 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { HelpGuide } from "@/components/help/HelpGuide";
+import { Badge } from "@/components/ui/badge";
 
 export function HelpPage() {
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-lg font-semibold">Help</h1>
-        <p className="text-sm text-muted-foreground">Documentation and guides</p>
+    <div className="mx-auto max-w-5xl space-y-6">
+      <div className="space-y-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <h1 className="text-xl font-semibold sm:text-2xl">Help</h1>
+          <Badge variant="outline">Step-by-step guide</Badge>
+        </div>
+        <p className="max-w-2xl text-sm text-muted-foreground">
+          Learn how to scan contracts, plan optimal hauling routes, and track cargo across Pyro,
+          Stanton, and Nyx.
+        </p>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Help — TBD</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm text-muted-foreground">
-          <p>Quick tips:</p>
-          <ul className="list-inside list-disc space-y-1">
-            <li>Prep: upload contract screenshots for OCR scanning</li>
-            <li>Routing: set ship SCU, max distance, and starting location</li>
-            <li>Tracking: mark pickups, dropoffs, and contracts complete</li>
-          </ul>
-        </CardContent>
-      </Card>
+
+      <HelpGuide />
     </div>
   );
 }

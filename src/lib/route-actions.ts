@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid";
 import type { Contract, ContractStop, RouteAction, RouteVisit } from "@/types/contracts";
 import { findLocation, getLocationStorageKey } from "@/lib/location-lookup";
+import { recalculateRouteLegs } from "@/lib/route-optimizer";
 
 export interface AvailableRouteAction {
   key: string;
@@ -89,10 +90,38 @@ export function recalculateRouteCargo(visits: RouteVisit[]): RouteVisit[] {
   });
 }
 
+export function finalizeRouteVisits(
+  visits: RouteVisit[],
+  totalScu = 0
+): { visits: RouteVisit[]; totalDistance: number; totalScu: number } {
+  const withCargo = recalculateRouteCargo(visits);
+  const { visits: withDistances, totalDistance } = recalculateRouteLegs(withCargo);
+  return { visits: withDistances, totalDistance, totalScu };
+}
+
+export function createStopoverVisit(locationName: string): RouteVisit | null {
+  const loc = findLocation(locationName);
+  if (!loc) return null;
+
+  return {
+    id: nanoid(8),
+    locationName: getLocationStorageKey(loc),
+    x: loc.x,
+    y: loc.y,
+    system: loc.system,
+    type: "stopover",
+    actions: [],
+    cargoAfter: 0,
+    distanceFromPrev: 0,
+  };
+}
+
 export function createVisitFromActions(
   locationName: string,
   actions: RouteAction[]
 ): RouteVisit | null {
+  if (actions.length === 0) return createStopoverVisit(locationName);
+
   const loc = findLocation(locationName);
   if (!loc) return null;
 
@@ -113,4 +142,14 @@ export function createVisitFromActions(
     cargoAfter: 0,
     distanceFromPrev: 0,
   };
+}
+
+export function visitTypeForActions(
+  actions: RouteAction[],
+  fallback: RouteVisit["type"] = "stopover"
+): RouteVisit["type"] {
+  if (actions.length === 0) return "stopover";
+  if (actions.some((a) => a.type === "pickup")) return "pickup";
+  if (actions.some((a) => a.type === "dropoff")) return "dropoff";
+  return fallback;
 }
