@@ -378,11 +378,13 @@ export function POIMapCanvas({
             const rect = wrap.getBoundingClientRect();
             setHoverPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
           }
-          if (dragging && dragStart.current) {
+          const start = dragStart.current;
+          if (start) {
+            const { clientX, clientY } = e;
             setTransform((t) => ({
               ...t,
-              offsetX: dragStart.current!.offsetX + (e.clientX - dragStart.current!.x),
-              offsetY: dragStart.current!.offsetY + (e.clientY - dragStart.current!.y),
+              offsetX: start.offsetX + (clientX - start.x),
+              offsetY: start.offsetY + (clientY - start.y),
             }));
             return;
           }
@@ -406,7 +408,6 @@ export function POIMapCanvas({
           onSelectPath(poi.pc || []);
         }}
         onWheel={(e) => {
-          e.preventDefault();
           const wrap = wrapRef.current;
           if (!wrap) return;
           const rect = wrap.getBoundingClientRect();

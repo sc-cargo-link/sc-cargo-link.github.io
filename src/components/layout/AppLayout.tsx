@@ -46,7 +46,7 @@ export function AppLayout() {
           </div>
         </div>
       </header>
-      <main className="w-full flex-1 p-3">
+      <main className="min-w-0 flex-1 m-[50px]">
         <Outlet />
       </main>
     </div>

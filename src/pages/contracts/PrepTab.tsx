@@ -1,9 +1,10 @@
-import { useRef, useState } from "react";
-import { GripVertical, Plus, Trash2, Upload } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { GripVertical, Plus, Search, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { useContracts } from "@/context/ContractsContext";
 import type { CargoItem, Contract, ContractStop } from "@/types/contracts";
 import { contractTotalScu, scanContractScreenshot, stopTotalScu } from "@/lib/ocr-parser";
+import { getLocationDisplayName } from "@/lib/location-lookup";
 import { ContractDetailsTooltip } from "@/components/contracts/ContractDetailsTooltip";
 import { ScanRegionSetup } from "@/components/contracts/ScanRegionSetup";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,8 +18,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { formatScu } from "@/lib/utils";
+import { formatAuec, formatScu } from "@/lib/utils";
 import { nanoid } from "nanoid";
+
+function stopSearchText(stop: ContractStop): string[] {
+  return [
+    stop.locationName,
+    stop.locationHint ?? "",
+    getLocationDisplayName(stop.locationName),
+    ...stop.items.flatMap((item) => [item.name, item.nameHint ?? ""]),
+  ];
+}
+
+function contractMatchesSearch(contract: Contract, query: string): boolean {
+  const haystack = [
+    ...contract.pickups.flatMap(stopSearchText),
+    ...contract.dropoffs.flatMap(stopSearchText),
+  ];
+  return haystack.some((text) => text.toLowerCase().includes(query));
+}
 
 function StopEditor({
   stop,
@@ -214,8 +232,20 @@ export function PrepTab() {
     setDeveloperMode,
   } = useContracts();
   const [scanning, setScanning] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
-  const dragItem = useRef<number | null>(null);
+  const dragItem = useRef<string | null>(null);
+
+  const totalReward = useMemo(
+    () => contracts.reduce((sum, c) => sum + (c.reward ?? 0), 0),
+    [contracts],
+  );
+
+  const filteredContracts = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return contracts;
+    return contracts.filter((contract) => contractMatchesSearch(contract, query));
+  }, [contracts, searchQuery]);
 
   const handleFiles = async (files: FileList | null) => {
     if (!files?.length) return;
@@ -250,31 +280,59 @@ export function PrepTab() {
     toast.success("Cleared all contracts");
   };
 
-  const onDragStart = (e: React.DragEvent, index: number) => {
-    dragItem.current = index;
+  const onDragStart = (e: React.DragEvent, contractId: string) => {
+    dragItem.current = contractId;
     e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData("text/plain", String(index));
+    e.dataTransfer.setData("text/plain", contractId);
   };
 
   const onDragEnd = () => {
     dragItem.current = null;
   };
 
-  const onDragOver = (e: React.DragEvent, index: number) => {
+  const onDragOver = (e: React.DragEvent, contractId: string) => {
     e.preventDefault();
-    if (dragItem.current === null || dragItem.current === index) return;
-    reorderContracts(dragItem.current, index);
-    dragItem.current = index;
+    if (dragItem.current === null || dragItem.current === contractId) return;
+    const fromIndex = contracts.findIndex((c) => c.id === dragItem.current);
+    const toIndex = contracts.findIndex((c) => c.id === contractId);
+    if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) return;
+    reorderContracts(fromIndex, toIndex);
+    dragItem.current = contractId;
   };
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-end gap-2">
-        <Label htmlFor="developer-mode" className="text-xs text-muted-foreground">
-          Developer mode
-        </Label>
-        <Switch id="developer-mode" checked={developerMode} onCheckedChange={setDeveloperMode} />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm font-medium text-muted-foreground">Total contract value</span>
+          <Badge variant="default" className="tabular-nums text-sm font-semibold">
+            {formatAuec(totalReward)}
+          </Badge>
+          {contracts.length > 0 && (
+            <span className="text-xs text-muted-foreground">
+              across {contracts.length} contract{contracts.length === 1 ? "" : "s"}
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          <Label htmlFor="developer-mode" className="text-xs text-muted-foreground">
+            Developer mode
+          </Label>
+          <Switch id="developer-mode" checked={developerMode} onCheckedChange={setDeveloperMode} />
+        </div>
       </div>
+
+      {contracts.length > 0 && (
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search pickups, dropoffs, cargo…"
+            className="h-8 pl-8"
+          />
+        </div>
+      )}
 
       <ScanRegionSetup
         calibrationImage={scanCalibrationImage}
@@ -313,26 +371,32 @@ export function PrepTab() {
           <Plus className="mr-1.5 h-3.5 w-3.5" />
           Add contract
         </Button>
-        <span className="text-xs text-muted-foreground">{contracts.length} contract(s)</span>
+        <span className="text-xs text-muted-foreground">
+          {searchQuery.trim()
+            ? `${filteredContracts.length} of ${contracts.length} contract(s)`
+            : `${contracts.length} contract(s)`}
+        </span>
       </div>
 
       {contracts.length === 0 ? (
         <p className="text-sm text-muted-foreground">
           No contracts yet. Configure scan regions, then upload screenshots.
         </p>
+      ) : filteredContracts.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No contracts match your search.</p>
       ) : (
         <div className="space-y-4">
           <TooltipProvider delayDuration={200}>
-            {contracts.map((contract, index) => (
+            {filteredContracts.map((contract) => (
               <Card
                 key={contract.id}
-                onDragOver={(e) => onDragOver(e, index)}
+                onDragOver={(e) => onDragOver(e, contract.id)}
               >
                 <CardHeader className="flex flex-row items-center gap-2 space-y-0 pb-2">
                   <span
                     draggable
                     className="flex shrink-0 cursor-grab touch-none active:cursor-grabbing"
-                    onDragStart={(e) => onDragStart(e, index)}
+                    onDragStart={(e) => onDragStart(e, contract.id)}
                     onDragEnd={onDragEnd}
                   >
                     <GripVertical className="h-4 w-4 text-muted-foreground" />

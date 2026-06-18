@@ -52,6 +52,7 @@ Have a submenu for preparing contracts, routing and cargo tracking.
 - Keep all the recorded contracts in local storage, and this will be used in route planning.
 - Have a button for clearing all contracts and uploaded screenshots.
 - The location should be Stored with entity_name instead of the display name, but show the display name for the user.
+- Addd a search bar on the top and allow filtering for contracts with that term, search in pickup, drop off and mission items.
 
 ### Scanning contracts
 - Use tesseract for OCR.
