@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import type { Contract, ContractStop, RouteAction, RouteVisit } from "@/types/contracts";
+import type { Contract, ContractStop, RouteAction, RoutePlan, RouteVisit } from "@/types/contracts";
 import { findLocation, getLocationStorageKey } from "@/lib/location-lookup";
 import { cargoItemsMatch, cargoItemLabel } from "@/lib/cargo-display";
 import { recalculateRouteLegs } from "@/lib/route-optimizer";
@@ -19,7 +19,7 @@ function locationKey(name: string): string {
   return (loc?.poi.en ?? name).toLowerCase().trim();
 }
 
-function pickupItemsWithScu(pickup: ContractStop, contract: Contract): RouteAction["items"] {
+export function pickupItemsWithScu(pickup: ContractStop, contract: Contract): RouteAction["items"] {
   const hasScu = pickup.items.some((i) => i.scu > 0);
   if (hasScu) return pickup.items.map((i) => ({ ...i }));
 
@@ -36,6 +36,40 @@ function pickupItemsWithScu(pickup: ContractStop, contract: Contract): RouteActi
 
 export function actionKey(action: Pick<RouteAction, "contractId" | "stopId" | "type">): string {
   return `${action.contractId}-${action.stopId}-${action.type}`;
+}
+
+export function getContractRouteInclusion(
+  contract: Contract,
+  route: RoutePlan | null
+): { included: number; total: number } {
+  const activePickups = contract.pickups.filter((p) => !p.completed);
+  const activeDropoffs = contract.dropoffs.filter((d) => !d.completed);
+  const total = activePickups.length + activeDropoffs.length;
+
+  if (!route || total === 0) return { included: 0, total };
+
+  const includedKeys = new Set<string>();
+  for (const visit of route.visits) {
+    for (const action of visit.actions) {
+      if (action.contractId === contract.id) {
+        includedKeys.add(actionKey(action));
+      }
+    }
+  }
+
+  let included = 0;
+  for (const pickup of activePickups) {
+    if (includedKeys.has(actionKey({ contractId: contract.id, stopId: pickup.id, type: "pickup" }))) {
+      included++;
+    }
+  }
+  for (const dropoff of activeDropoffs) {
+    if (includedKeys.has(actionKey({ contractId: contract.id, stopId: dropoff.id, type: "dropoff" }))) {
+      included++;
+    }
+  }
+
+  return { included, total };
 }
 
 export function getAvailableActionsAtLocation(

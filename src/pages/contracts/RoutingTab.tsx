@@ -7,6 +7,8 @@ import {
   actionKey,
   createVisitFromActions,
   getAvailableActionsAtLocation,
+  getContractRouteInclusion,
+  pickupItemsWithScu,
   recalculateRouteCargo,
   finalizeRouteVisits,
   visitTypeForActions,
@@ -27,30 +29,56 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { formatDistance, formatScu } from "@/lib/utils";
 import { cargoItemLabel } from "@/lib/cargo-display";
-import type { Contract, RouteAction, RouteVisit } from "@/types/contracts";
+import type { Contract, ContractStop, RouteAction, RoutePlan, RouteVisit } from "@/types/contracts";
 import type { StarSystem } from "@/types/map";
 
-function uniqueStopLocations(stops: Contract["pickups"]): string[] {
-  const seen = new Set<string>();
-  const names: string[] = [];
-  for (const stop of stops) {
-    const label = getLocationDisplayName(stop.locationName) || stop.locationHint || "—";
-    if (seen.has(label)) continue;
-    seen.add(label);
-    names.push(label);
-  }
-  return names;
+function formatStopItems(
+  stop: ContractStop,
+  contract: Contract,
+  type: "pickup" | "dropoff"
+): string {
+  const items =
+    type === "pickup"
+      ? pickupItemsWithScu(stop, contract)
+      : stop.items.map((i) => ({ ...i }));
+  const labels = items
+    .map((it) => (it.scu > 0 ? `${cargoItemLabel(it)} (${it.scu} SCU)` : cargoItemLabel(it)))
+    .filter((label) => label !== "Cargo");
+  return labels.length > 0 ? labels.join(", ") : "—";
 }
 
-function ContractRouteRow({ contract }: { contract: Contract }) {
-  const pickups = uniqueStopLocations(contract.pickups);
-  const dropoffs = uniqueStopLocations(contract.dropoffs);
-  const rowCount = Math.max(pickups.length, dropoffs.length, 1);
+function stopLocationLabel(stop: ContractStop): string {
+  return getLocationDisplayName(stop.locationName) || stop.locationHint || "—";
+}
+
+function ContractRouteRow({
+  contract,
+  route,
+}: {
+  contract: Contract;
+  route: RoutePlan | null;
+}) {
+  const activePickups = contract.pickups.filter((p) => !p.completed);
+  const activeDropoffs = contract.dropoffs.filter((d) => !d.completed);
+  const rowCount = Math.max(activePickups.length, activeDropoffs.length, 1);
+  const { included, total } = getContractRouteInclusion(contract, route);
+  const allIncluded = total > 0 && included >= total;
 
   return (
     <div className="min-w-0 flex-1">
-      <div className="truncate font-medium">{contract.title}</div>
-      <div className="mt-1 grid grid-cols-2 gap-x-3 gap-y-0.5">
+      <div className="flex items-center gap-2">
+        <div className="min-w-0 flex-1 truncate font-medium">{contract.title}</div>
+        {contract.selectedForRoute && total > 0 && (
+          <span
+            className={`shrink-0 tabular-nums text-[10px] font-semibold ${
+              allIncluded ? "text-emerald-400" : "text-amber-400"
+            }`}
+          >
+            ({included}/{total})
+          </span>
+        )}
+      </div>
+      <div className="mt-1 grid grid-cols-2 gap-x-3 gap-y-1">
         <div className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
           Pickup
         </div>
@@ -59,11 +87,37 @@ function ContractRouteRow({ contract }: { contract: Contract }) {
         </div>
         {Array.from({ length: rowCount }, (_, i) => (
           <Fragment key={i}>
-            <div className="truncate text-[10px] text-muted-foreground">
-              {pickups[i] ?? (pickups.length === 0 && i === 0 ? "—" : "")}
+            <div className="min-w-0">
+              {activePickups[i] ? (
+                <>
+                  <div className="truncate text-[10px] text-muted-foreground">
+                    {stopLocationLabel(activePickups[i])}
+                  </div>
+                  <div className="truncate text-[10px] text-foreground/80">
+                    {formatStopItems(activePickups[i], contract, "pickup")}
+                  </div>
+                </>
+              ) : (
+                <div className="text-[10px] text-muted-foreground">
+                  {activePickups.length === 0 && i === 0 ? "—" : ""}
+                </div>
+              )}
             </div>
-            <div className="truncate text-right text-[10px] text-muted-foreground">
-              {dropoffs[i] ?? (dropoffs.length === 0 && i === 0 ? "—" : "")}
+            <div className="min-w-0 text-right">
+              {activeDropoffs[i] ? (
+                <>
+                  <div className="truncate text-[10px] text-muted-foreground">
+                    {stopLocationLabel(activeDropoffs[i])}
+                  </div>
+                  <div className="truncate text-[10px] text-foreground/80">
+                    {formatStopItems(activeDropoffs[i], contract, "dropoff")}
+                  </div>
+                </>
+              ) : (
+                <div className="text-[10px] text-muted-foreground">
+                  {activeDropoffs.length === 0 && i === 0 ? "—" : ""}
+                </div>
+              )}
             </div>
           </Fragment>
         ))}
@@ -571,7 +625,7 @@ export function RoutingTab() {
                               onCheckedChange={(v) => toggleContractSelection(c.id, !!v)}
                               className="mt-0.5"
                             />
-                            <ContractRouteRow contract={c} />
+                            <ContractRouteRow contract={c} route={route} />
                           </label>
                         </ContractDetailsTooltip>
                       ))
