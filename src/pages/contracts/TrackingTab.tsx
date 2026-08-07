@@ -17,8 +17,8 @@ function ContractSummaryRow({
 }) {
   return (
     <div
-      className={`flex items-center justify-between gap-2 rounded-md border px-2 py-1.5 text-xs ${
-        contract.completed ? "border-border/60 opacity-60" : "border-border"
+      className={`flex items-center justify-between gap-2 rounded-md border bg-card px-2 py-1.5 text-xs shadow-sm ${
+        contract.completed ? "border-border opacity-60" : "border-border"
       }`}
     >
       <div className="flex min-w-0 items-center gap-2">
@@ -115,7 +115,7 @@ export function TrackingTab() {
   return (
     <div className="flex min-h-0 flex-col gap-3 lg:flex-row">
       <div className="flex min-h-0 flex-1 flex-col gap-3">
-        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card/50 px-3 py-2 text-xs">
+        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-xs shadow-sm">
           <Badge variant="secondary">From {routingSettings.startingLocation || "—"}</Badge>
           <span className="text-muted-foreground">
             {route.visits.length} stops · {formatDistance(route.totalDistance)} ·{" "}
@@ -126,7 +126,7 @@ export function TrackingTab() {
           </span>
         </div>
 
-        <ScrollArea className="min-h-[420px] flex-1 rounded-lg border border-border bg-muted/20">
+        <ScrollArea className="min-h-[420px] flex-1 rounded-lg border border-border bg-card shadow-sm">
           <div className="p-4">
             <RouteFlowGraph
               visits={route.visits}

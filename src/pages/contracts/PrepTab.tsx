@@ -52,7 +52,7 @@ function StopEditor({
   };
 
   return (
-    <div className="space-y-2 rounded-md border border-border p-2">
+    <div className="space-y-2 rounded-md border border-border bg-card p-2 shadow-sm">
       <div className="flex items-center justify-between gap-2">
         <Label>{label}</Label>
         {type === "dropoff" && <Badge variant="secondary">{formatScu(stopTotalScu(stop, type))}</Badge>}

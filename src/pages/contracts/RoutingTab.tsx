@@ -149,8 +149,8 @@ function VisitCard({
     <button
       type="button"
       onClick={onSelect}
-      className={`w-full rounded-md border p-2 text-left text-xs transition-colors ${
-        selected ? "border-primary bg-primary/10" : "border-border hover:bg-accent/40"
+      className={`w-full rounded-md border bg-card p-2 text-left text-xs shadow-sm transition-colors ${
+        selected ? "border-primary bg-primary/10 ring-1 ring-primary/20" : "border-border hover:bg-accent/50"
       }`}
     >
       <div className="flex items-center justify-between gap-2">
@@ -269,7 +269,7 @@ function CustomRoutePanel({
         return (
           <label
             key={action.key}
-            className="flex cursor-pointer items-start gap-2 rounded-md border border-border px-2 py-1.5 text-xs hover:bg-accent/30"
+            className="flex cursor-pointer items-start gap-2 rounded-md border border-border bg-card px-2 py-1.5 text-xs shadow-sm hover:bg-accent/40"
           >
             <Checkbox
               checked={selectedKeys.has(action.key)}
@@ -619,7 +619,7 @@ export function RoutingTab() {
                     ) : (
                       filteredContracts.map((c) => (
                         <ContractDetailsTooltip key={c.id} contract={c}>
-                          <label className="flex cursor-pointer items-start gap-2 rounded-md border border-border px-2 py-1.5 text-xs">
+                          <label className="flex cursor-pointer items-start gap-2 rounded-md border border-border bg-card px-2 py-1.5 text-xs shadow-sm hover:bg-accent/30">
                             <Checkbox
                               checked={c.selectedForRoute}
                               onCheckedChange={(v) => toggleContractSelection(c.id, !!v)}

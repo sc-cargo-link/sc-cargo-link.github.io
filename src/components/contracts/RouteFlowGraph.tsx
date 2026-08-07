@@ -119,8 +119,8 @@ function FlowNode({
   return (
     <div className="flex w-full max-w-lg flex-col items-center">
       <div
-        className={`w-full rounded-lg border bg-card p-3 shadow-sm transition-colors ${
-          active ? "border-primary ring-2 ring-primary/20" : done ? "border-border/60 opacity-75" : "border-border"
+        className={`w-full rounded-lg border bg-card p-3 shadow-md transition-colors ${
+          active ? "border-primary ring-2 ring-primary/20" : done ? "border-border opacity-75" : "border-border"
         }`}
       >
         <div className="flex items-start justify-between gap-2">
