@@ -12,8 +12,8 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "capture-help-screenshots": "node scripts/capture-help-screenshots.mjs",
     "predeploy": "npm run build",
+
     "deploy": "gh-pages -d dist",
     "test": "vitest",
     "test:ui": "vitest --ui"

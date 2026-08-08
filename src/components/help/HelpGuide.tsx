@@ -1,301 +1,77 @@
-import type { ComponentType } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import {
-  BookOpen,
-  Package,
-  Route,
-  ScanLine,
-  Truck,
-} from "lucide-react";
-
-interface GuideStep {
-  title: string;
-  description: string;
-  bullets?: string[];
-  image?: string;
-  imageAlt: string;
-}
-
-interface GuideSection {
-  id: string;
-  title: string;
-  icon: ComponentType<{ className?: string }>;
-  intro?: string;
-  steps: GuideStep[];
-}
-
-const guideSections: GuideSection[] = [
+const sections = [
   {
     id: "overview",
-    title: "Getting started",
-    icon: BookOpen,
-    intro:
-      "CargoLink is ops structure for space truckers — the day-to-day way you'd handle jobs, with a role-playing edge for your Star Citizen hauls. Scan contracts, plan the run, track the freight. Everything stays in your browser.",
-    steps: [
-      {
-        title: "Navigate the yard",
-        description:
-          "Use the top navigation to move between Home, Contracts, Map, and Help. Contracts is the shift floor — three tabs that mirror how a hauler works the day.",
-        image: "/help/01-home.png",
-        imageAlt: "CargoLink home page with navigation bar",
-        bullets: [
-          "Home — ops pitch, haul path, and how to start a shift",
-
-          "Contracts — Manifest, Flight plan, and On the road",
-
-          "Map — browse star systems and points of interest",
-          "Help — this handbook",
-        ],
-      },
+    title: "The shift",
+    body: "CargoLink is ops structure for space truckers — how you'd handle jobs day to day, with a role-playing edge for Star Citizen hauls. Everything stays in your browser.",
+    bullets: [
+      "Home — why this exists and how a haul is shaped",
+      "Contracts — Manifest, Flight plan, On the road",
+      "Map — yards and jump points across Pyro, Stanton, and Nyx",
     ],
   },
   {
-    id: "prep",
-    title: "Manifest — scan contracts",
+    id: "manifest",
+    title: "Manifest",
+    body: "Get jobs on the board. Upload mobiGlas contract screenshots; OCR fills pickup, dropoff, cargo, and reward. Fix anything that looks wrong before you leave the hangar.",
+    bullets: [
+      "Accept the contracts you want in-game, then press Print Screen on each one",
+      "Those screenshots land in Roberts Space Industries\\StarCitizen\\LIVE\\Screenshots",
+      "First time: set scan regions for Name, Primary objective, and Reward",
+      "Upload the screenshots in batch, then edit locations and cargo with autocomplete",
+      "Unmatched OCR text shows as suggestion chips under the field",
+    ],
+  },
 
-    icon: ScanLine,
-    intro:
-      "Start the shift by getting jobs on the board. Upload contract screenshots from the mobiGlas and let OCR pull pickup, dropoff, cargo, and reward details.",
-
-    steps: [
-      {
-        title: "Set up scan regions (first time only)",
-        description:
-          "Before uploading contracts, calibrate where OCR should read on your screenshots. Upload one sample image and draw three boxes: Name, Primary objective, and Reward.",
-        image: "/help/03-contracts-prep.png",
-        imageAlt: "Contracts prep tab with scan region setup",
-        bullets: [
-          "Expand Scan regions and upload a sample contract screenshot",
-          "PrintScreen will put the screenshots to 'Roberts Space Industries\\StarCitizen\\LIVE\\Screenshots' folder",
-          "Switch between Name, Primary objective, and Reward tabs",
-          "Draw a box on the image for each region — all future uploads use these boxes",
-          "Regions are saved automatically in your browser",
-        ],
-      },
-      {
-        title: "Upload and review contracts",
-        description:
-          "Once scan regions are configured, upload your contract screenshots in batch. Each image becomes an editable contract card with the screenshot beside the fields.",
-        bullets: [
-          "Click Upload screenshots to process multiple images at once",
-          "Review each contract: title, reward (aUEC), pickups, and dropoffs",
-          "Edit locations and cargo items — autocomplete suggests matches from map data",
-          "Unmatched OCR text appears as suggestion chips under the field",
-          "Contracts stay in upload order; use the search bar to filter",
-          "Click a screenshot to expand it; enable Developer mode to see raw OCR text",
-        ],
-      },
+  {
+    id: "flight-plan",
+    title: "Flight plan",
+    body: "Set capacity and range, pick which contracts you're taking, then generate a route that respects jump gates and what the ship can carry.",
+    bullets: [
+      "Ship capacity (SCU), max range per tank (GM), starting location",
+      "Review visits — reorder, add stops, or clear and rebuild",
+      "Gateways appear when a haul crosses systems",
     ],
   },
   {
-    id: "routing",
-    title: "Flight plan — plan the run",
-
-    icon: Route,
-    intro:
-      "Before you spool up, set the ship, pick which jobs you're taking, and build a route that respects capacity, range, and jump points — like a real freight plan.",
-    steps: [
-      {
-        title: "Configure route settings",
-        description:
-          "Open Flight plan and enter your ship details. Select which contracts belong on this run, then generate the route.",
-        image: "/help/04-contracts-routing.png",
-        imageAlt: "Flight plan tab with ship settings and contract selection",
-
-        bullets: [
-          "Ship capacity (SCU) — maximum cargo your ship can carry",
-          "Max range per tank (GM) — distance before a refuel stopover is added",
-          "Starting location — where your haul begins",
-          "Check the contracts you want to include in this run",
-        ],
-      },
-      {
-        title: "Review the planned route",
-        description:
-          "After generating, review each visit in the planned route list. The route map below shows your path with numbered legs. Click a visit to focus it on the map.",
-        image: "/help/05-contracts-routing-planned.png",
-        imageAlt: "Planned route with visit list and route map",
-        bullets: [
-          "Each visit shows leg number, type (start, pickup, dropoff, gateway, refuel), and distance",
-          "Pickup and dropoff actions list the cargo and which contract it belongs to",
-          "Use ↑↓ arrows to manually reorder visits (start is fixed)",
-          "Add custom stops by searching a location and selecting available actions",
-          "Clear route to start over with different settings",
-        ],
-      },
-    ],
-  },
-  {
-    id: "tracking",
-    title: "On the road — fly the haul",
-
-    icon: Truck,
-    intro:
-      "Once you're under way, work the route like a checklist: each stop tells you what to load or unload, and you mark it done as you clear it in-game.",
-    steps: [
-      {
-        title: "Track progress on the flow graph",
-        description:
-          "On the road shows your route as a vertical flow graph. The active stop is highlighted — check off each pickup and dropoff as you complete it.",
-        image: "/help/06-contracts-tracking.png",
-        imageAlt: "On-the-road flow graph with active visit highlighted",
-
-        bullets: [
-          "Progress bar shows stops, total distance, cargo, and completed actions",
-          "Click the circle next to an action to mark it complete (turns green with strikethrough)",
-          "Gateway and refuel stops have no cargo actions — just transit through them",
-          "Mark an entire contract done from the sidebar or via the link on each visit",
-        ],
-      },
-      {
-        title: "Before you have a route",
-        description:
-          "If you open On the road before building a flight plan, you'll see a prompt to head back and generate one first.",
-        image: "/help/07-contracts-tracking-empty.png",
-        imageAlt: "Empty on-the-road state with no planned route",
-        bullets: [
-          "Generate a route in Flight plan to unlock the flow graph",
-          "Contracts selected for the run still appear in the sidebar for reference",
-        ],
-
-      },
+    id: "on-the-road",
+    title: "On the road",
+    body: "Fly the route stop by stop. Mark pickups and dropoffs as you clear them in-game.",
+    bullets: [
+      "Build a flight plan first — the flow graph needs a route",
+      "Check off each action at the active stop",
+      "Mark a whole contract done from the sidebar when it's finished",
     ],
   },
   {
     id: "tips",
-    title: "Tips & persistence",
-    icon: Package,
-    intro: "A few things worth knowing while you run ops in CargoLink.",
-    steps: [
-      {
-        title: "Your log stays local",
-        description:
-          "Contracts, scan regions, route plans, and settings live in your browser's local storage — like a personal ops log on this machine. They persist across reloads but are not synced between devices.",
-        imageAlt: "Local storage persistence",
-        bullets: [
-          "Clear all on Manifest removes every contract and uploaded screenshot",
-          "Clear route on Flight plan resets only the planned route",
-
-          "Use the theme toggle in the header to switch light and dark mode",
-        ],
-      },
+    title: "Local log",
+    body: "Contracts, scan regions, and routes live in this browser only. They persist on reload but do not sync across devices.",
+    bullets: [
+      "Clear all on Manifest wipes contracts and screenshots",
+      "Clear route on Flight plan resets only the plan",
+      "Theme toggle is in the header",
     ],
   },
-];
-
-
-function GuideScreenshot({ src, alt }: { src?: string; alt: string }) {
-  if (!src) return null;
-
-  return (
-    <div className="overflow-hidden rounded-lg border border-border bg-muted/30 shadow-sm">
-      <img
-        src={src}
-        alt={alt}
-        loading="lazy"
-        className="w-full object-cover object-top"
-      />
-    </div>
-  );
-}
-
-function GuideStepCard({
-  step,
-  stepNumber,
-}: {
-  step: GuideStep;
-  stepNumber: number;
-}) {
-  return (
-    <article className="space-y-3">
-      <div className="flex items-start gap-3">
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-          {stepNumber}
-        </span>
-        <div className="min-w-0 space-y-1">
-          <h4 className="text-sm font-semibold leading-tight">{step.title}</h4>
-          <p className="text-sm text-muted-foreground">{step.description}</p>
-        </div>
-      </div>
-
-      {step.image && <GuideScreenshot src={step.image} alt={step.imageAlt} />}
-
-      {step.bullets && step.bullets.length > 0 && (
-        <ul className="ml-10 list-disc space-y-1.5 text-sm text-muted-foreground">
-          {step.bullets.map((bullet) => (
-            <li key={bullet}>{bullet}</li>
-          ))}
-        </ul>
-      )}
-    </article>
-  );
-}
+] as const;
 
 export function HelpGuide() {
-  let globalStep = 0;
-
   return (
-    <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
-      <nav className="shrink-0 lg:sticky lg:top-16 lg:w-52 lg:self-start">
-        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          On this page
-        </p>
-        <ul className="flex flex-wrap gap-1.5 lg:flex-col">
-          {guideSections.map((section) => (
-            <li key={section.id}>
-              <a
-                href={`#${section.id}`}
-                className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              >
-                <section.icon className="h-3.5 w-3.5 shrink-0" />
-                {section.title}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <div className="min-w-0 flex-1 space-y-8">
-        {guideSections.map((section, sectionIndex) => (
-          <section key={section.id} id={section.id} className="scroll-mt-20">
-            <Card className="overflow-hidden border-border/80 bg-card/60">
-              <CardContent className="space-y-5 p-4 sm:p-6">
-                <div className="flex flex-wrap items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/15 text-primary">
-                    <section.icon className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h2 className="text-base font-semibold">{section.title}</h2>
-                    {section.intro && (
-                      <p className="mt-0.5 text-sm text-muted-foreground">{section.intro}</p>
-                    )}
-                  </div>
-                  <Badge variant="secondary" className="ml-auto">
-                    {sectionIndex + 1} of {guideSections.length}
-                  </Badge>
-                </div>
-
-                <Separator />
-
-                <div className="space-y-8">
-                  {section.steps.map((step) => {
-                    globalStep += 1;
-                    return (
-                      <GuideStepCard
-                        key={step.title}
-                        step={step}
-                        stepNumber={globalStep}
-                      />
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          </section>
-        ))}
-      </div>
+    <div className="mx-auto max-w-2xl space-y-10">
+      {sections.map((section) => (
+        <section key={section.id} id={section.id} className="scroll-mt-20 space-y-3">
+          <h2 className="font-display text-xl font-semibold tracking-tight sm:text-2xl">
+            {section.title}
+          </h2>
+          <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+            {section.body}
+          </p>
+          <ul className="list-disc space-y-1.5 pl-5 text-sm text-muted-foreground">
+            {section.bullets.map((bullet) => (
+              <li key={bullet}>{bullet}</li>
+            ))}
+          </ul>
+        </section>
+      ))}
     </div>
   );
 }

@@ -12,7 +12,7 @@ import { ContractDetailsTooltip } from "@/components/contracts/ContractDetailsTo
 import { ScreenshotPanViewer } from "@/components/contracts/ScreenshotPanViewer";
 import { ScanRegionSetup } from "@/components/contracts/ScanRegionSetup";
 import { StopSection } from "@/components/contracts/StopEditor";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -396,15 +396,32 @@ export function PrepTab() {
             className="hidden"
             onChange={(e) => handleFiles(e.target.files)}
           />
-          <Button
-            size="sm"
-            className="h-8"
-            disabled={scanning || !scanCalibrationImage}
-            onClick={() => fileRef.current?.click()}
-          >
-            <Upload className="mr-1.5 h-3.5 w-3.5" />
-            {scanning ? "Scanning…" : "Upload"}
-          </Button>
+          <TooltipProvider delayDuration={200}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="inline-flex">
+                  <Button
+                    size="sm"
+                    className="h-8"
+                    disabled={scanning || !scanCalibrationImage}
+                    onClick={() => fileRef.current?.click()}
+                  >
+                    <Upload className="mr-1.5 h-3.5 w-3.5" />
+                    {scanning ? "Scanning…" : "Upload"}
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-xs space-y-1.5 p-3 text-left">
+                <p>Press Print Screen on each accepted contract in-game.</p>
+                <p className="text-muted-foreground">
+                  Screenshots land in{" "}
+                  <span className="font-mono text-[11px] text-foreground">
+                    Roberts Space Industries\StarCitizen\LIVE\Screenshots
+                  </span>
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <Button variant="outline" size="sm" className="h-8" onClick={addEmptyContract}>
             <Plus className="mr-1.5 h-3.5 w-3.5" />
             Add
