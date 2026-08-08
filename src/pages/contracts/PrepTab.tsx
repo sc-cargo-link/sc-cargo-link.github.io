@@ -2,16 +2,17 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Plus, Search, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { useContracts } from "@/context/ContractsContext";
-import type { CargoItem, Contract, ContractStop, ScanRegion } from "@/types/contracts";
-import { contractTotalScu, scanContractScreenshot, stopTotalScu } from "@/lib/ocr-parser";
+import type { Contract, ContractStop, ScanRegion } from "@/types/contracts";
+import { contractTotalScu, scanContractScreenshot } from "@/lib/ocr-parser";
+import { consolidateStops, mergeCargoItems } from "@/lib/contract-stops";
 import { contractMatchesSearch } from "@/lib/contract-search";
 import { compressImageFile } from "@/lib/image-compress";
+import { loadScreenshotZoom, saveScreenshotZoom } from "@/lib/contracts-storage";
 import { ContractDetailsTooltip } from "@/components/contracts/ContractDetailsTooltip";
-import { ObjectivePreviewIcon } from "@/components/contracts/ObjectivePreviewIcon";
+import { ScreenshotPanViewer } from "@/components/contracts/ScreenshotPanViewer";
 import { ScanRegionSetup } from "@/components/contracts/ScanRegionSetup";
+import { StopSection } from "@/components/contracts/StopEditor";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { MissionItemInput } from "@/components/contracts/MissionItemInput";
-import { LocationNameInput } from "@/components/locations/LocationNameInput";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -24,90 +25,20 @@ import { nanoid } from "nanoid";
 const panelClass =
   "border-0 bg-transparent shadow-none ring-0";
 
-function StopEditor({
-  stop,
-  label,
-  type,
-  onChange,
-}: {
-  stop: ContractStop;
-  label: string;
-  type: "pickup" | "dropoff";
-  onChange: (stop: ContractStop) => void;
-}) {
-  const updateItem = (itemId: string, patch: Partial<CargoItem>) => {
-    onChange({
-      ...stop,
-      items: stop.items.map((i) => (i.id === itemId ? { ...i, ...patch } : i)),
-    });
-  };
-
-  const addItem = () => {
-    onChange({
-      ...stop,
-      items: [...stop.items, { id: nanoid(6), name: "Item", scu: type === "dropoff" ? 1 : 0 }],
-    });
-  };
-
-  const removeItem = (itemId: string) => {
-    onChange({ ...stop, items: stop.items.filter((i) => i.id !== itemId) });
-  };
-
-  return (
-    <div className="space-y-2 rounded-md border border-border/70 bg-muted/30 p-2">
-      <div className="flex items-center justify-between gap-2">
-        <Label className="text-xs font-semibold">{label}</Label>
-        {type === "dropoff" && <Badge variant="secondary">{formatScu(stopTotalScu(stop, type))}</Badge>}
-      </div>
-      <LocationNameInput
-        value={stop.locationName}
-        hint={stop.locationHint}
-        onChange={(v) => onChange({ ...stop, locationName: v, locationHint: undefined })}
-        placeholder="Location name"
-      />
-      <div className="space-y-1">
-        {stop.items.map((item) => (
-          <div key={item.id} className="flex gap-1">
-            <MissionItemInput
-              value={item.name}
-              hint={item.nameHint}
-              onChange={(name) => updateItem(item.id, { name, nameHint: undefined })}
-              placeholder="Cargo"
-            />
-            {type === "dropoff" && (
-              <Input
-                className="h-8 w-16 tabular-nums"
-                type="number"
-                min={0}
-                value={item.scu}
-                onChange={(e) => updateItem(item.id, { scu: parseFloat(e.target.value) || 0 })}
-              />
-            )}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-muted-foreground hover:bg-transparent hover:text-destructive"
-              onClick={() => removeItem(item.id)}
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-        ))}
-      </div>
-      <Button variant="outline" size="sm" className="h-7 text-xs" onClick={addItem}>
-        Add item
-      </Button>
-    </div>
-  );
-}
+/** Shared height for screenshot strip. */
+const STOP_ROW_HEIGHT = "min-h-[180px] h-[180px]";
 
 function ContractEditor({
   contract,
+  screenshotZoom,
+  onScreenshotZoomChange,
   objectiveRegion,
   onChange,
   onDelete,
 }: {
   contract: Contract;
+  screenshotZoom: number;
+  onScreenshotZoomChange: (zoom: number) => void;
   objectiveRegion: ScanRegion;
   onChange: (c: Contract) => void;
   onDelete: () => void;
@@ -169,42 +100,74 @@ function ContractEditor({
     setEditingReward(false);
   };
 
+  const pickups = useMemo(
+    () => consolidateStops(contract.pickups, "pickup"),
+    [contract.pickups]
+  );
+  const dropoffs = useMemo(
+    () => consolidateStops(contract.dropoffs, "dropoff"),
+    [contract.dropoffs]
+  );
+
   const updatePickup = (idx: number, stop: ContractStop) => {
-    const pickups = [...contract.pickups];
-    pickups[idx] = stop;
-    onChange({ ...contract, pickups });
+    const next = [...pickups];
+    next[idx] = {
+      ...stop,
+      items: mergeCargoItems(stop.items, "pickup"),
+    };
+    onChange({ ...contract, pickups: consolidateStops(next, "pickup") });
   };
 
   const updateDropoff = (idx: number, stop: ContractStop) => {
-    const dropoffs = [...contract.dropoffs];
-    dropoffs[idx] = stop;
-    onChange({ ...contract, dropoffs });
+    const next = [...dropoffs];
+    next[idx] = {
+      ...stop,
+      items: mergeCargoItems(stop.items, "dropoff"),
+    };
+    onChange({ ...contract, dropoffs: consolidateStops(next, "dropoff") });
   };
 
   const addPickup = () => {
     onChange({
       ...contract,
-      pickups: [
-        ...contract.pickups,
-        { id: nanoid(8), locationName: "Pickup", items: [{ id: nanoid(6), name: "Cargo", scu: 0 }] },
-      ],
+      pickups: consolidateStops(
+        [
+          ...pickups,
+          { id: nanoid(8), locationName: "Pickup", items: [{ id: nanoid(6), name: "Cargo", scu: 0 }] },
+        ],
+        "pickup"
+      ),
     });
   };
 
   const addDropoff = () => {
     onChange({
       ...contract,
-      dropoffs: [
-        ...contract.dropoffs,
-        { id: nanoid(8), locationName: "Dropoff", items: [{ id: nanoid(6), name: "Cargo", scu: 1 }] },
-      ],
+      dropoffs: consolidateStops(
+        [
+          ...dropoffs,
+          { id: nanoid(8), locationName: "Dropoff", items: [{ id: nanoid(6), name: "Cargo", scu: 1 }] },
+        ],
+        "dropoff"
+      ),
     });
   };
 
+  const removePickup = (idx: number) => {
+    const next = pickups.filter((_, i) => i !== idx);
+    onChange({ ...contract, pickups: consolidateStops(next, "pickup") });
+  };
+
+  const removeDropoff = (idx: number) => {
+    const next = dropoffs.filter((_, i) => i !== idx);
+    onChange({ ...contract, dropoffs: consolidateStops(next, "dropoff") });
+  };
+
   return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-      <div className="flex min-w-0 items-center gap-3 md:col-span-2">
-        <div className="min-w-0 flex-1">
+    <div className="space-y-4">
+      <div className="grid min-w-0 grid-cols-1 items-center gap-2 md:grid-cols-[1fr_minmax(0,2fr)_1fr]">
+        <div className="hidden md:block" aria-hidden />
+        <div className="flex min-w-0 items-center justify-center justify-self-center">
           {editingTitle ? (
             <Input
               ref={titleInputRef}
@@ -220,7 +183,7 @@ function ContractEditor({
                   cancelTitleEdit();
                 }
               }}
-              className="h-9 text-base font-semibold tracking-tight"
+              className="h-9 text-center text-base font-semibold tracking-tight"
               placeholder="Contract name"
               aria-label="Contract name"
             />
@@ -229,7 +192,7 @@ function ContractEditor({
               <button
                 type="button"
                 onClick={() => setEditingTitle(true)}
-                className="max-w-full truncate text-left text-lg font-semibold tracking-tight text-foreground transition-colors hover:text-primary"
+                className="max-w-full truncate text-center text-lg font-semibold tracking-tight text-foreground transition-colors hover:text-primary"
                 title="Click to edit name"
               >
                 {contract.title || "Untitled contract"}
@@ -238,7 +201,7 @@ function ContractEditor({
           )}
         </div>
 
-        <div className="flex shrink-0 items-center gap-2.5">
+        <div className="flex shrink-0 items-center justify-center gap-2.5 md:justify-end">
           {editingReward ? (
             <Input
               ref={rewardInputRef}
@@ -284,36 +247,35 @@ function ContractEditor({
         </div>
       </div>
 
-      <div className="min-w-0 space-y-2">
-        <div className="flex items-center gap-1">
-          <Label className="text-xs font-semibold">Pickups</Label>
-          <ObjectivePreviewIcon
-            screenshot={contract.screenshot}
-            region={objectiveRegion}
+      {contract.screenshot && (
+        <div className="min-w-0 space-y-2">
+          <Label className="text-xs font-semibold">Screenshot</Label>
+          <ScreenshotPanViewer
+            src={contract.screenshot}
+            alt={contract.title}
+            zoom={screenshotZoom}
+            onZoomChange={onScreenshotZoomChange}
+            focusRegion={objectiveRegion}
+            className={cn("w-full", STOP_ROW_HEIGHT)}
           />
         </div>
-        {contract.pickups.map((p, i) => (
-          <StopEditor key={p.id} stop={p} label={`Pickup ${i + 1}`} type="pickup" onChange={(s) => updatePickup(i, s)} />
-        ))}
-        <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={addPickup}>
-          <Plus className="mr-1 h-3 w-3" /> Add
-        </Button>
-      </div>
+      )}
 
-      <div className="min-w-0 space-y-2">
-        <div className="flex items-center gap-1">
-          <Label className="text-xs font-semibold">Dropoffs</Label>
-          <ObjectivePreviewIcon
-            screenshot={contract.screenshot}
-            region={objectiveRegion}
-          />
-        </div>
-        {contract.dropoffs.map((d, i) => (
-          <StopEditor key={d.id} stop={d} label={`Dropoff ${i + 1}`} type="dropoff" onChange={(s) => updateDropoff(i, s)} />
-        ))}
-        <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={addDropoff}>
-          <Plus className="mr-1 h-3 w-3" /> Add
-        </Button>
+      <div className="grid min-w-0 grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
+        <StopSection
+          type="pickup"
+          stops={pickups}
+          onUpdateStop={updatePickup}
+          onAddStop={addPickup}
+          onRemoveStop={removePickup}
+        />
+        <StopSection
+          type="dropoff"
+          stops={dropoffs}
+          onUpdateStop={updateDropoff}
+          onAddStop={addDropoff}
+          onRemoveStop={removeDropoff}
+        />
       </div>
     </div>
   );
@@ -336,6 +298,12 @@ export function PrepTab() {
   } = useContracts();
   const [scanning, setScanning] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [screenshotZoom, setScreenshotZoom] = useState(() => loadScreenshotZoom());
+
+  const handleScreenshotZoomChange = (zoom: number) => {
+    setScreenshotZoom(zoom);
+    saveScreenshotZoom(zoom);
+  };
   const fileRef = useRef<HTMLInputElement>(null);
 
   const orderedContracts = useMemo(
@@ -492,6 +460,8 @@ export function PrepTab() {
                   <CardContent className="p-3">
                     <ContractEditor
                       contract={contract}
+                      screenshotZoom={screenshotZoom}
+                      onScreenshotZoomChange={handleScreenshotZoomChange}
                       objectiveRegion={scanRegions.objective}
                       onChange={(c) => updateContract(contract.id, c)}
                       onDelete={() => deleteContract(contract.id)}

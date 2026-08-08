@@ -303,21 +303,37 @@ function makeStop(
 }
 
 function makePickupItems(parsed: { name: string; nameHint?: string }[]): CargoItem[] {
-  return parsed.map((p) => ({
-    id: nanoid(6),
-    name: p.name,
-    nameHint: p.nameHint,
-    scu: 0,
-  }));
+  const byName = new Map<string, CargoItem>();
+  for (const p of parsed) {
+    const key = (p.name || p.nameHint || "Cargo").toLowerCase().trim();
+    if (byName.has(key)) continue;
+    byName.set(key, {
+      id: nanoid(6),
+      name: p.name,
+      nameHint: p.nameHint,
+      scu: 0,
+    });
+  }
+  return [...byName.values()];
 }
 
 function makeItems(parsed: { name: string; nameHint?: string; scu: number }[]): CargoItem[] {
-  return parsed.map((p) => ({
-    id: nanoid(6),
-    name: p.name,
-    nameHint: p.nameHint,
-    scu: p.scu,
-  }));
+  const byName = new Map<string, CargoItem>();
+  for (const p of parsed) {
+    const key = (p.name || p.nameHint || "Cargo").toLowerCase().trim();
+    const existing = byName.get(key);
+    if (existing) {
+      existing.scu += p.scu;
+      continue;
+    }
+    byName.set(key, {
+      id: nanoid(6),
+      name: p.name,
+      nameHint: p.nameHint,
+      scu: p.scu,
+    });
+  }
+  return [...byName.values()];
 }
 
 export type { ScannedFields } from "@/types/contracts";

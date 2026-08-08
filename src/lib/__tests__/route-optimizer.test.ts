@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { optimizeRoute, countSystemJumps, recalculateRouteLegs } from "@/lib/route-optimizer";
+import {
+  optimizeRoute,
+  optimizeRouteSequential,
+  countSystemJumps,
+  recalculateRouteLegs,
+} from "@/lib/route-optimizer";
 import { createStopoverVisit, createVisitFromActions, finalizeRouteVisits } from "@/lib/route-actions";
 import { findLocation } from "@/lib/location-lookup";
 import type { Contract, RouteVisit } from "@/types/contracts";
@@ -161,6 +166,75 @@ describe("optimizeRoute fuel range", () => {
     if (!("error" in result)) return;
     expect(result.error).toMatch(/Not enough fuel to jump/);
     expect(result.error).toMatch(/this leg is/);
+  });
+});
+
+describe("optimizeRouteSequential", () => {
+  it("finishes each contract before starting the next in list order", () => {
+    const first = makeContract({
+      id: "first",
+      title: "First contract",
+      order: 0,
+      createdAt: 1,
+      pickups: [
+        {
+          id: "p1",
+          locationName: "Area18",
+          completed: false,
+          items: [{ id: "i1", name: "Hydrogen", scu: 0 }],
+        },
+      ],
+      dropoffs: [
+        {
+          id: "d1",
+          locationName: "Lorville",
+          completed: false,
+          items: [{ id: "i2", name: "Hydrogen", scu: 5 }],
+        },
+      ],
+    });
+
+    const second = makeContract({
+      id: "second",
+      title: "Second contract",
+      order: 1,
+      createdAt: 2,
+      pickups: [
+        {
+          id: "p2",
+          locationName: "Area18",
+          completed: false,
+          items: [{ id: "i3", name: "Waste", scu: 0 }],
+        },
+      ],
+      dropoffs: [
+        {
+          id: "d2",
+          locationName: "New Babbage",
+          completed: false,
+          items: [{ id: "i4", name: "Waste", scu: 4 }],
+        },
+      ],
+    });
+
+    // Pass second first in the array; sequential should still honor order.
+    const result = optimizeRouteSequential([second, first], {
+      shipCapacity: 100,
+      maxDistanceGm: 500,
+      startingLocation: "Area18",
+    });
+
+    expect("error" in result).toBe(false);
+    if ("error" in result) return;
+
+    const actionContractIds = result.visits.flatMap((v) =>
+      v.actions.map((a) => a.contractId)
+    );
+    const lastFirst = actionContractIds.lastIndexOf("first");
+    const firstSecond = actionContractIds.indexOf("second");
+
+    expect(lastFirst).toBeGreaterThanOrEqual(0);
+    expect(firstSecond).toBeGreaterThan(lastFirst);
   });
 });
 

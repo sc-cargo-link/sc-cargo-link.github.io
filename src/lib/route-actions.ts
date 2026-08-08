@@ -1,8 +1,14 @@
 import { nanoid } from "nanoid";
 import type { Contract, ContractStop, RouteAction, RoutePlan, RouteVisit } from "@/types/contracts";
-import { findLocation, getLocationStorageKey } from "@/lib/location-lookup";
+import type { StarSystem } from "@/types/map";
+import {
+  findLocation,
+  getLocationDisplayName,
+  getLocationStorageKey,
+  type ResolvedLocation,
+} from "@/lib/location-lookup";
 import { cargoItemsMatch, cargoItemLabel } from "@/lib/cargo-display";
-import { recalculateRouteLegs } from "@/lib/route-optimizer";
+import { countSystemJumps, recalculateRouteLegs, travelDistance } from "@/lib/route-optimizer";
 
 export interface AvailableRouteAction {
   key: string;
@@ -114,6 +120,141 @@ export function getAvailableActionsAtLocation(
   return actions;
 }
 
+export interface ContractStopCandidate {
+  locationKey: string;
+  locationName: string;
+  displayName: string;
+  system: StarSystem | null;
+  distanceM: number;
+  jumps: number;
+  pickupScu: number;
+  dropoffScu: number;
+  actions: AvailableRouteAction[];
+}
+
+function resolveFromPoint(
+  route: RoutePlan | null,
+  startingLocation: string
+): ResolvedLocation | null {
+  if (route && route.visits.length > 0) {
+    const last = route.visits[route.visits.length - 1];
+    const loc = findLocation(last.locationName);
+    if (loc) return loc;
+    return {
+      name: last.locationName,
+      x: last.x,
+      y: last.y,
+      system: last.system,
+      poi: { n: last.locationName, x: last.x, y: last.y, z: 0 },
+    };
+  }
+  return findLocation(startingLocation);
+}
+
+function routedActionKeys(route: RoutePlan | null): Set<string> {
+  const keys = new Set<string>();
+  if (!route) return keys;
+  for (const visit of route.visits) {
+    for (const action of visit.actions) {
+      keys.add(actionKey(action));
+    }
+  }
+  return keys;
+}
+
+/** Remaining contract stops for manual routing, nearest-first from the last route stop (or start). */
+export function getContractStopCandidates(
+  contracts: Contract[],
+  route: RoutePlan | null,
+  startingLocation: string
+): ContractStopCandidate[] {
+  const from = resolveFromPoint(route, startingLocation);
+  const alreadyRouted = routedActionKeys(route);
+  const byLocation = new Map<string, AvailableRouteAction[]>();
+
+  for (const contract of contracts) {
+    if (!contract.selectedForRoute || contract.completed) continue;
+
+    for (const pickup of contract.pickups) {
+      if (pickup.completed) continue;
+      const key = actionKey({ contractId: contract.id, stopId: pickup.id, type: "pickup" });
+      if (alreadyRouted.has(key)) continue;
+      const locKey = locationKey(pickup.locationName);
+      const list = byLocation.get(locKey) ?? [];
+      list.push({
+        key,
+        contractId: contract.id,
+        contractTitle: contract.title,
+        stopId: pickup.id,
+        type: "pickup",
+        locationName: pickup.locationName,
+        items: pickupItemsWithScu(pickup, contract),
+      });
+      byLocation.set(locKey, list);
+    }
+
+    for (const dropoff of contract.dropoffs) {
+      if (dropoff.completed) continue;
+      const key = actionKey({ contractId: contract.id, stopId: dropoff.id, type: "dropoff" });
+      if (alreadyRouted.has(key)) continue;
+      const locKey = locationKey(dropoff.locationName);
+      const list = byLocation.get(locKey) ?? [];
+      list.push({
+        key,
+        contractId: contract.id,
+        contractTitle: contract.title,
+        stopId: dropoff.id,
+        type: "dropoff",
+        locationName: dropoff.locationName,
+        items: dropoff.items.map((i) => ({ ...i })),
+      });
+      byLocation.set(locKey, list);
+    }
+  }
+
+  const candidates: ContractStopCandidate[] = [];
+
+  for (const [locKey, actions] of byLocation) {
+    const sampleName = actions[0]?.locationName ?? locKey;
+    const resolved = findLocation(sampleName);
+    const pickupScu = actions
+      .filter((a) => a.type === "pickup")
+      .reduce((sum, a) => sum + a.items.reduce((s, i) => s + i.scu, 0), 0);
+    const dropoffScu = actions
+      .filter((a) => a.type === "dropoff")
+      .reduce((sum, a) => sum + a.items.reduce((s, i) => s + i.scu, 0), 0);
+
+    let distanceM = Number.POSITIVE_INFINITY;
+    let jumps = 0;
+    if (from && resolved) {
+      jumps = countSystemJumps(from, resolved);
+      distanceM = travelDistance(from, resolved);
+    } else if (!resolved) {
+      distanceM = Number.POSITIVE_INFINITY;
+    } else {
+      distanceM = 0;
+    }
+
+    candidates.push({
+      locationKey: locKey,
+      locationName: resolved ? getLocationStorageKey(resolved) : sampleName,
+      displayName: getLocationDisplayName(sampleName) || sampleName,
+      system: resolved?.system ?? null,
+      distanceM,
+      jumps,
+      pickupScu,
+      dropoffScu,
+      actions,
+    });
+  }
+
+  return candidates.sort((a, b) => {
+    if (a.jumps !== b.jumps) return a.jumps - b.jumps;
+    if (a.distanceM !== b.distanceM) return a.distanceM - b.distanceM;
+    return a.displayName.localeCompare(b.displayName);
+  });
+}
+
 export function recalculateRouteCargo(visits: RouteVisit[]): RouteVisit[] {
   let onboard = 0;
   return visits.map((visit) => {
@@ -146,6 +287,23 @@ export function createStopoverVisit(locationName: string): RouteVisit | null {
     y: loc.y,
     system: loc.system,
     type: "stopover",
+    actions: [],
+    cargoAfter: 0,
+    distanceFromPrev: 0,
+  };
+}
+
+export function createStartVisit(locationName: string): RouteVisit | null {
+  const loc = findLocation(locationName);
+  if (!loc) return null;
+
+  return {
+    id: nanoid(8),
+    locationName: getLocationStorageKey(loc),
+    x: loc.x,
+    y: loc.y,
+    system: loc.system,
+    type: "start",
     actions: [],
     cargoAfter: 0,
     distanceFromPrev: 0,

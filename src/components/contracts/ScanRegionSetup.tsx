@@ -12,9 +12,9 @@ const REGION_LABELS: Record<ScanRegionKey, string> = {
 };
 
 const REGION_COLORS: Record<ScanRegionKey, string> = {
-  name: "border-sky-400 bg-sky-400/20",
-  objective: "border-emerald-400 bg-emerald-400/20",
-  reward: "border-amber-400 bg-amber-400/20",
+  name: "border-info bg-info/20",
+  objective: "border-success bg-success/20",
+  reward: "border-warning bg-warning/20",
 };
 
 interface ScanRegionSetupProps {

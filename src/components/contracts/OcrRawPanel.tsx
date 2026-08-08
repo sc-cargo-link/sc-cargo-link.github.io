@@ -25,8 +25,8 @@ export function OcrRawPanel({ ocrRaw }: { ocrRaw: ScannedFields }) {
   };
 
   return (
-    <div className="mb-2 space-y-1.5 rounded-lg border border-amber-500/25 bg-amber-500/5 p-2">
-      <div className="text-[11px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">
+    <div className="mb-2 space-y-1.5 rounded-lg border border-warning/25 bg-warning/5 p-2">
+      <div className="text-[11px] font-semibold uppercase tracking-wide text-warning">
         Raw OCR
       </div>
       {zones.map(({ label, text }) => {

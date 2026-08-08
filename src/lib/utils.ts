@@ -20,3 +20,15 @@ export function formatScu(scu: number): string {
 export function formatAuec(amount: number): string {
   return `${amount.toLocaleString()} aUEC`;
 }
+
+/** Resolve a theme HSL token (e.g. `--primary`) for canvas / inline styles. */
+export function themeColor(cssVar: string, alpha?: number): string {
+  if (typeof document === "undefined") {
+    return alpha != null ? `hsl(24 60% 50% / ${alpha})` : "hsl(24 60% 50%)";
+  }
+  const raw = getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
+  if (!raw) {
+    return alpha != null ? `hsl(24 60% 50% / ${alpha})` : "hsl(24 60% 50%)";
+  }
+  return alpha != null ? `hsl(${raw} / ${alpha})` : `hsl(${raw})`;
+}

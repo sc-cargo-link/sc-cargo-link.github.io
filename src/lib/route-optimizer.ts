@@ -200,7 +200,7 @@ function planTravel(from: ResolvedLocation, to: ResolvedLocation): TravelHop[] |
   return hops;
 }
 
-function travelDistance(from: ResolvedLocation, to: ResolvedLocation): number {
+export function travelDistance(from: ResolvedLocation, to: ResolvedLocation): number {
   const hops = planTravel(from, to);
   if ("error" in hops) return Infinity;
   return hops.reduce((sum, hop) => sum + hop.distance, 0);
@@ -719,38 +719,61 @@ function pushVisit(
   });
 }
 
-export function optimizeRoute(
-  contracts: Contract[],
-  settings: RoutingSettings
-): RoutePlan | { error: string } {
-  const startLoc = findLocation(settings.startingLocation);
-  if (!startLoc) {
-    return { error: `Starting location "${settings.startingLocation}" not found on map.` };
-  }
+function selectedContractsTotalScu(contracts: Contract[]): number {
+  return contracts
+    .filter((c) => c.selectedForRoute && !c.completed)
+    .reduce((sum, c) => {
+      const dropoffScu = c.dropoffs.reduce(
+        (s, stop) => s + stop.items.reduce((a, i) => a + i.scu, 0),
+        0
+      );
+      return sum + dropoffScu;
+    }, 0);
+}
 
-  const tasks = buildTasks(contracts, settings.shipCapacity);
-  if (tasks.length === 0) {
-    return { error: "No routable tasks. Select contracts with valid locations." };
-  }
+function orderedSelectedContracts(contracts: Contract[]): Contract[] {
+  return [...contracts]
+    .filter((c) => c.selectedForRoute && !c.completed)
+    .sort((a, b) => a.order - b.order || a.createdAt - b.createdAt);
+}
 
-  const completed = new Set<string>();
+interface OptimizeRunState {
+  current: ResolvedLocation;
+  onboardScu: number;
+  totalDistance: number;
+  visits: RouteVisit[];
+  completed: Set<string>;
+}
+
+function createOptimizeStartState(startLoc: ResolvedLocation): OptimizeRunState {
+  return {
+    current: startLoc,
+    onboardScu: 0,
+    totalDistance: 0,
+    completed: new Set<string>(),
+    visits: [
+      {
+        id: nanoid(8),
+        locationName: getLocationStorageKey(startLoc),
+        x: startLoc.x,
+        y: startLoc.y,
+        system: startLoc.system,
+        type: "start",
+        actions: [],
+        cargoAfter: 0,
+        distanceFromPrev: 0,
+      },
+    ],
+  };
+}
+
+/** Greedy nearest-task solver for a task list, mutating/continuing run state. */
+function runOptimizeTasks(
+  tasks: PendingTask[],
+  settings: RoutingSettings,
+  state: OptimizeRunState
+): { error: string } | null {
   const remaining = [...tasks];
-  let current = startLoc;
-  let onboardScu = 0;
-  let totalDistance = 0;
-  const visits: RouteVisit[] = [
-    {
-      id: nanoid(8),
-      locationName: getLocationStorageKey(startLoc),
-      x: startLoc.x,
-      y: startLoc.y,
-      system: startLoc.system,
-      type: "start",
-      actions: [],
-      cargoAfter: 0,
-      distanceFromPrev: 0,
-    },
-  ];
 
   while (remaining.length > 0) {
     let bestIdx = -1;
@@ -758,10 +781,10 @@ export function optimizeRoute(
 
     for (let i = 0; i < remaining.length; i++) {
       const task = remaining[i];
-      if (!canDoTask(task, completed, onboardScu, settings.shipCapacity)) continue;
+      if (!canDoTask(task, state.completed, state.onboardScu, settings.shipCapacity)) continue;
       const taskLoc = findLocation(task.locationName);
       if (!taskLoc) continue;
-      const score = scoreTaskTravel(current, taskLoc);
+      const score = scoreTaskTravel(state.current, taskLoc);
       if (bestScore === null || isBetterTaskScore(score, bestScore)) {
         bestScore = score;
         bestIdx = i;
@@ -781,44 +804,112 @@ export function optimizeRoute(
       return { error: `Location "${task.locationName}" not found on map.` };
     }
 
-    let travel = planTravel(current, taskLoc);
+    const travel = planTravel(state.current, taskLoc);
     if ("error" in travel) return { error: travel.error };
 
-    const fuelError = validateTravelFuel(current, travel, settings.maxDistanceGm);
+    const fuelError = validateTravelFuel(state.current, travel, settings.maxDistanceGm);
     if (fuelError) return fuelError;
 
     if (travel.length === 0) {
-      onboardScu = applyCargoTask(visits, task, taskLoc, 0, onboardScu);
+      state.onboardScu = applyCargoTask(state.visits, task, taskLoc, 0, state.onboardScu);
     } else {
       for (let i = 0; i < travel.length; i++) {
         const hop = travel[i];
         const isLast = i === travel.length - 1;
 
-        totalDistance += hop.distance;
+        state.totalDistance += hop.distance;
 
         if (isLast) {
-          onboardScu = applyCargoTask(visits, task, taskLoc, hop.distance, onboardScu);
+          state.onboardScu = applyCargoTask(
+            state.visits,
+            task,
+            taskLoc,
+            hop.distance,
+            state.onboardScu
+          );
         } else {
-          pushVisit(visits, hop, onboardScu);
+          pushVisit(state.visits, hop, state.onboardScu);
         }
       }
     }
 
-    completed.add(task.id);
-    current = taskLoc;
+    state.completed.add(task.id);
+    state.current = taskLoc;
   }
 
-  const totalScu = contracts
-    .filter((c) => c.selectedForRoute && !c.completed)
-    .reduce((sum, c) => {
-      const dropoffScu = c.dropoffs.reduce(
-        (s, stop) => s + stop.items.reduce((a, i) => a + i.scu, 0),
-        0
-      );
-      return sum + dropoffScu;
-    }, 0);
+  return null;
+}
 
-  return { visits, totalDistance, totalScu };
+export type RouteOptimizeMode = "optimal" | "sequential";
+
+export function optimizeRoute(
+  contracts: Contract[],
+  settings: RoutingSettings,
+  mode: RouteOptimizeMode = "optimal"
+): RoutePlan | { error: string } {
+  if (mode === "sequential") {
+    return optimizeRouteSequential(contracts, settings);
+  }
+
+  const startLoc = findLocation(settings.startingLocation);
+  if (!startLoc) {
+    return { error: `Starting location "${settings.startingLocation}" not found on map.` };
+  }
+
+  const tasks = buildTasks(contracts, settings.shipCapacity);
+  if (tasks.length === 0) {
+    return { error: "No routable tasks. Select contracts with valid locations." };
+  }
+
+  const state = createOptimizeStartState(startLoc);
+  const error = runOptimizeTasks(tasks, settings, state);
+  if (error) return error;
+
+  return {
+    visits: state.visits,
+    totalDistance: state.totalDistance,
+    totalScu: selectedContractsTotalScu(contracts),
+  };
+}
+
+/** Finish each selected contract (in list order) before starting the next, optimizing within each. */
+export function optimizeRouteSequential(
+  contracts: Contract[],
+  settings: RoutingSettings
+): RoutePlan | { error: string } {
+  const startLoc = findLocation(settings.startingLocation);
+  if (!startLoc) {
+    return { error: `Starting location "${settings.startingLocation}" not found on map.` };
+  }
+
+  const selected = orderedSelectedContracts(contracts);
+  if (selected.length === 0) {
+    return { error: "No routable tasks. Select contracts with valid locations." };
+  }
+
+  const state = createOptimizeStartState(startLoc);
+
+  for (const contract of selected) {
+    const tasks = buildTasks([contract], settings.shipCapacity);
+    if (tasks.length === 0) {
+      return {
+        error: `Contract "${contract.title}" has no routable stops with valid locations.`,
+      };
+    }
+
+    const error = runOptimizeTasks(tasks, settings, state);
+    if (error) {
+      return {
+        error: `${error.error.replace(/\.$/, "")} (while routing "${contract.title}").`,
+      };
+    }
+  }
+
+  return {
+    visits: state.visits,
+    totalDistance: state.totalDistance,
+    totalScu: selectedContractsTotalScu(contracts),
+  };
 }
 
 export function routeToOverlay(visits: RouteVisit[], system?: StarSystem) {

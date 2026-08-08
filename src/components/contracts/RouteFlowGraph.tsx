@@ -50,14 +50,14 @@ function ActionRow({
       className={cn(
         "flex items-start justify-between gap-2 rounded-md px-2 py-1.5 text-xs",
         done
-          ? "border border-emerald-500/30 bg-emerald-500/5"
+          ? "border border-success/30 bg-success/5"
           : "border border-transparent bg-muted/25"
       )}
     >
       <div className="flex min-w-0 items-start gap-2">
         <Button variant="ghost" size="icon" className="mt-0.5 h-6 w-6 shrink-0" onClick={onToggle}>
           {done ? (
-            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+            <CheckCircle2 className="h-4 w-4 text-success" />
           ) : (
             <Circle className="h-4 w-4 text-muted-foreground" />
           )}
@@ -78,7 +78,7 @@ function ActionRow({
               onClick={onToggleContract}
             >
               {contractDone ? (
-                <span className="text-emerald-400">Contract done</span>
+                <span className="text-success">Contract done</span>
               ) : (
                 <span>Mark contract done</span>
               )}
@@ -136,7 +136,7 @@ function FlowNode({
                 active
                   ? "bg-primary text-primary-foreground"
                   : done
-                    ? "bg-emerald-600/20 text-emerald-400"
+                    ? "bg-success/20 text-success"
                     : "bg-muted text-muted-foreground"
               )}
             >

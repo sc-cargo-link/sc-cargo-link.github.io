@@ -21,6 +21,11 @@ const SCAN_REGIONS_KEY = "cargolink-scan-regions";
 const SCAN_CALIBRATION_KEY = "cargolink-scan-calibration";
 const DEVELOPER_MODE_KEY = "cargolink-developer-mode";
 const MAP_SYSTEM_KEY = "cargolink-map-system";
+const SCREENSHOT_ZOOM_KEY = "cargolink-screenshot-zoom";
+
+const MIN_SCREENSHOT_ZOOM = 1;
+const MAX_SCREENSHOT_ZOOM = 4;
+const DEFAULT_SCREENSHOT_ZOOM = 1;
 
 const DEFAULT_SETTINGS: RoutingSettings = {
   shipCapacity: 128,
@@ -227,4 +232,27 @@ export function loadMapSystem(): StarSystem {
 
 export function saveMapSystem(system: StarSystem): void {
   localStorage.setItem(MAP_SYSTEM_KEY, system);
+}
+
+export function loadScreenshotZoom(): number {
+  try {
+    const raw = localStorage.getItem(SCREENSHOT_ZOOM_KEY);
+    if (raw == null) return DEFAULT_SCREENSHOT_ZOOM;
+    const value = Number(raw);
+    if (!Number.isFinite(value)) return DEFAULT_SCREENSHOT_ZOOM;
+    return Math.min(
+      MAX_SCREENSHOT_ZOOM,
+      Math.max(MIN_SCREENSHOT_ZOOM, Number(value.toFixed(2)))
+    );
+  } catch {
+    return DEFAULT_SCREENSHOT_ZOOM;
+  }
+}
+
+export function saveScreenshotZoom(zoom: number): void {
+  const value = Math.min(
+    MAX_SCREENSHOT_ZOOM,
+    Math.max(MIN_SCREENSHOT_ZOOM, Number(zoom.toFixed(2)))
+  );
+  localStorage.setItem(SCREENSHOT_ZOOM_KEY, String(value));
 }

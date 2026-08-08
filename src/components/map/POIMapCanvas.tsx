@@ -8,7 +8,7 @@ import {
   pathUsesPyro4MoonOrbit,
   resolveOrbitParentEntity,
 } from "@/lib/map-data";
-import { formatDistance } from "@/lib/utils";
+import { formatDistance, themeColor } from "@/lib/utils";
 
 interface LegLabel {
   x: number;
@@ -106,7 +106,7 @@ export function POIMapCanvas({
       ctx.beginPath();
       ctx.arc(center.sx, center.sy, screenR, 0, Math.PI * 2);
       ctx.strokeStyle =
-        highlightPyro5Orbit && isPyro5 ? "rgba(255, 179, 71, 0.75)" : "rgba(120, 170, 220, 0.35)";
+        highlightPyro5Orbit && isPyro5 ? themeColor("--primary", 0.75) : "rgba(120, 170, 220, 0.35)";
       ctx.lineWidth = highlightPyro5Orbit && isPyro5 ? 2 : 1;
       ctx.stroke();
       if (screenR > 30 && orbit.px != null && orbit.py != null) {
@@ -120,7 +120,7 @@ export function POIMapCanvas({
     }
 
     if (routeOverlay && routeOverlay.length > 1) {
-      ctx.strokeStyle = "rgba(255, 179, 71, 0.8)";
+      ctx.strokeStyle = themeColor("--primary", 0.8);
       ctx.lineWidth = 2;
       ctx.setLineDash([6, 4]);
       ctx.beginPath();
@@ -181,14 +181,14 @@ export function POIMapCanvas({
         const bh = 14 + padY * 2;
 
         ctx.fillStyle = "rgba(15, 23, 42, 0.88)";
-        ctx.strokeStyle = "rgba(255, 179, 71, 0.65)";
+        ctx.strokeStyle = themeColor("--primary", 0.65);
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.roundRect(ox - bw / 2, oy - bh / 2, bw, bh, 4);
         ctx.fill();
         ctx.stroke();
 
-        ctx.fillStyle = "#ffb347";
+        ctx.fillStyle = themeColor("--primary");
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(label.text, ox, oy);
