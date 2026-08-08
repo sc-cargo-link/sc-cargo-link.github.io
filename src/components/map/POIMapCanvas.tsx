@@ -1,11 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { LocationCategory, MapData, MapTransform, RouteMapLeg, RouteOverlayPoint } from "@/types/map";
 import {
+  CATEGORY_COLORS,
+  CATEGORY_RADIUS,
+  collapseOverlappingPoiIndices,
   collectSubtreeIndices,
   findTreeNodeByPath,
   fitToBounds,
+  getPrimaryCategory,
   getVisiblePoiIndices,
   pathUsesPyro4MoonOrbit,
+  PLANET_LEVEL_MIN_SCALE,
   resolveOrbitParentEntity,
 } from "@/lib/map-data";
 import { formatDistance, themeColor } from "@/lib/utils";
@@ -96,26 +101,53 @@ export function POIMapCanvas({
 
     const highlightPyro5Orbit =
       data.system === "pyro" && selectedPath && pathUsesPyro4MoonOrbit(data, selectedPath);
+    const atPlanetLevel = transform.scale >= PLANET_LEVEL_MIN_SCALE;
 
     for (const orbit of data.orbits || []) {
+      const isMoonOrbit = orbit.kind === "moon";
+      if (isMoonOrbit && !atPlanetLevel) continue;
+
       const isPyro5 = data.system === "pyro" && orbit.n === "Pyro V";
       const center = worldToScreen(orbit.cx, orbit.cy, rect.width, rect.height);
       const edge = worldToScreen(orbit.cx + orbit.r, orbit.cy, rect.width, rect.height);
       const screenR = Math.hypot(edge.sx - center.sx, edge.sy - center.sy);
       if (screenR < 2) continue;
+
+      // Skip moon rings whose host planet is far off-screen.
+      if (isMoonOrbit) {
+        const margin = screenR + 40;
+        if (
+          center.sx < -margin ||
+          center.sy < -margin ||
+          center.sx > rect.width + margin ||
+          center.sy > rect.height + margin
+        ) {
+          continue;
+        }
+      }
+
       ctx.beginPath();
       ctx.arc(center.sx, center.sy, screenR, 0, Math.PI * 2);
-      ctx.strokeStyle =
-        highlightPyro5Orbit && isPyro5 ? themeColor("--primary", 0.75) : "rgba(120, 170, 220, 0.35)";
-      ctx.lineWidth = highlightPyro5Orbit && isPyro5 ? 2 : 1;
+      if (highlightPyro5Orbit && isPyro5) {
+        ctx.strokeStyle = themeColor("--primary", 0.75);
+        ctx.lineWidth = 2;
+      } else if (isMoonOrbit) {
+        ctx.strokeStyle = "rgba(140, 190, 230, 0.28)";
+        ctx.lineWidth = 1;
+      } else {
+        ctx.strokeStyle = "rgba(120, 170, 220, 0.35)";
+        ctx.lineWidth = 1;
+      }
       ctx.stroke();
       if (screenR > 30 && orbit.px != null && orbit.py != null) {
-        const planet = worldToScreen(orbit.px, orbit.py, rect.width, rect.height);
-        ctx.fillStyle = "rgba(180, 210, 240, 0.75)";
-        ctx.font = "11px Segoe UI, system-ui, sans-serif";
+        const body = worldToScreen(orbit.px, orbit.py, rect.width, rect.height);
+        ctx.fillStyle = isMoonOrbit ? "rgba(170, 205, 235, 0.65)" : "rgba(180, 210, 240, 0.75)";
+        ctx.font = isMoonOrbit
+          ? "10px Segoe UI, system-ui, sans-serif"
+          : "11px Segoe UI, system-ui, sans-serif";
         ctx.textAlign = "left";
         ctx.textBaseline = "bottom";
-        ctx.fillText(orbit.n, planet.sx + 8, planet.sy - 6);
+        ctx.fillText(orbit.n, body.sx + 8, body.sy - 6);
       }
     }
 
@@ -195,34 +227,50 @@ export function POIMapCanvas({
       }
     }
 
-    const visible = new Set(getVisiblePoiIndices(data, filters));
-    for (const i of highlighted.current) visible.add(i);
-    for (const i of parentIndices.current) visible.add(i);
-    if (hoverIndex !== null) visible.add(hoverIndex);
-    if (focusTarget) visible.add(focusTarget.poiIndex);
+    const filtered = getVisiblePoiIndices(data, filters);
+    const screenOf = (i: number) => worldToScreen(data.pois[i].x, data.pois[i].y, rect.width, rect.height);
+    const collapsed = collapseOverlappingPoiIndices(filtered, data, screenOf);
 
-    for (const i of visible) {
+    const drawIndices = new Set(collapsed);
+    // Selection / hover always painted so chosen points aren't buried.
+    for (const i of highlighted.current) drawIndices.add(i);
+    for (const i of parentIndices.current) drawIndices.add(i);
+    if (hoverIndex !== null) drawIndices.add(hoverIndex);
+    if (focusTarget) drawIndices.add(focusTarget.poiIndex);
+
+    for (const i of drawIndices) {
       const p = data.pois[i];
       if (!p) continue;
       const { sx, sy } = worldToScreen(p.x, p.y, rect.width, rect.height);
       if (sx < -20 || sy < -20 || sx > rect.width + 20 || sy > rect.height + 20) continue;
 
-      let radius = 5;
-      let color = "rgba(91, 141, 239, 0.9)";
+      const category = getPrimaryCategory(p);
+      let radius = CATEGORY_RADIUS[category];
+      const color = CATEGORY_COLORS[category];
+      let ring: string | null = null;
+
       if (parentIndices.current.has(i)) {
-        radius = 9;
-        color = "#ffb347";
+        radius = Math.max(radius, 9);
+        ring = "#ffb347";
       } else if (highlighted.current.has(i)) {
-        radius = 7;
-        color = "#6ee7b7";
+        radius = Math.max(radius, 7);
+        ring = "#6ee7b7";
       } else if (hoverIndex === i) {
-        radius = 8;
+        radius = Math.max(radius, 8);
+        ring = "rgba(255, 255, 255, 0.85)";
       }
 
       ctx.beginPath();
       ctx.fillStyle = color;
       ctx.arc(sx, sy, radius, 0, Math.PI * 2);
       ctx.fill();
+      if (ring) {
+        ctx.beginPath();
+        ctx.strokeStyle = ring;
+        ctx.lineWidth = 2;
+        ctx.arc(sx, sy, radius + 2, 0, Math.PI * 2);
+        ctx.stroke();
+      }
     }
 
     if (routeOverlay) {
@@ -292,7 +340,11 @@ export function POIMapCanvas({
 
     const rect = wrap.getBoundingClientRect();
     const base = fitToBounds(data.bounds, rect.width, rect.height);
-    const focusScale = Math.min(base.scale * 12, 5e-4);
+    const bodyFocus =
+      poi.category === "planet" || poi.category === "moon"
+        ? PLANET_LEVEL_MIN_SCALE * 1.25
+        : 0;
+    const focusScale = Math.min(Math.max(base.scale * 12, bodyFocus), 5e-4);
 
     setTransform({
       scale: focusScale,
@@ -331,7 +383,10 @@ export function POIMapCanvas({
     const rect = wrap.getBoundingClientRect();
     const sx = clientX - rect.left;
     const sy = clientY - rect.top;
-    const candidates = new Set(getVisiblePoiIndices(data, filters));
+    const screenOf = (i: number) => worldToScreen(data.pois[i].x, data.pois[i].y, rect.width, rect.height);
+    const candidates = new Set(
+      collapseOverlappingPoiIndices(getVisiblePoiIndices(data, filters), data, screenOf)
+    );
     for (const i of highlighted.current) candidates.add(i);
     for (const i of parentIndices.current) candidates.add(i);
 
@@ -340,7 +395,11 @@ export function POIMapCanvas({
     for (const i of candidates) {
       const p = data.pois[i];
       const screen = worldToScreen(p.x, p.y, rect.width, rect.height);
-      const radius = (parentIndices.current.has(i) ? 9 : highlighted.current.has(i) ? 7 : 5) + 4;
+      const category = getPrimaryCategory(p);
+      const baseR = CATEGORY_RADIUS[category];
+      const radius =
+        (parentIndices.current.has(i) ? Math.max(baseR, 9) : highlighted.current.has(i) ? Math.max(baseR, 7) : baseR) +
+        4;
       const d = Math.hypot(screen.sx - sx, screen.sy - sy);
       if (d <= radius && d < bestDist) {
         bestDist = d;

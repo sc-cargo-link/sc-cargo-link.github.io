@@ -7,10 +7,11 @@ import { TrackingTab } from "@/pages/contracts/TrackingTab";
 import { cn } from "@/lib/utils";
 
 const steps = [
-  { value: "prep", label: "Prep" },
-  { value: "routing", label: "Routing" },
-  { value: "tracking", label: "Tracking" },
+  { value: "prep", label: "Manifest" },
+  { value: "routing", label: "Flight plan" },
+  { value: "tracking", label: "On the road" },
 ] as const;
+
 
 export function ContractsPage() {
   return (

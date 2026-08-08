@@ -4,7 +4,7 @@ import type { RouteVisit } from "@/types/contracts";
 import { loadMapSystem, saveMapSystem } from "@/lib/contracts-storage";
 import { findPoiIndexInMapData } from "@/lib/location-lookup";
 import { routeToMapLegs, routeToOverlay } from "@/lib/route-optimizer";
-import { getMapData, STAR_SYSTEMS } from "@/lib/map-data";
+import { CATEGORY_COLORS, getMapData, STAR_SYSTEMS } from "@/lib/map-data";
 import { POIMapCanvas } from "@/components/map/POIMapCanvas";
 import { LocationSearch } from "@/components/map/LocationSearch";
 import { Button } from "@/components/ui/button";
@@ -91,8 +91,8 @@ export function POIMap({ initialSystem, routeVisits, compact, focusRequest }: PO
     [routeVisits, system]
   );
 
-  const toggleFilter = (key: LocationCategory) => {
-    setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
+  const setFilter = (key: LocationCategory, checked: boolean) => {
+    setFilters((prev) => ({ ...prev, [key]: checked }));
   };
 
   const clearSelection = () => {
@@ -141,7 +141,15 @@ export function POIMap({ initialSystem, routeVisits, compact, focusRequest }: PO
         <div className="flex flex-wrap gap-3">
           {(Object.keys(FILTER_LABELS) as LocationCategory[]).map((key) => (
             <label key={key} className="flex items-center gap-1.5 text-[11px] text-foreground">
-              <Switch checked={filters[key]} onCheckedChange={() => toggleFilter(key)} />
+              <Switch
+                checked={filters[key]}
+                onCheckedChange={(checked) => setFilter(key, checked)}
+              />
+              <span
+                className="inline-block h-2 w-2 shrink-0 rounded-full"
+                style={{ backgroundColor: CATEGORY_COLORS[key] }}
+                aria-hidden
+              />
               {FILTER_LABELS[key]}
             </label>
           ))}

@@ -32,29 +32,33 @@ const guideSections: GuideSection[] = [
     title: "Getting started",
     icon: BookOpen,
     intro:
-      "CargoLink helps you scan hauling contracts from in-game screenshots, plan an optimal route, and track pickups and dropoffs during your run. All data is saved in your browser.",
+      "CargoLink is ops structure for space truckers — the day-to-day way you'd handle jobs, with a role-playing edge for your Star Citizen hauls. Scan contracts, plan the run, track the freight. Everything stays in your browser.",
     steps: [
       {
-        title: "Navigate the app",
+        title: "Navigate the yard",
         description:
-          "Use the top navigation to move between Home, Contracts, Map, and Help. Contracts is where you'll spend most of your time — it has three tabs for the full workflow.",
+          "Use the top navigation to move between Home, Contracts, Map, and Help. Contracts is the shift floor — three tabs that mirror how a hauler works the day.",
         image: "/help/01-home.png",
         imageAlt: "CargoLink home page with navigation bar",
         bullets: [
-          "Home — quick overview and links to other pages",
-          "Contracts — prep, routing, and cargo tracking",
+          "Home — ops pitch, haul path, and how to start a shift",
+
+          "Contracts — Manifest, Flight plan, and On the road",
+
           "Map — browse star systems and points of interest",
-          "Help — this guide",
+          "Help — this handbook",
         ],
       },
     ],
   },
   {
     id: "prep",
-    title: "Prep — scan contracts",
+    title: "Manifest — scan contracts",
+
     icon: ScanLine,
     intro:
-      "Upload contract screenshots from the mobiGlas and let OCR extract pickup, dropoff, cargo, and reward details.",
+      "Start the shift by getting jobs on the board. Upload contract screenshots from the mobiGlas and let OCR pull pickup, dropoff, cargo, and reward details.",
+
     steps: [
       {
         title: "Set up scan regions (first time only)",
@@ -87,17 +91,19 @@ const guideSections: GuideSection[] = [
   },
   {
     id: "routing",
-    title: "Routing — plan your haul",
+    title: "Flight plan — plan the run",
+
     icon: Route,
     intro:
-      "Configure your ship, select contracts, and generate an optimal route that respects capacity, range, and cross-system jump points.",
+      "Before you spool up, set the ship, pick which jobs you're taking, and build a route that respects capacity, range, and jump points — like a real freight plan.",
     steps: [
       {
         title: "Configure route settings",
         description:
-          "Open the Routing tab and enter your ship details. Select which contracts to include, then generate the route.",
+          "Open Flight plan and enter your ship details. Select which contracts belong on this run, then generate the route.",
         image: "/help/04-contracts-routing.png",
-        imageAlt: "Routing tab with ship settings and contract selection",
+        imageAlt: "Flight plan tab with ship settings and contract selection",
+
         bullets: [
           "Ship capacity (SCU) — maximum cargo your ship can carry",
           "Max range per tank (GM) — distance before a refuel stopover is added",
@@ -123,17 +129,19 @@ const guideSections: GuideSection[] = [
   },
   {
     id: "tracking",
-    title: "Cargo tracking — fly the route",
+    title: "On the road — fly the haul",
+
     icon: Truck,
     intro:
-      "Follow your planned route step by step and mark pickups and dropoffs as you complete them in-game.",
+      "Once you're under way, work the route like a checklist: each stop tells you what to load or unload, and you mark it done as you clear it in-game.",
     steps: [
       {
         title: "Track progress on the flow graph",
         description:
-          "The Cargo tracking tab shows your route as a vertical flow graph. The active stop is highlighted — check off each pickup and dropoff as you complete it.",
+          "On the road shows your route as a vertical flow graph. The active stop is highlighted — check off each pickup and dropoff as you complete it.",
         image: "/help/06-contracts-tracking.png",
-        imageAlt: "Cargo tracking flow graph with active visit highlighted",
+        imageAlt: "On-the-road flow graph with active visit highlighted",
+
         bullets: [
           "Progress bar shows stops, total distance, cargo, and completed actions",
           "Click the circle next to an action to mark it complete (turns green with strikethrough)",
@@ -144,13 +152,14 @@ const guideSections: GuideSection[] = [
       {
         title: "Before you have a route",
         description:
-          "If you open Cargo tracking before generating a route, you'll see a prompt to head to the Routing tab first.",
+          "If you open On the road before building a flight plan, you'll see a prompt to head back and generate one first.",
         image: "/help/07-contracts-tracking-empty.png",
-        imageAlt: "Empty cargo tracking state with no planned route",
+        imageAlt: "Empty on-the-road state with no planned route",
         bullets: [
-          "Generate a route in the Routing tab to unlock the flow graph",
-          "Contracts selected for routing still appear in the sidebar for reference",
+          "Generate a route in Flight plan to unlock the flow graph",
+          "Contracts selected for the run still appear in the sidebar for reference",
         ],
+
       },
     ],
   },
@@ -158,22 +167,24 @@ const guideSections: GuideSection[] = [
     id: "tips",
     title: "Tips & persistence",
     icon: Package,
-    intro: "A few things worth knowing as you use CargoLink.",
+    intro: "A few things worth knowing while you run ops in CargoLink.",
     steps: [
       {
-        title: "Your data stays local",
+        title: "Your log stays local",
         description:
-          "Contracts, scan regions, route plans, and settings are stored in your browser's local storage. They persist across page reloads but are not synced between devices.",
+          "Contracts, scan regions, route plans, and settings live in your browser's local storage — like a personal ops log on this machine. They persist across reloads but are not synced between devices.",
         imageAlt: "Local storage persistence",
         bullets: [
-          "Clear all on the Prep tab removes every contract and uploaded screenshot",
-          "Clear route on the Routing tab resets only the planned route",
+          "Clear all on Manifest removes every contract and uploaded screenshot",
+          "Clear route on Flight plan resets only the planned route",
+
           "Use the theme toggle in the header to switch light and dark mode",
         ],
       },
     ],
   },
 ];
+
 
 function GuideScreenshot({ src, alt }: { src?: string; alt: string }) {
   if (!src) return null;

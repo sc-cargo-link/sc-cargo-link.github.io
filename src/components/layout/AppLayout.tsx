@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { Map, Package, HelpCircle, Home } from "lucide-react";
+import { FolderTree, Map, Package, HelpCircle, Home } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { cn } from "@/lib/utils";
 
@@ -8,6 +8,9 @@ const links = [
   { to: "/contracts", label: "Contracts", icon: Package },
   { to: "/map", label: "Map", icon: Map },
   { to: "/help", label: "Help", icon: HelpCircle },
+  ...(import.meta.env.DEV
+    ? [{ to: "/dev/locations", label: "Locations", icon: FolderTree }]
+    : []),
 ];
 
 export function AppLayout() {
@@ -19,7 +22,9 @@ export function AppLayout() {
             <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-xs font-bold text-primary-foreground">
               CL
             </div>
-            <span className="text-sm font-semibold tracking-wide">CargoLink</span>
+            <span className="font-display text-sm font-semibold tracking-wide">CargoLink</span>
+
+
           </div>
           <div className="flex items-center gap-1">
           <nav className="flex items-center gap-1">

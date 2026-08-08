@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { getLocationDisplayName } from "@/lib/location-lookup";
 import { cn, formatDistance, formatScu } from "@/lib/utils";
 import type { Contract, RouteAction } from "@/types/contracts";
 
@@ -93,7 +94,7 @@ export function TrackingTab() {
         <div>
           <p className="text-sm font-semibold">No planned route</p>
           <p className="mt-1 max-w-sm text-xs text-muted-foreground">
-            Generate a route in the Routing tab to track pickups and dropoffs step by step.
+            Build a flight plan first, then work pickups and dropoffs stop by stop.
           </p>
         </div>
         {selectedContracts.length > 0 && (
@@ -129,7 +130,10 @@ export function TrackingTab() {
           )}
         >
           <Badge variant="secondary" className="max-w-[12rem] truncate">
-            From {routingSettings.startingLocation || "—"}
+            From{" "}
+            {getLocationDisplayName(routingSettings.startingLocation) ||
+              getLocationDisplayName(route.visits[0]?.locationName ?? "") ||
+              "—"}
           </Badge>
           <span className="tabular-nums text-muted-foreground">
             {route.visits.length} stops · {formatDistance(route.totalDistance)} ·{" "}

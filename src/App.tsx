@@ -6,7 +6,10 @@ import { HomePage } from "@/pages/HomePage";
 import { MapPage } from "@/pages/MapPage";
 import { ContractsPage } from "@/pages/ContractsPage";
 import { HelpPage } from "@/pages/HelpPage";
+import { DevLocationsPage } from "@/pages/DevLocationsPage";
 import { Toaster } from "@/components/ui/sonner";
+
+const isDev = import.meta.env.DEV;
 
 export default function App() {
   return (
@@ -19,6 +22,7 @@ export default function App() {
             <Route path="contracts" element={<ContractsPage />} />
             <Route path="map" element={<MapPage />} />
             <Route path="help" element={<HelpPage />} />
+            {isDev && <Route path="dev/locations" element={<DevLocationsPage />} />}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

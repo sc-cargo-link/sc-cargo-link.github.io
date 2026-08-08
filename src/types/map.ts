@@ -9,9 +9,14 @@ export interface MapBounds {
   maxY: number;
 }
 
+export type MapOrbitKind = "planet" | "moon";
+
 export interface MapOrbit {
   n: string;
   entityName?: string;
+  /** Planet that the moon orbits around (moon orbits only). */
+  parentEntityName?: string;
+  kind: MapOrbitKind;
   cx: number;
   cy: number;
   r: number;

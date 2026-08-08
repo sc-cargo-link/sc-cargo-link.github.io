@@ -20,7 +20,9 @@ export default {
     extend: {
       fontFamily: {
         sans: ['"Source Sans 3"', "system-ui", "sans-serif"],
+        display: ['"Barlow Condensed"', '"Source Sans 3"', "system-ui", "sans-serif"],
       },
+
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -96,13 +98,20 @@ export default {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-8px)" },
         },
+        "hero-drift": {
+          "0%": { transform: "scale(1.05) translate3d(0, 0, 0)" },
+          "50%": { transform: "scale(1.08) translate3d(-1%, -0.5%, 0)" },
+          "100%": { transform: "scale(1.05) translate3d(0, 0, 0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "pulse-glow": "pulse-glow 4s infinite ease-in-out",
         float: "float 5s infinite ease-in-out",
+        "hero-drift": "hero-drift 28s ease-in-out infinite",
       },
+
       backgroundImage: {
         atmosphere:
           "radial-gradient(ellipse 80% 50% at 50% -10%, var(--atmosphere-brand), transparent 55%), radial-gradient(ellipse 60% 40% at 100% 0%, var(--atmosphere-depth), transparent 50%)",

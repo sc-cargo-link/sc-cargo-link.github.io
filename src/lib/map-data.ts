@@ -1,6 +1,7 @@
 import type {
   LocationCategory,
   MapData,
+  MapOrbit,
   MapPOI,
   MapTreeNode,
   RawMapData,
@@ -11,38 +12,84 @@ import nyxData from "@/data/map_data/nyx.json";
 import pyroData from "@/data/map_data/pyro.json";
 import stantonData from "@/data/map_data/stanton.json";
 
+/** Scale at which moon orbits become readable (~25px for a 50 Mm ring). */
+export const PLANET_LEVEL_MIN_SCALE = 5e-7;
+
+function deriveMoonOrbits(pois: MapPOI[]): MapOrbit[] {
+  const byEntity = new Map<string, MapPOI>();
+  for (const poi of pois) {
+    if (poi.en) byEntity.set(poi.en, poi);
+  }
+
+  const orbits: MapOrbit[] = [];
+  for (const moon of pois) {
+    if (moon.category !== "moon" || !moon.en) continue;
+    const chain = moon.pc || [];
+    let parent: MapPOI | undefined;
+    for (let i = chain.length - 1; i >= 0; i -= 1) {
+      const entity = chain[i];
+      if (entity === moon.en) continue;
+      const candidate = byEntity.get(entity);
+      if (candidate?.category === "planet") {
+        parent = candidate;
+        break;
+      }
+    }
+    if (!parent) continue;
+    const r = Math.hypot(moon.x - parent.x, moon.y - parent.y);
+    if (!(r > 0)) continue;
+    orbits.push({
+      n: moon.n,
+      entityName: moon.en,
+      parentEntityName: parent.en,
+      kind: "moon",
+      cx: parent.x,
+      cy: parent.y,
+      r,
+      px: moon.x,
+      py: moon.y,
+    });
+  }
+  return orbits;
+}
+
 function normalizeMapData(raw: RawMapData): MapData {
+  const pois: MapPOI[] = (raw.pois || []).map((poi) => ({
+    n: poi.display_name,
+    x: poi.world_position[0],
+    y: poi.world_position[1],
+    z: poi.world_position[2],
+    en: poi.entity_name,
+    pc: poi.parent_chain,
+    category: poi.category,
+    sm: poi.star_map_record_id,
+    src: poi.source,
+    icon: poi.nav_icon,
+    recordName: poi.record_name,
+    description: poi.description,
+  }));
+
+  const planetOrbits: MapOrbit[] = (raw.orbits || []).map((orbit) => ({
+    n: orbit.name,
+    entityName: orbit.entity_name,
+    kind: "planet" as const,
+    cx: orbit.center[0],
+    cy: orbit.center[1],
+    r: orbit.radius,
+    px: orbit.planet_position?.[0],
+    py: orbit.planet_position?.[1],
+  }));
+
   return {
     system: raw.system,
     count: raw.count,
     categoryCounts: raw.category_counts,
     bounds: raw.bounds,
-    orbits: (raw.orbits || []).map((orbit) => ({
-      n: orbit.name,
-      entityName: orbit.entity_name,
-      cx: orbit.center[0],
-      cy: orbit.center[1],
-      r: orbit.radius,
-      px: orbit.planet_position?.[0],
-      py: orbit.planet_position?.[1],
-    })),
+    orbits: [...planetOrbits, ...deriveMoonOrbits(pois)],
     orbitExceptions: raw.orbit_exceptions || {},
     entityIndex: raw.entity_index || {},
     tree: raw.tree,
-    pois: (raw.pois || []).map((poi) => ({
-      n: poi.display_name,
-      x: poi.world_position[0],
-      y: poi.world_position[1],
-      z: poi.world_position[2],
-      en: poi.entity_name,
-      pc: poi.parent_chain,
-      category: poi.category,
-      sm: poi.star_map_record_id,
-      src: poi.source,
-      icon: poi.nav_icon,
-      recordName: poi.record_name,
-      description: poi.description,
-    })),
+    pois,
   };
 }
 
@@ -126,76 +173,53 @@ export function distance2d(a: { x: number; y: number }, b: { x: number; y: numbe
   return Math.hypot(a.x - b.x, a.y - b.y);
 }
 
-export function categorizePoi(poi: MapPOI): LocationCategory[] {
-  const categories = new Set<LocationCategory>();
-  const chain = poi.pc || [];
-  const chainText = chain.join(" ").toLowerCase();
-  const name = poi.n.toLowerCase();
-  const icon = (poi.icon || "").toLowerCase();
-
+/**
+ * Exclusive map filter category for a POI.
+ * Uses the data `category` when present; never promotes child POIs to
+ * planet/moon just because those appear in the parent chain.
+ */
+export function getPrimaryCategory(poi: MapPOI): LocationCategory {
   switch (poi.category) {
     case "planet":
-      categories.add("planets");
-      return Array.from(categories);
+      return "planets";
     case "moon":
-      categories.add("moons");
-      return Array.from(categories);
+      return "moons";
     case "lagrangian_point":
-      categories.add("lagrangian");
-      return Array.from(categories);
+      return "lagrangian";
     case "station":
-      categories.add("stations");
-      return Array.from(categories);
+      return "stations";
     case "star":
-      categories.add("otherPoi");
-      return Array.from(categories);
+      return "otherPoi";
     default:
       break;
   }
 
-  const isLagrangian = /_l[1-5](?:_|$)/i.test(chainText) || /lagrange|lagrangian/i.test(chainText);
-  const isMoon = /_\d+a_/i.test(chainText) || /moon/i.test(chainText);
-  const isPlanet =
-    /_\d+_[a-z]/i.test(chainText) &&
-    !isMoon &&
-    !/_l[1-5]/i.test(chainText) &&
-    !/jumppoint|jump_point/i.test(chainText);
+  const name = poi.n.toLowerCase();
+  const icon = (poi.icon || "").toLowerCase();
+  const chainText = (poi.pc || []).join(" ").toLowerCase();
+  const entity = (poi.en || "").toLowerCase();
 
   const isStation =
     icon === "outpost" ||
     icon === "station" ||
+    /^loc_rr_|^rs_/i.test(entity) ||
+    /rr_|rest_stop|reststop/i.test(chainText) ||
     /station|reststop|rest stop|port|depot|trading|hospital|admin|security post|services/i.test(
       name
-    ) ||
-    /rr_|rest_stop|station/i.test(chainText);
+    );
 
-  if (isPlanet) categories.add("planets");
-  if (isMoon) categories.add("moons");
-  if (isLagrangian) categories.add("lagrangian");
-  if (isStation) categories.add("stations");
+  return isStation ? "stations" : "otherPoi";
+}
 
-  if (
-    categories.size === 0 ||
-    poi.category === "poi" ||
-    (!isPlanet && !isMoon && !isLagrangian && !isStation)
-  ) {
-    categories.add("otherPoi");
-  }
-
-  return Array.from(categories);
+export function categorizePoi(poi: MapPOI): LocationCategory[] {
+  return [getPrimaryCategory(poi)];
 }
 
 export function poiMatchesFilters(
   poi: MapPOI,
   filters: Record<LocationCategory, boolean>
 ): boolean {
-  const cats = categorizePoi(poi);
-  if (filters.planets && cats.includes("planets")) return true;
-  if (filters.moons && cats.includes("moons")) return true;
-  if (filters.lagrangian && cats.includes("lagrangian")) return true;
-  if (filters.stations && cats.includes("stations")) return true;
-  if (filters.otherPoi && cats.includes("otherPoi")) return true;
-  return false;
+  return !!filters[getPrimaryCategory(poi)];
 }
 
 export function getVisiblePoiIndices(
@@ -205,6 +229,61 @@ export function getVisiblePoiIndices(
   return data.pois
     .map((poi, i) => (poiMatchesFilters(poi, filters) ? i : -1))
     .filter((i) => i >= 0);
+}
+
+/** Higher wins when points overlap on screen. */
+export const CATEGORY_PRIORITY: Record<LocationCategory, number> = {
+  planets: 5,
+  moons: 4,
+  stations: 3,
+  lagrangian: 2,
+  otherPoi: 1,
+};
+
+export const CATEGORY_COLORS: Record<LocationCategory, string> = {
+  planets: "#4da3ff",
+  moons: "#3dbf9a",
+  stations: "#e8a838",
+  lagrangian: "#e07a5f",
+  otherPoi: "#8b9cb3",
+};
+
+export const CATEGORY_RADIUS: Record<LocationCategory, number> = {
+  planets: 7,
+  moons: 6,
+  stations: 5,
+  lagrangian: 5,
+  otherPoi: 4,
+};
+
+/**
+ * Keep one POI per screen cell, preferring the highest category.
+ * Cell size is in CSS pixels (roughly marker diameter).
+ */
+export function collapseOverlappingPoiIndices(
+  indices: Iterable<number>,
+  data: MapData,
+  screenPos: (index: number) => { sx: number; sy: number },
+  cellSize = 10
+): number[] {
+  const winners = new Map<string, number>();
+  for (const i of indices) {
+    const poi = data.pois[i];
+    if (!poi) continue;
+    const { sx, sy } = screenPos(i);
+    const key = `${Math.floor(sx / cellSize)}\0${Math.floor(sy / cellSize)}`;
+    const existing = winners.get(key);
+    if (existing === undefined) {
+      winners.set(key, i);
+      continue;
+    }
+    const existingCat = getPrimaryCategory(data.pois[existing]);
+    const nextCat = getPrimaryCategory(poi);
+    if (CATEGORY_PRIORITY[nextCat] > CATEGORY_PRIORITY[existingCat]) {
+      winners.set(key, i);
+    }
+  }
+  return Array.from(winners.values());
 }
 
 type PathSegmentKind = "planet" | "moon" | "lagrangian" | "station" | "jumppoint" | "container";

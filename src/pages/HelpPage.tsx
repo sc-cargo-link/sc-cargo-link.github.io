@@ -10,9 +10,10 @@ export function HelpPage() {
           <Badge variant="outline">Step-by-step guide</Badge>
         </div>
         <p className="max-w-2xl text-sm text-muted-foreground">
-          Learn how to scan contracts, plan optimal hauling routes, and track cargo across Pyro,
-          Stanton, and Nyx.
+          How a hauler works the shift: prep the manifest, plan the run, then fly it stop by
+          stop — structure for realistic ops across Pyro, Stanton, and Nyx.
         </p>
+
       </div>
 
       <HelpGuide />

@@ -127,4 +127,11 @@
   #root {
     @apply min-h-screen w-full;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-hero-drift {
+      animation: none !important;
+    }
+  }
 }
+
