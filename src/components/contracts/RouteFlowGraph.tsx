@@ -2,7 +2,7 @@ import { ArrowDown, CheckCircle2, Circle, Fuel, MapPin, Route } from "lucide-rea
 import type { Contract, RouteAction, RouteVisit } from "@/types/contracts";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { formatDistance, formatScu } from "@/lib/utils";
+import { cn, formatDistance, formatScu } from "@/lib/utils";
 import { cargoItemLabel } from "@/lib/cargo-display";
 import { getLocationDisplayName } from "@/lib/location-lookup";
 
@@ -47,9 +47,12 @@ function ActionRow({
 }) {
   return (
     <div
-      className={`flex items-start justify-between gap-2 rounded-md border px-2 py-1.5 text-xs ${
-        done ? "border-emerald-500/30 bg-emerald-500/5" : "border-border"
-      }`}
+      className={cn(
+        "flex items-start justify-between gap-2 rounded-md px-2 py-1.5 text-xs",
+        done
+          ? "border border-emerald-500/30 bg-emerald-500/5"
+          : "border border-transparent bg-muted/25"
+      )}
     >
       <div className="flex min-w-0 items-start gap-2">
         <Button variant="ghost" size="icon" className="mt-0.5 h-6 w-6 shrink-0" onClick={onToggle}>
@@ -60,18 +63,18 @@ function ActionRow({
           )}
         </Button>
         <div className="min-w-0">
-          <div className={`font-medium ${done ? "text-muted-foreground line-through" : ""}`}>
+          <div className={cn("font-medium", done && "text-muted-foreground line-through")}>
             {action.type === "pickup" ? "Pick up" : "Drop off"}
           </div>
-          <div className={`text-muted-foreground ${done ? "line-through" : ""}`}>
+          <div className={cn("text-muted-foreground", done && "line-through")}>
             {action.items.map((it) => `${cargoItemLabel(it)} (${formatScu(it.scu)})`).join(", ")}
           </div>
           <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
-            <span className="text-[10px] text-muted-foreground">{action.contractTitle}</span>
+            <span className="text-[11px] text-muted-foreground">{action.contractTitle}</span>
             <Button
               variant="ghost"
               size="sm"
-              className="h-5 px-1.5 text-[10px]"
+              className="h-5 px-1.5 text-[11px]"
               onClick={onToggleContract}
             >
               {contractDone ? (
@@ -90,9 +93,9 @@ function ActionRow({
 function FlowConnector() {
   return (
     <div className="flex flex-col items-center py-0.5">
-      <div className="h-4 w-px bg-border" />
-      <ArrowDown className="h-3.5 w-3.5 text-muted-foreground/70" />
-      <div className="h-4 w-px bg-border" />
+      <div className="h-3 w-px bg-border/80" />
+      <ArrowDown className="h-3.5 w-3.5 text-muted-foreground/60" />
+      <div className="h-3 w-px bg-border/80" />
     </div>
   );
 }
@@ -117,22 +120,25 @@ function FlowNode({
   getContract: (id: string) => Contract | undefined;
 }) {
   return (
-    <div className="flex w-full max-w-lg flex-col items-center">
+    <div className="flex w-full max-w-2xl flex-col items-stretch">
       <div
-        className={`w-full rounded-lg border bg-card p-3 shadow-md transition-colors ${
-          active ? "border-primary ring-2 ring-primary/20" : done ? "border-border opacity-75" : "border-border"
-        }`}
+        className={cn(
+          "w-full rounded-lg border border-border/70 bg-muted/20 p-3 transition-colors duration-200",
+          active && "border-primary/50 bg-primary/5",
+          done && !active && "opacity-75"
+        )}
       >
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2">
             <div
-              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
+              className={cn(
+                "flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[11px] font-bold tabular-nums transition-colors",
                 active
                   ? "bg-primary text-primary-foreground"
                   : done
                     ? "bg-emerald-600/20 text-emerald-400"
                     : "bg-muted text-muted-foreground"
-              }`}
+              )}
             >
               {done ? <CheckCircle2 className="h-3.5 w-3.5" /> : index + 1}
             </div>
@@ -147,9 +153,11 @@ function FlowNode({
                   {visitIcon(visit.type)}
                   {visitLabel(visit.type)}
                 </Badge>
-                <span className="text-sm font-medium">{getLocationDisplayName(visit.locationName)}</span>
+                <span className="text-sm font-semibold tracking-tight">
+                  {getLocationDisplayName(visit.locationName)}
+                </span>
               </div>
-              <div className="mt-0.5 flex flex-wrap gap-2 text-[10px] text-muted-foreground">
+              <div className="mt-0.5 flex flex-wrap gap-2 text-[11px] tabular-nums text-muted-foreground">
                 <span>{visit.system}</span>
                 {visit.distanceFromPrev > 0 && <span>+{formatDistance(visit.distanceFromPrev)}</span>}
                 <span>Cargo after: {formatScu(visit.cargoAfter)}</span>
@@ -169,7 +177,7 @@ function FlowNode({
         )}
 
         {visit.actions.length > 0 && (
-          <div className="mt-2 space-y-1.5">
+          <div className="mt-2 space-y-1">
             {visit.actions.map((action, i) => {
               const contract = getContract(action.contractId);
               return (
@@ -218,7 +226,7 @@ export function RouteFlowGraph({
   const activeIndex = visits.findIndex((v) => !isVisitDone(v));
 
   return (
-    <div className="flex flex-col items-center py-2">
+    <div className="flex flex-col items-center py-1">
       {visits.map((visit, index) => (
         <div key={visit.id} className="flex w-full flex-col items-center">
           <FlowNode

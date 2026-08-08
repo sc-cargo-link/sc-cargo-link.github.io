@@ -27,10 +27,13 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { formatDistance, formatScu } from "@/lib/utils";
+import { cn, formatDistance, formatScu } from "@/lib/utils";
 import { cargoItemLabel } from "@/lib/cargo-display";
 import type { Contract, ContractStop, RouteAction, RoutePlan, RouteVisit } from "@/types/contracts";
 import type { StarSystem } from "@/types/map";
+
+const panelClass =
+  "shadow-none ring-0 border-border/80 bg-card/80 backdrop-blur-sm";
 
 function formatStopItems(
   stop: ContractStop,
@@ -70,19 +73,20 @@ function ContractRouteRow({
         <div className="min-w-0 flex-1 truncate font-medium">{contract.title}</div>
         {contract.selectedForRoute && total > 0 && (
           <span
-            className={`shrink-0 tabular-nums text-[10px] font-semibold ${
+            className={cn(
+              "shrink-0 tabular-nums text-[11px] font-semibold",
               allIncluded ? "text-emerald-400" : "text-amber-400"
-            }`}
+            )}
           >
             ({included}/{total})
           </span>
         )}
       </div>
       <div className="mt-1 grid grid-cols-2 gap-x-3 gap-y-1">
-        <div className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+        <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
           Pickup
         </div>
-        <div className="text-right text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+        <div className="text-right text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
           Drop off
         </div>
         {Array.from({ length: rowCount }, (_, i) => (
@@ -90,15 +94,15 @@ function ContractRouteRow({
             <div className="min-w-0">
               {activePickups[i] ? (
                 <>
-                  <div className="truncate text-[10px] text-muted-foreground">
+                  <div className="truncate text-[11px] text-muted-foreground">
                     {stopLocationLabel(activePickups[i])}
                   </div>
-                  <div className="truncate text-[10px] text-foreground/80">
+                  <div className="truncate text-xs text-foreground/80">
                     {formatStopItems(activePickups[i], contract, "pickup")}
                   </div>
                 </>
               ) : (
-                <div className="text-[10px] text-muted-foreground">
+                <div className="text-[11px] text-muted-foreground">
                   {activePickups.length === 0 && i === 0 ? "—" : ""}
                 </div>
               )}
@@ -106,15 +110,15 @@ function ContractRouteRow({
             <div className="min-w-0 text-right">
               {activeDropoffs[i] ? (
                 <>
-                  <div className="truncate text-[10px] text-muted-foreground">
+                  <div className="truncate text-[11px] text-muted-foreground">
                     {stopLocationLabel(activeDropoffs[i])}
                   </div>
-                  <div className="truncate text-[10px] text-foreground/80">
+                  <div className="truncate text-xs text-foreground/80">
                     {formatStopItems(activeDropoffs[i], contract, "dropoff")}
                   </div>
                 </>
               ) : (
-                <div className="text-[10px] text-muted-foreground">
+                <div className="text-[11px] text-muted-foreground">
                   {activeDropoffs.length === 0 && i === 0 ? "—" : ""}
                 </div>
               )}
@@ -149,9 +153,11 @@ function VisitCard({
     <button
       type="button"
       onClick={onSelect}
-      className={`w-full rounded-md border bg-card p-2 text-left text-xs shadow-sm transition-colors ${
-        selected ? "border-primary bg-primary/10 ring-1 ring-primary/20" : "border-border hover:bg-accent/50"
-      }`}
+      className={cn(
+        "w-full rounded-md border p-2 text-left text-xs transition-colors",
+        "border-border/70 bg-muted/20 hover:bg-accent/40",
+        selected && "border-primary/50 bg-primary/10"
+      )}
     >
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
@@ -217,7 +223,7 @@ function VisitCard({
           {action.items.map((it) => `${cargoItemLabel(it)} ${it.scu} SCU`).join(", ")}
         </div>
       ))}
-      <div className="mt-1 text-[10px] text-muted-foreground">
+      <div className="mt-1 text-[11px] tabular-nums text-muted-foreground">
         Cargo onboard: {formatScu(visit.cargoAfter)}
       </div>
     </button>
@@ -269,7 +275,7 @@ function CustomRoutePanel({
         return (
           <label
             key={action.key}
-            className="flex cursor-pointer items-start gap-2 rounded-md border border-border bg-card px-2 py-1.5 text-xs shadow-sm hover:bg-accent/40"
+            className="flex cursor-pointer items-start gap-2 rounded-md border border-border/70 bg-muted/20 px-2 py-1.5 text-xs hover:bg-accent/40"
           >
             <Checkbox
               checked={selectedKeys.has(action.key)}
@@ -494,104 +500,104 @@ export function RoutingTab() {
   };
 
   return (
-    <div className="flex h-full min-h-[calc(100dvh-11rem)] flex-col gap-3">
-      <div className="grid min-h-[680px] flex-1 gap-3 lg:grid-cols-[320px_1fr]">
-        <Card className="flex h-full min-h-[680px] flex-col overflow-hidden">
-          <CardHeader className="shrink-0 pb-2">
-            <CardTitle className="text-sm">Route settings</CardTitle>
+    <div className="flex h-full min-h-0 flex-col gap-2.5">
+      <div className="grid min-h-0 flex-1 gap-2.5 lg:grid-cols-[300px_1fr]">
+        <Card className={cn(panelClass, "flex min-h-[420px] flex-col overflow-hidden lg:min-h-0")}>
+          <CardHeader className="shrink-0 py-2.5 pb-2">
+            <CardTitle className="text-sm font-semibold">Route settings</CardTitle>
           </CardHeader>
-          <CardContent className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden">
-            <div className="shrink-0 space-y-3">
-            <div className="space-y-1">
-              <Label>Ship capacity (SCU)</Label>
-              <Input
-                type="number"
-                min={1}
-                value={routingSettings.shipCapacity}
-                onChange={(e) =>
-                  setRoutingSettings({
-                    ...routingSettings,
-                    shipCapacity: parseInt(e.target.value, 10) || 1,
-                  })
-                }
-                className="h-8"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label>Max range per tank (GM)</Label>
-              <Input
-                type="number"
-                min={1}
-                value={routingSettings.maxDistanceGm}
-                onChange={(e) =>
-                  setRoutingSettings({
-                    ...routingSettings,
-                    maxDistanceGm: parseFloat(e.target.value) || 1,
-                  })
-                }
-                className="h-8"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label>Starting location</Label>
-              <Input
-                value={locationQuery}
-                onChange={(e) => {
-                  setLocationQuery(e.target.value);
-                  setStartSuggestionsOpen(true);
-                }}
-                onFocus={() => setStartSuggestionsOpen(true)}
-                onBlur={() => {
-                  window.setTimeout(() => setStartSuggestionsOpen(false), 150);
-                }}
-                placeholder="Search POI name…"
-                className="h-8"
-              />
-              {startSuggestionsOpen && suggestions.length > 0 && (
-                <div className="rounded-md border border-border bg-popover p-1">
-                  {suggestions.map((s) => (
-                    <button
-                      key={`${s.system}-${s.name}`}
-                      type="button"
-                      className="block w-full truncate rounded px-2 py-1 text-left text-xs hover:bg-accent"
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => {
-                        setLocationQuery(s.name);
-                        setStartSuggestionsOpen(false);
-                        setRoutingSettings({
-                          ...routingSettings,
-                          startingLocation: getLocationStorageKey(s),
-                        });
-                      }}
-                    >
-                      {s.name} <span className="text-muted-foreground">({s.system})</span>
-                    </button>
-                  ))}
+          <CardContent className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-hidden">
+            <div className="shrink-0 space-y-2.5">
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold">Ship capacity (SCU)</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  value={routingSettings.shipCapacity}
+                  onChange={(e) =>
+                    setRoutingSettings({
+                      ...routingSettings,
+                      shipCapacity: parseInt(e.target.value, 10) || 1,
+                    })
+                  }
+                  className="h-8 tabular-nums"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold">Max range per tank (GM)</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  value={routingSettings.maxDistanceGm}
+                  onChange={(e) =>
+                    setRoutingSettings({
+                      ...routingSettings,
+                      maxDistanceGm: parseFloat(e.target.value) || 1,
+                    })
+                  }
+                  className="h-8 tabular-nums"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold">Starting location</Label>
+                <Input
+                  value={locationQuery}
+                  onChange={(e) => {
+                    setLocationQuery(e.target.value);
+                    setStartSuggestionsOpen(true);
+                  }}
+                  onFocus={() => setStartSuggestionsOpen(true)}
+                  onBlur={() => {
+                    window.setTimeout(() => setStartSuggestionsOpen(false), 150);
+                  }}
+                  placeholder="Search POI name…"
+                  className="h-8"
+                />
+                {startSuggestionsOpen && suggestions.length > 0 && (
+                  <div className="rounded-md border border-border/80 bg-popover p-1">
+                    {suggestions.map((s) => (
+                      <button
+                        key={`${s.system}-${s.name}`}
+                        type="button"
+                        className="block w-full truncate rounded px-2 py-1 text-left text-xs hover:bg-accent"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => {
+                          setLocationQuery(s.name);
+                          setStartSuggestionsOpen(false);
+                          setRoutingSettings({
+                            ...routingSettings,
+                            startingLocation: getLocationStorageKey(s),
+                          });
+                        }}
+                      >
+                        {s.name} <span className="text-muted-foreground">({s.system})</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <Button className="h-8 w-full" onClick={generateRoute}>
+                <Route className="mr-1.5 h-3.5 w-3.5" />
+                Generate optimal route
+              </Button>
+              {route && (
+                <Button variant="outline" className="h-8 w-full" onClick={clearRoute}>
+                  <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+                  Clear route
+                </Button>
+              )}
+              {error && (
+                <div className="flex gap-2 rounded-md border border-destructive/40 bg-destructive/10 p-2 text-xs text-destructive">
+                  <AlertCircle className="h-4 w-4 shrink-0" />
+                  {error}
                 </div>
               )}
             </div>
-            <Button className="w-full" onClick={generateRoute}>
-              <Route className="mr-1.5 h-3.5 w-3.5" />
-              Generate optimal route
-            </Button>
-            {route && (
-              <Button variant="outline" className="w-full" onClick={clearRoute}>
-                <Trash2 className="mr-1.5 h-3.5 w-3.5" />
-                Clear route
-              </Button>
-            )}
-            {error && (
-              <div className="flex gap-2 rounded-md border border-destructive/40 bg-destructive/10 p-2 text-xs text-destructive">
-                <AlertCircle className="h-4 w-4 shrink-0" />
-                {error}
-              </div>
-            )}
-            </div>
-            <div className="flex min-h-0 flex-1 flex-col gap-1">
+            <div className="flex min-h-0 flex-1 flex-col gap-1.5">
               <div className="flex shrink-0 items-center justify-between gap-2">
-                <Label>Contracts</Label>
+                <Label className="text-xs font-semibold">Contracts</Label>
                 {contracts.length > 0 && (
-                  <span className="text-[10px] text-muted-foreground">
+                  <span className="text-[11px] tabular-nums text-muted-foreground">
                     {contractSearchQuery.trim()
                       ? `${filteredContracts.length} of ${contracts.length}`
                       : `${contracts.length}`}
@@ -619,7 +625,7 @@ export function RoutingTab() {
                     ) : (
                       filteredContracts.map((c) => (
                         <ContractDetailsTooltip key={c.id} contract={c}>
-                          <label className="flex cursor-pointer items-start gap-2 rounded-md border border-border bg-card px-2 py-1.5 text-xs shadow-sm hover:bg-accent/30">
+                          <label className="flex cursor-pointer items-start gap-2 rounded-md border border-border/70 bg-muted/20 px-2 py-1.5 text-xs hover:bg-accent/30">
                             <Checkbox
                               checked={c.selectedForRoute}
                               onCheckedChange={(v) => toggleContractSelection(c.id, !!v)}
@@ -637,27 +643,19 @@ export function RoutingTab() {
           </CardContent>
         </Card>
 
-        <Card className="flex h-full min-h-[680px] flex-col overflow-hidden">
-          <CardHeader className="flex shrink-0 flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm">Planned route</CardTitle>
-            <div className="flex items-center gap-2">
-              {route && (
-                <>
-                  <div className="flex gap-2 text-xs text-muted-foreground">
-                    <Badge variant="outline">{formatDistance(route.totalDistance)}</Badge>
-                    <Badge variant="outline">{formatScu(route.totalScu)}</Badge>
-                  </div>
-                  <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={clearRoute}>
-                    <Trash2 className="mr-1 h-3 w-3" />
-                    Clear
-                  </Button>
-                </>
-              )}
-            </div>
+        <Card className={cn(panelClass, "flex min-h-[420px] flex-col overflow-hidden lg:min-h-0")}>
+          <CardHeader className="flex shrink-0 flex-row items-center justify-between space-y-0 py-2.5 pb-2">
+            <CardTitle className="text-sm font-semibold">Planned route</CardTitle>
+            {route && (
+              <div className="flex gap-1.5 text-xs text-muted-foreground">
+                <Badge variant="outline">{formatDistance(route.totalDistance)}</Badge>
+                <Badge variant="outline">{formatScu(route.totalScu)}</Badge>
+              </div>
+            )}
           </CardHeader>
           <CardContent className="flex min-h-0 flex-1 flex-col gap-0 overflow-hidden p-0">
-            <ScrollArea className="min-h-0 flex-1 px-6">
-              <div className="space-y-2 pb-4 pr-2">
+            <ScrollArea className="min-h-0 flex-1 px-3 sm:px-4">
+              <div className="space-y-1.5 pb-3 pr-2">
                 {route ? (
                   route.visits.map((visit: RouteVisit, index) => (
                     <VisitCard
@@ -678,17 +676,17 @@ export function RoutingTab() {
                     />
                   ))
                 ) : (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="px-1 py-6 text-center text-sm text-muted-foreground">
                     Generate a route or add a custom stop below.
                   </p>
                 )}
               </div>
             </ScrollArea>
 
-            <Separator />
+            <Separator className="opacity-60" />
 
-            <div className="shrink-0 space-y-2 px-6 py-3">
-              <Label className="text-xs">Custom route</Label>
+            <div className="shrink-0 space-y-2 px-3 py-2.5 sm:px-4">
+              <Label className="text-xs font-semibold">Custom route</Label>
               <div className="flex gap-2">
                 <Input
                   value={customLocationQuery}
@@ -706,7 +704,7 @@ export function RoutingTab() {
                 </Button>
               </div>
               {customSuggestions.length > 0 && selectedVisitIndex === null && (
-                <div className="rounded-md border border-border bg-popover p-1">
+                <div className="rounded-md border border-border/80 bg-popover p-1">
                   {customSuggestions.map((s) => (
                     <button
                       key={`custom-${s.system}-${s.name}`}
@@ -719,7 +717,7 @@ export function RoutingTab() {
                   ))}
                 </div>
               )}
-              <ScrollArea className="max-h-40">
+              <ScrollArea className="max-h-36">
                 <CustomRoutePanel
                   contracts={contracts}
                   locationName={configureLocation}
@@ -732,9 +730,9 @@ export function RoutingTab() {
         </Card>
       </div>
 
-      <Card className="shrink-0 overflow-hidden">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm">Route map</CardTitle>
+      <Card className={cn(panelClass, "shrink-0 overflow-hidden")}>
+        <CardHeader className="py-2.5 pb-2">
+          <CardTitle className="text-sm font-semibold">Route map</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <POIMap compact routeVisits={route?.visits} focusRequest={mapFocusRequest} />

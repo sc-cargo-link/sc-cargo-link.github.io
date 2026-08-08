@@ -20,7 +20,7 @@ export function ScreenshotHoverZoom({ src, alt, zoom = 2 }: ScreenshotHoverZoomP
 
   return (
     <div
-      className="w-full overflow-hidden rounded-md border border-border bg-black/30 p-2 cursor-crosshair"
+      className="w-full cursor-crosshair overflow-hidden rounded-lg border border-border/80 bg-black/35 p-1.5"
       onMouseEnter={() => setActive(true)}
       onMouseLeave={() => setActive(false)}
       onMouseMove={handleMove}

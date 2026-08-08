@@ -80,7 +80,7 @@ export function MissionItemInput({
       />
 
       {showSuggestions && (
-        <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 max-h-40 overflow-y-auto rounded-md border border-border bg-popover shadow-lg">
+        <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-50 max-h-40 overflow-y-auto rounded-md border border-border/80 bg-popover shadow-md">
           {suggestions.map((name, idx) => (
             <button
               key={name}
@@ -105,7 +105,7 @@ export function MissionItemInput({
             <button
               key={`chip-${name}`}
               type="button"
-              className="rounded border border-border bg-card px-1.5 py-0.5 text-[10px] text-muted-foreground hover:bg-accent"
+              className="rounded border border-border/70 bg-muted/30 px-1.5 py-0.5 text-[11px] text-muted-foreground hover:bg-accent"
               onClick={() => pick(name)}
             >
               {name}

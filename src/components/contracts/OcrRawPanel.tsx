@@ -25,8 +25,8 @@ export function OcrRawPanel({ ocrRaw }: { ocrRaw: ScannedFields }) {
   };
 
   return (
-    <div className="mb-2 space-y-1 rounded-md border border-amber-500/30 bg-amber-500/5 p-2">
-      <div className="text-[10px] font-semibold uppercase tracking-wide text-amber-600 dark:text-amber-400">
+    <div className="mb-2 space-y-1.5 rounded-lg border border-amber-500/25 bg-amber-500/5 p-2">
+      <div className="text-[11px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">
         Raw OCR
       </div>
       {zones.map(({ label, text }) => {
@@ -35,7 +35,7 @@ export function OcrRawPanel({ ocrRaw }: { ocrRaw: ScannedFields }) {
         return (
           <div key={label}>
             <div className="flex items-center justify-between gap-2">
-              <div className="text-[10px] font-medium text-muted-foreground">{label}</div>
+              <div className="text-[11px] font-medium text-muted-foreground">{label}</div>
               <Button
                 type="button"
                 variant="ghost"
@@ -47,7 +47,7 @@ export function OcrRawPanel({ ocrRaw }: { ocrRaw: ScannedFields }) {
                 {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
               </Button>
             </div>
-            <pre className="max-h-24 overflow-auto whitespace-pre-wrap break-words rounded border border-border bg-background/80 p-1.5 font-mono text-[10px] leading-relaxed text-foreground">
+            <pre className="max-h-24 overflow-auto whitespace-pre-wrap break-words rounded-md border border-border/70 bg-background/70 p-1.5 font-mono text-[11px] leading-relaxed text-foreground">
               {text.trim() || "(empty)"}
             </pre>
           </div>

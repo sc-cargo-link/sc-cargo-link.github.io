@@ -101,7 +101,7 @@ export function POIMap({ initialSystem, routeVisits, compact, focusRequest }: PO
   };
 
   return (
-    <div className={`flex min-h-0 flex-col ${compact ? "h-[65vh] min-h-[520px]" : "h-full min-h-[calc(100vh-5rem)]"}`}>
+    <div className={`flex min-h-0 flex-col ${compact ? "h-[50vh] min-h-[360px]" : "h-full min-h-[calc(100vh-5rem)]"}`}>
       <div className="flex flex-wrap items-center gap-2 border-b border-border bg-card p-2">
         <div className="flex items-center gap-2">
           <Label>System</Label>

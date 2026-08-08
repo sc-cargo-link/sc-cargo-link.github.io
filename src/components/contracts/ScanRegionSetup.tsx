@@ -106,23 +106,23 @@ export function ScanRegionSetup({
   };
 
   return (
-    <div className="rounded-md border border-border">
-      <div className="flex items-center gap-2 p-2">
+    <div className="rounded-lg border border-border/80 bg-card/60 backdrop-blur-sm">
+      <div className="flex items-center gap-2 px-2.5 py-1.5">
         <button
           type="button"
-          className="flex min-w-0 flex-1 items-center gap-1.5 text-left text-xs font-medium"
+          className="flex min-w-0 flex-1 items-center gap-1.5 text-left text-xs font-semibold"
           onClick={() => setOpen((v) => !v)}
         >
           <ChevronDown
             className={cn(
-              "h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform",
+              "h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform duration-200",
               !open && "-rotate-90"
             )}
           />
           <Crop className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
           <span className="truncate">Scan regions</span>
           {calibrationImage && !open && (
-            <span className="truncate text-[10px] font-normal text-muted-foreground">
+            <span className="truncate text-[11px] font-normal text-muted-foreground">
               — configured
             </span>
           )}
@@ -149,7 +149,7 @@ export function ScanRegionSetup({
       </div>
 
       {open && (
-        <div className="space-y-2 border-t border-border p-2">
+        <div className="space-y-2 border-t border-border/70 px-2.5 py-2">
           <div className="flex flex-wrap gap-1">
             {(Object.keys(REGION_LABELS) as ScanRegionKey[]).map((key) => (
               <Button
@@ -157,7 +157,7 @@ export function ScanRegionSetup({
                 type="button"
                 size="sm"
                 variant={activeRegion === key ? "default" : "outline"}
-                className="h-7 text-[10px]"
+                className="h-7 text-[11px]"
                 onClick={() => setActiveRegion(key)}
               >
                 {REGION_LABELS[key]}
@@ -165,7 +165,7 @@ export function ScanRegionSetup({
             ))}
           </div>
 
-          <p className="text-[10px] text-muted-foreground">
+          <p className="text-[11px] text-muted-foreground">
             Draw a box on the sample screenshot for <strong>{REGION_LABELS[activeRegion]}</strong>.
             All uploads use these regions.
           </p>
@@ -173,7 +173,7 @@ export function ScanRegionSetup({
           {calibrationImage ? (
             <div
               ref={containerRef}
-              className="relative mx-auto w-[70%] cursor-crosshair touch-none select-none overflow-hidden rounded-md border border-border bg-black/40"
+              className="relative mx-auto w-[70%] cursor-crosshair touch-none select-none overflow-hidden rounded-md border border-border/80 bg-black/40"
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
@@ -203,7 +203,7 @@ export function ScanRegionSetup({
                       height: `${region.height * 100}%`,
                     }}
                   >
-                    <span className="absolute left-0 top-0 bg-background/80 px-1 text-[9px] font-medium">
+                    <span className="absolute left-0 top-0 bg-background/80 px-1 text-[11px] font-medium">
                       {REGION_LABELS[key]}
                     </span>
                   </div>
@@ -211,7 +211,7 @@ export function ScanRegionSetup({
               })}
             </div>
           ) : (
-            <div className="flex min-h-32 w-full items-center justify-center rounded-md border border-dashed border-border text-xs text-muted-foreground">
+            <div className="flex min-h-28 w-full items-center justify-center rounded-md border border-dashed border-border/80 text-xs text-muted-foreground">
               Upload a sample contract screenshot to set scan boxes
             </div>
           )}
