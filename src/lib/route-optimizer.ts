@@ -15,6 +15,7 @@ import {
   getLocationDisplayName,
   getLocationStorageKey,
   getRefuelStationsInRange,
+  resolveLocationReference,
   type ResolvedLocation,
 } from "@/lib/location-lookup";
 import { cargoItemLabel, cargoItemsMatch, contractRouteLabel } from "@/lib/cargo-display";
@@ -98,7 +99,7 @@ function buildFuelRangeError(
 }
 
 function hopToLocation(hop: TravelHop): ResolvedLocation {
-  const loc = findLocation(hop.locationName);
+  const loc = resolveLocationReference(hop.locationName, hop);
   if (loc) return loc;
   return {
     name: hop.locationName,
@@ -207,7 +208,7 @@ export function travelDistance(from: ResolvedLocation, to: ResolvedLocation): nu
 }
 
 function visitToResolvedLocation(visit: RouteVisit): ResolvedLocation {
-  const loc = findLocation(visit.locationName);
+  const loc = resolveLocationReference(visit.locationName, visit);
   if (loc) return loc;
   return {
     name: visit.locationName,
@@ -782,7 +783,7 @@ function runOptimizeTasks(
     for (let i = 0; i < remaining.length; i++) {
       const task = remaining[i];
       if (!canDoTask(task, state.completed, state.onboardScu, settings.shipCapacity)) continue;
-      const taskLoc = findLocation(task.locationName);
+      const taskLoc = resolveLocationReference(task.locationName, task);
       if (!taskLoc) continue;
       const score = scoreTaskTravel(state.current, taskLoc);
       if (bestScore === null || isBetterTaskScore(score, bestScore)) {
@@ -799,7 +800,7 @@ function runOptimizeTasks(
     }
 
     const task = remaining.splice(bestIdx, 1)[0];
-    const taskLoc = findLocation(task.locationName);
+    const taskLoc = resolveLocationReference(task.locationName, task);
     if (!taskLoc) {
       return { error: `Location "${task.locationName}" not found on map.` };
     }

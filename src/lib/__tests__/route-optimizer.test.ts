@@ -6,7 +6,7 @@ import {
   recalculateRouteLegs,
 } from "@/lib/route-optimizer";
 import { createStopoverVisit, createVisitFromActions, finalizeRouteVisits } from "@/lib/route-actions";
-import { findLocation } from "@/lib/location-lookup";
+import { findLocation, getAllLocations } from "@/lib/location-lookup";
 import type { Contract, RouteVisit } from "@/types/contracts";
 
 function makeContract(overrides: Partial<Contract> & Pick<Contract, "id" | "title">): Contract {
@@ -367,6 +367,60 @@ describe("recalculateRouteLegs", () => {
     expect(reversed.visits[2].distanceFromPrev).toBeGreaterThan(0);
     expect(reversed.totalDistance).toBe(
       reversed.visits.slice(1).reduce((sum, v) => sum + v.distanceFromPrev, 0)
+    );
+  });
+
+  it("keeps the selected POI when a route visit shares its display name", () => {
+    const byName = new Map<string, ReturnType<typeof getAllLocations>>();
+    for (const location of getAllLocations()) {
+      const matches = byName.get(location.name) ?? [];
+      matches.push(location);
+      byName.set(location.name, matches);
+    }
+    const duplicateLocations = [...byName.values()].find(
+      (matches) =>
+        matches.length > 1 &&
+        matches.some((a) => matches.some((b) => Math.hypot(a.x - b.x, a.y - b.y) >= 1))
+    );
+    expect(duplicateLocations).toBeDefined();
+    if (!duplicateLocations) return;
+
+    const selected = duplicateLocations[duplicateLocations.length - 1];
+    const destination = getAllLocations().find(
+      (location) =>
+        location.system === selected.system &&
+        Math.hypot(location.x - selected.x, location.y - selected.y) >= 1
+    );
+    expect(destination).toBeDefined();
+    if (!destination) return;
+
+    const result = recalculateRouteLegs([
+      {
+        id: "selected",
+        locationName: selected.name,
+        x: selected.x,
+        y: selected.y,
+        system: selected.system,
+        type: "pickup",
+        actions: [],
+        cargoAfter: 0,
+        distanceFromPrev: 0,
+      },
+      {
+        id: "destination",
+        locationName: destination.poi.en ?? destination.name,
+        x: destination.x,
+        y: destination.y,
+        system: destination.system,
+        type: "dropoff",
+        actions: [],
+        cargoAfter: 0,
+        distanceFromPrev: 0,
+      },
+    ]);
+
+    expect(result.visits[1].distanceFromPrev).toBeCloseTo(
+      Math.hypot(selected.x - destination.x, selected.y - destination.y)
     );
   });
 

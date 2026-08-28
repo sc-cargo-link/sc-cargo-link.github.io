@@ -13,7 +13,12 @@ import {
   type AvailableRouteAction,
   type ContractStopCandidate,
 } from "@/lib/route-actions";
-import { findLocation, getLocationDisplayName, getLocationStorageKey } from "@/lib/location-lookup";
+import {
+  findLocation,
+  getLocationDisplayName,
+  getLocationStorageKey,
+  resolveLocationReference,
+} from "@/lib/location-lookup";
 import { POIMap } from "@/components/map/POIMap";
 import { RouteSettingsBar } from "@/components/contracts/routing/RouteSettingsBar";
 import { RouteContractsRail } from "@/components/contracts/routing/RouteContractsRail";
@@ -106,7 +111,13 @@ export function RoutingTab() {
     }
 
     setError(null);
-    const startLoc = findLocation(locationQuery);
+    const configuredStart = resolveLocationReference(routingSettings.startingLocation);
+    const startLoc =
+      configuredStart &&
+      getLocationDisplayName(routingSettings.startingLocation).trim().toLowerCase() ===
+        locationQuery.trim().toLowerCase()
+        ? configuredStart
+        : findLocation(locationQuery);
     const startingLocation = startLoc
       ? getLocationStorageKey(startLoc)
       : routingSettings.startingLocation;
@@ -312,7 +323,7 @@ export function RoutingTab() {
       return;
     }
 
-    setCustomLocationQuery(candidate.displayName);
+    setCustomLocationQuery(candidate.locationName);
     setPendingActionKeys(new Set(candidate.actions.map((a) => a.key)));
   };
 

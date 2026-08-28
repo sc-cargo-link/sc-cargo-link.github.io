@@ -104,6 +104,28 @@ export function findLocation(query: string): ResolvedLocation | null {
   return bestScore >= Math.min(2, words.length) ? best : null;
 }
 
+export function resolveLocationReference(
+  query: string,
+  reference?: Pick<ResolvedLocation, "x" | "y" | "system">
+): ResolvedLocation | null {
+  if (reference) {
+    const poi = getMapData(reference.system).pois.find(
+      (candidate) => Math.hypot(candidate.x - reference.x, candidate.y - reference.y) < 1
+    );
+    if (poi) {
+      return {
+        name: poi.n,
+        x: poi.x,
+        y: poi.y,
+        system: reference.system,
+        poi,
+      };
+    }
+  }
+
+  return findLocation(query);
+}
+
 export function searchLocations(query: string, limit = 20): ResolvedLocation[] {
   const q = normalize(query);
   if (!q) return [];

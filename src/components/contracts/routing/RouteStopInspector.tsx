@@ -7,7 +7,12 @@ import {
   type AvailableRouteAction,
   type ContractStopCandidate,
 } from "@/lib/route-actions";
-import { getLocationDisplayName, searchLocations } from "@/lib/location-lookup";
+import {
+  getLocationDisplayName,
+  getLocationStorageKey,
+  isExactStoredLocation,
+  searchLocations,
+} from "@/lib/location-lookup";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -175,7 +180,10 @@ export function RouteStopInspector({
     [contracts, route, startingLocation]
   );
 
-  const query = customLocationQuery.trim().toLowerCase();
+  const customLocationDisplay = isExactStoredLocation(customLocationQuery)
+    ? getLocationDisplayName(customLocationQuery)
+    : customLocationQuery;
+  const query = customLocationDisplay.trim().toLowerCase();
   const filteredCandidates = useMemo(() => {
     if (!query) return candidates;
     return candidates.filter(
@@ -186,8 +194,8 @@ export function RouteStopInspector({
   }, [candidates, query]);
 
   const customSuggestions = useMemo(
-    () => (customLocationQuery.length > 2 ? searchLocations(customLocationQuery, 8) : []),
-    [customLocationQuery]
+    () => (customLocationDisplay.length > 2 ? searchLocations(customLocationDisplay, 8) : []),
+    [customLocationDisplay]
   );
 
   const selectedCandidateKey = customLocationQuery.trim()
@@ -284,7 +292,7 @@ export function RouteStopInspector({
                 .
               </p>
               <Input
-                value={customLocationQuery}
+                value={customLocationDisplay}
                 onChange={(e) => setCustomLocationQuery(e.target.value)}
                 placeholder="Filter or search any POI…"
                 className="h-8"
@@ -332,7 +340,7 @@ export function RouteStopInspector({
                           key={`custom-${s.system}-${s.name}`}
                           type="button"
                           className="block w-full truncate rounded px-2 py-1 text-left text-xs hover:bg-accent"
-                          onClick={() => setCustomLocationQuery(s.name)}
+                          onClick={() => setCustomLocationQuery(getLocationStorageKey(s))}
                         >
                           {s.name}{" "}
                           <span className="text-muted-foreground">({s.system})</span>

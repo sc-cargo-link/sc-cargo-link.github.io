@@ -5,6 +5,7 @@ import {
   findLocation,
   getLocationDisplayName,
   getLocationStorageKey,
+  resolveLocationReference,
   type ResolvedLocation,
 } from "@/lib/location-lookup";
 import { cargoItemsMatch, cargoItemLabel } from "@/lib/cargo-display";
@@ -138,7 +139,7 @@ function resolveFromPoint(
 ): ResolvedLocation | null {
   if (route && route.visits.length > 0) {
     const last = route.visits[route.visits.length - 1];
-    const loc = findLocation(last.locationName);
+    const loc = resolveLocationReference(last.locationName, last);
     if (loc) return loc;
     return {
       name: last.locationName,
