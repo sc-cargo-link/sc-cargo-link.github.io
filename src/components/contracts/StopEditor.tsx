@@ -40,8 +40,8 @@ function StopLine({
   };
 
   return (
-    <div className="flex min-w-0 items-center gap-1.5 rounded-md border border-border/60 bg-muted/20 px-1.5 py-1">
-      <span className="w-4 shrink-0 text-center text-[10px] tabular-nums text-muted-foreground">
+    <div className="flex min-w-0 items-start gap-1.5 rounded-md border border-border/60 bg-muted/20 px-1.5 py-1">
+      <span className="mt-1.5 w-4 shrink-0 text-center text-[10px] tabular-nums text-muted-foreground">
         {index + 1}
       </span>
       <LocationNameInput
@@ -51,8 +51,8 @@ function StopLine({
         placeholder="Location"
         className="w-[7.5rem] shrink-0 sm:w-[9rem]"
       />
-      <div className="h-5 w-px shrink-0 bg-border/70" aria-hidden />
-      <div className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto overflow-y-visible">
+      <div className="mt-1.5 h-5 w-px shrink-0 bg-border/70" aria-hidden />
+      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1">
         {stop.items.map((item) => (
           <div
             key={item.id}
@@ -95,13 +95,13 @@ function StopLine({
         </button>
       </div>
       {type === "dropoff" && (
-        <span className="shrink-0 tabular-nums text-[10px] text-muted-foreground">
+        <span className="mt-1.5 shrink-0 tabular-nums text-[10px] text-muted-foreground">
           {formatScu(stopTotalScu(stop, type))}
         </span>
       )}
       <button
         type="button"
-        className="shrink-0 p-1 text-muted-foreground hover:text-destructive"
+        className="mt-0.5 shrink-0 p-1 text-muted-foreground hover:text-destructive"
         onClick={onRemove}
         aria-label={`Remove ${type} stop`}
         title="Remove stop"
