@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Plus, Search, Trash2, Upload } from "lucide-react";
+import { BarChart3, MapPin, Plus, Search, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { useContracts } from "@/context/ContractsContext";
 import type { Contract, ContractStop, ScanRegion } from "@/types/contracts";
@@ -12,6 +12,7 @@ import { ContractDetailsTooltip } from "@/components/contracts/ContractDetailsTo
 import { ScreenshotPanViewer } from "@/components/contracts/ScreenshotPanViewer";
 import { ScanRegionSetup } from "@/components/contracts/ScanRegionSetup";
 import { StopSection } from "@/components/contracts/StopEditor";
+import { findLocation } from "@/lib/location-lookup";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -316,11 +317,47 @@ export function PrepTab() {
     [orderedContracts],
   );
 
+  const totalScu = useMemo(
+    () => orderedContracts.reduce((sum, c) => sum + contractTotalScu(c), 0),
+    [orderedContracts],
+  );
+
   const filteredContracts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     if (!query) return orderedContracts;
     return orderedContracts.filter((contract) => contractMatchesSearch(contract, query));
   }, [orderedContracts, searchQuery]);
+
+  const locationStats = useMemo(() => {
+    const stats = new Map<string, { key: string; name: string; count: number }>();
+
+    for (const contract of contracts) {
+      for (const stop of [...contract.pickups, ...contract.dropoffs]) {
+        const rawName = (stop.locationName || stop.locationHint || "").trim();
+        if (!rawName || /^(?:pickup|dropoff)(?: location)?$/i.test(rawName)) continue;
+
+        const resolved = findLocation(rawName);
+        const key = resolved
+          ? `${resolved.system}:${resolved.poi.en ?? resolved.name}`
+          : `unresolved:${rawName.toLowerCase().replace(/\s+/g, " ")}`;
+        const existing = stats.get(key);
+
+        if (existing) {
+          existing.count += 1;
+        } else {
+          stats.set(key, {
+            key,
+            name: resolved?.name ?? rawName,
+            count: 1,
+          });
+        }
+      }
+    }
+
+    return [...stats.values()].sort(
+      (a, b) => b.count - a.count || a.name.localeCompare(b.name)
+    );
+  }, [contracts]);
 
   const handleFiles = async (files: FileList | null) => {
     if (!files?.length) return;
@@ -451,6 +488,52 @@ export function PrepTab() {
         onRegionsChange={setScanRegions}
         onCalibrationImageChange={setScanCalibrationImage}
       />
+
+      <div className="rounded-lg border border-border/80 bg-card/60 px-2.5 py-2 backdrop-blur-sm">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+          <div className="flex items-center gap-1.5">
+            <BarChart3 className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-xs font-semibold">Stats</span>
+            {locationStats.length > 0 && (
+              <span className="text-[11px] text-muted-foreground">
+                — {locationStats.reduce((sum, location) => sum + location.count, 0)} visits
+              </span>
+            )}
+          </div>
+          <div className="ml-auto flex flex-wrap items-center gap-1.5 text-[11px]">
+            <span className="text-muted-foreground">Total SCU</span>
+            <Badge variant="secondary" className="tabular-nums">
+              {formatScu(totalScu)}
+            </Badge>
+            <span className="ml-1 text-muted-foreground">Total money</span>
+            <Badge variant="default" className="tabular-nums">
+              {formatAuec(totalReward)}
+            </Badge>
+          </div>
+        </div>
+        {locationStats.length > 0 ? (
+          <div className="mt-2 grid grid-cols-1 gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
+            {locationStats.map((location) => (
+              <div
+                key={location.key}
+                className="flex min-w-0 items-center gap-1.5 rounded-md border border-border/60 bg-muted/20 px-2 py-1.5 text-xs"
+              >
+                <MapPin className="h-3 w-3 shrink-0 text-muted-foreground" />
+                <span className="min-w-0 flex-1 truncate" title={location.name}>
+                  {location.name}
+                </span>
+                <span className="shrink-0 font-medium tabular-nums text-muted-foreground">
+                  ({location.count})
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            Add contract stops to see location visit counts.
+          </p>
+        )}
+      </div>
 
       {contracts.length === 0 ? (
         <div className="rounded-lg border border-dashed border-border/80 px-4 py-10 text-center">
