@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { FolderTree, Map, Package, HelpCircle, Home } from "lucide-react";
+import { FolderTree, Gamepad2, Map, Package, HelpCircle, Home } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { cn } from "@/lib/utils";
 
@@ -7,6 +7,7 @@ const links = [
   { to: "/", label: "Home", icon: Home },
   { to: "/contracts", label: "Contracts", icon: Package },
   { to: "/map", label: "Map", icon: Map },
+  { to: "/keybinds", label: "Keybinds", icon: Gamepad2 },
   { to: "/help", label: "Help", icon: HelpCircle },
   ...(import.meta.env.DEV
     ? [{ to: "/dev/locations", label: "Locations", icon: FolderTree }]

@@ -7,6 +7,7 @@ import { MapPage } from "@/pages/MapPage";
 import { ContractsPage } from "@/pages/ContractsPage";
 import { HelpPage } from "@/pages/HelpPage";
 import { DevLocationsPage } from "@/pages/DevLocationsPage";
+import { KeybindsPage } from "@/pages/KeybindsPage";
 import { Toaster } from "@/components/ui/sonner";
 
 const isDev = import.meta.env.DEV;
@@ -21,6 +22,7 @@ export default function App() {
             <Route index element={<HomePage />} />
             <Route path="contracts" element={<ContractsPage />} />
             <Route path="map" element={<MapPage />} />
+            <Route path="keybinds" element={<KeybindsPage />} />
             <Route path="help" element={<HelpPage />} />
             {isDev && <Route path="dev/locations" element={<DevLocationsPage />} />}
             <Route path="*" element={<Navigate to="/" replace />} />
